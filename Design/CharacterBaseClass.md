@@ -49,3 +49,6 @@ call animation for movement type
 - up
 - horizontal
 - dammage modifiers
+
+## Dodging
+- i-frame timer
