@@ -1,0 +1,161 @@
+using Godot;
+
+public abstract partial class CharacterBase : CharacterBody2D
+{
+    /// <summary>
+    /// Enums include the characters states, the possible attack directions,
+    /// and the possible special directions.
+    /// </summary>
+    public enum CharacterState { Idle, Run, Jump, Dodge, Attack, HitStun, Dead }
+    public enum AttackDirection { Horizontal, Up, DownAir }
+    public enum SpecialDirection { Neutral, Up, Horizontal }
+    public enum DodgeDirection { Neutral, Horizontal }
+
+    /// <summary>
+    /// Core attributes for a character (HP, Speed, Jump height, Damages, State).
+    /// </summary>
+    [Export] public int MaxHP = 100;
+    [Export] public float MoveSpeed = 200f;
+    [Export] public float JumpVelocity = -420f;
+    [Export] public int BasicDamage = 4;
+    public int SpecialDamage => BasicDamage *2;
+
+    /// <summary>
+    /// Dodge and hitstun timers.
+    /// </summary>
+    [Export] public float DodgeTime = 0.30f;
+    [Export] public float DodgeIFrameTime = 0.28f;
+    [Export] public float DodgeCooldown = 0.8f;
+    [Export] public float HitStunTimer = 0.25f;
+
+    /// <summary>
+    /// Runtime character attributes.
+    /// </summary>
+    public bool IsDead { get; protected set; }
+    public int CurrentHP { get; protected set; }
+    public CharacterState CurrentState { get; protected set; }
+    private float _hitStunRemaining;
+
+    // Base methods, owned by the core class.
+    
+    /// <summary>
+    /// TakeDamage() chacks that the character isn't dead or it returns early.
+    /// It records the old hp, then calculates and saves the new HP into currentHp. 
+    /// Resetting it to 0 if the damage would put current into the negative.
+    /// It then calls the appropriate virtual hooks. Then it checks to see if the damage killed the character.
+    /// Finally, it sets the hitstun timer and calls SetState with Hitstun as the new state.
+    /// </summary>
+    /// <param name="amount">amount is an integer containing the damage value the character will take.</param>
+    public void TakeDamage(int amount)
+    {
+        if (IsDead || amount <= 0) return;
+
+        int oldHp = CurrentHP;
+        CurrentHP = Mathf.Max(0, CurrentHP - amount);
+
+        OnHealthChanged(oldHp, CurrentHP);
+        OnDamaged(amount);
+       
+        if (CurrentHP == 0)
+        {
+            IsDead = true;
+            SetState(CharacterState.Dead);
+            OnDied();
+            return;
+        }
+
+        _hitStunRemaining = HitStunTimer;
+        SetState(CharacterState.HitStun);
+    }
+
+    /// <summary>
+    /// Attempts to start a dodge if the character is allowed to dodge right now.
+    /// </summary>
+    /// /// <returns>True when dodge starts successfully; otherwise false.</returns>
+    public bool TryStartDodge()
+    {
+        // TODO: Implement dodging.
+        return true;
+    }
+
+    /// <summary>
+    /// Routes a normal attack by direction and triggers attack hooks for character-specific behavior.
+    /// </summary>
+    /// <param name="direction">Requested normal attack direction.</param>
+    public void PerformAttack(AttackDirection direction)
+    {
+        // TODO: Implement attack
+    }
+
+    /// <summary>
+    /// Routes a special attack by direction and triggers special hooks for character-specific behavior.
+    /// </summary>
+    /// <param name="direction">Requested special attack direction.</param>
+    public void PerformSpecial(SpecialDirection direction)
+    {
+        // TODO: Implement special attack
+    }
+
+    /// <summary>
+    /// SetState changes a character into a new state. Fist it contains a check to prevent changing
+    /// to a new state. Then it calls the virtual hook, changes the character state, and calls the 
+    /// virtual hook to play the animation for the state.
+    /// </summary>
+    /// <param name="newState">Contains the state the character is going to switch into.</param>
+    protected void SetState(CharacterState newState)
+    {
+        if (CurrentState == newState) return;
+
+        OnStateChanged(CurrentState, newState);
+        CurrentState = newState;
+        PlayAnimationForState(newState);
+    }
+
+    // Virtual hooks to be overridden in individual characters.
+
+    // Lifecycle/State
+    protected virtual void OnStateChanged(CharacterState currentState, CharacterState newState) { }
+    protected virtual void PlayAnimationForState(CharacterState state) { }
+
+    // Health
+    protected virtual void OnHealthChanged(int oldHp, int newHp) { }
+    protected virtual void OnDamaged(int amount) { }
+    protected virtual void OnDied() { }
+
+    // Combat
+    protected virtual void OnAttackPerformed(AttackDirection direction, int damage) { }
+    protected virtual void OnSpecialPerformed(SpecialDirection direction, int damage) { }
+
+    // Dodge
+    protected virtual void OnDodgeStarted(DodgeDirection direction, float dodgeDuration, float iFrameDuration) { }
+    protected virtual void OnDodgeEnded(float dodgeCooldown) { }
+
+    // Basic Godot Overrides
+
+    /// <summary>
+    /// Sets the character's HP to the max, IsDead to false, and puts the character into the idle state.
+    /// </summary>
+    public override void _Ready()
+    {
+        CurrentHP = MaxHP;
+        IsDead = false;
+        CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
+        SetState(CharacterState.Idle);
+    }
+
+    /// <summary>
+    /// While a character is in hitstun state, the timer decreases.
+    /// </summary>
+    /// <param name="delta">delta represents time.</param>
+    public override void _PhysicsProcess(double delta)
+    {
+        if (CurrentState == CharacterState.HitStun && _hitStunRemaining > 0)
+        {
+            _hitStunRemaining -= (float)delta;
+            if (_hitStunRemaining <= 0)
+            {
+                SetState(CharacterState.Idle);
+            }
+        }
+    }
+}
