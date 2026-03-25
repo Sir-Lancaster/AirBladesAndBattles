@@ -34,7 +34,11 @@ public abstract partial class CharacterBase : CharacterBody2D
     public bool IsDead { get; protected set; }
     public int CurrentHP { get; protected set; }
     public CharacterState CurrentState { get; protected set; }
+    public bool IsInvincible { get; private set; }
     private float _hitStunRemaining;
+    private float _dodgeRemaining;
+    private float _dodgeCooldownRemaining;
+    private float _dodgeVelocityX;
 
     // Base methods, owned by the core class.
 
@@ -48,7 +52,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     /// <param name="amount">amount is an integer containing the damage value the character will take.</param>
     public void TakeDamage(int amount)
     {
-        if (IsDead || amount <= 0) return;
+        if (IsDead || amount <= 0 || IsInvincible) return;
 
         int oldHp = CurrentHP;
         CurrentHP = Mathf.Max(0, CurrentHP - amount);
@@ -70,11 +74,36 @@ public abstract partial class CharacterBase : CharacterBody2D
 
     /// <summary>
     /// Attempts to start a dodge if the character is allowed to dodge right now.
+    /// Blocks during locked states and while the cooldown is active.
+    /// For a horizontal dodge the roll velocity is captured from the current input.
+    /// Starts the iFrame window, transitions to the Dodge state, and fires OnDodgeStarted.
     /// </summary>
-    /// /// <returns>True when dodge starts successfully; otherwise false.</returns>
-    public bool TryStartDodge()
+    /// <param name="direction">Neutral for a spot dodge; Horizontal for a roll.</param>
+    /// <returns>True when dodge starts successfully; otherwise false.</returns>
+    public bool TryStartDodge(DodgeDirection direction)
     {
-        // TODO: Implement dodging.
+        if (CurrentState == CharacterState.HitStun ||
+            CurrentState == CharacterState.Dead  ||
+            CurrentState == CharacterState.Dodge ||
+            CurrentState == CharacterState.Attack)
+            return false;
+
+        if (_dodgeCooldownRemaining > 0) return false;
+
+        _dodgeRemaining  = DodgeTime;
+        _dodgeVelocityX  = 0f;
+
+        if (direction == DodgeDirection.Horizontal)
+        {
+            float inputX    = Input.GetVector("move_left", "move_right", "move_up", "move_down").X;
+            _dodgeVelocityX = (inputX >= 0f ? 1f : -1f) * MoveSpeed * 1.5f;
+        }
+
+        IsInvincible = true;
+        GetTree().CreateTimer(DodgeIFrameTime).Timeout += () => IsInvincible = false;
+
+        SetState(CharacterState.Dodge);
+        OnDodgeStarted(direction, DodgeTime, DodgeIFrameTime);
         return true;
     }
 
@@ -179,6 +208,23 @@ public abstract partial class CharacterBase : CharacterBody2D
 
         HandleCombatInput();
 
+        if (CurrentState == CharacterState.Dodge)
+        {
+            Velocity = new Vector2(_dodgeVelocityX, Velocity.Y);
+            _dodgeRemaining -= (float)delta;
+            if (_dodgeRemaining <= 0)
+            {
+                IsInvincible    = false;
+                _dodgeVelocityX = 0f;
+                _dodgeCooldownRemaining = DodgeCooldown;
+                SetState(CharacterState.Idle);
+                OnDodgeEnded(DodgeCooldown);
+            }
+        }
+
+        if (_dodgeCooldownRemaining > 0)
+            _dodgeCooldownRemaining -= (float)delta;
+
         if (CurrentState == CharacterState.HitStun && _hitStunRemaining > 0)
         {
             _hitStunRemaining -= (float)delta;
@@ -212,7 +258,12 @@ public abstract partial class CharacterBase : CharacterBody2D
             PerformSpecial(dir);
         }
 
-        //if (Input.IsActionJustPressed("dodge"))
+        if (Input.IsActionJustPressed("dodge"))
+        {
+            DodgeDirection dir = Mathf.Abs(move.X) > 0.3f ? DodgeDirection.Horizontal : DodgeDirection.Neutral;
+            TryStartDodge(dir);
+        }
+
         //if (Input.IsActionJustPressed("jump"))
     }
 }
