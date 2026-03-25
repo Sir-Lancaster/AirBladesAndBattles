@@ -18,7 +18,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     [Export] public float MoveSpeed = 200f;
     [Export] public float JumpVelocity = -420f;
     [Export] public int BasicDamage = 4;
-    public int SpecialDamage => BasicDamage *2;
+    public int SpecialDamage => BasicDamage * 2;
 
     /// <summary>
     /// Dodge and hitstun timers.
@@ -37,7 +37,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     private float _hitStunRemaining;
 
     // Base methods, owned by the core class.
-    
+
     /// <summary>
     /// TakeDamage() chacks that the character isn't dead or it returns early.
     /// It records the old hp, then calculates and saves the new HP into currentHp. 
@@ -55,7 +55,7 @@ public abstract partial class CharacterBase : CharacterBody2D
 
         OnHealthChanged(oldHp, CurrentHP);
         OnDamaged(amount);
-       
+
         if (CurrentHP == 0)
         {
             IsDead = true;
@@ -84,7 +84,22 @@ public abstract partial class CharacterBase : CharacterBody2D
     /// <param name="direction">Requested normal attack direction.</param>
     public void PerformAttack(AttackDirection direction)
     {
-        // TODO: Implement attack
+        // Block attacks during locked states.
+        if (CurrentState == CharacterState.HitStun ||
+            CurrentState == CharacterState.Dead ||
+            CurrentState == CharacterState.Dodge ||
+            CurrentState == CharacterState.Attack)
+        {
+            return;
+        }
+
+        // Down-air only makes sense while airborne.
+        AttackDirection resolvedDirection = direction;
+        if (resolvedDirection == AttackDirection.DownAir && IsOnFloor())
+            resolvedDirection = AttackDirection.Horizontal;
+
+        SetState(CharacterState.Attack);
+        OnAttackPerformed(resolvedDirection, BasicDamage);
     }
 
     /// <summary>
@@ -93,7 +108,18 @@ public abstract partial class CharacterBase : CharacterBody2D
     /// <param name="direction">Requested special attack direction.</param>
     public void PerformSpecial(SpecialDirection direction)
     {
-        // TODO: Implement special attack
+        // Block specials during locked states.
+        if (CurrentState == CharacterState.HitStun ||
+            CurrentState == CharacterState.Dead ||
+            CurrentState == CharacterState.Dodge ||
+            CurrentState == CharacterState.Attack)
+        {
+            return;
+        }
+
+        SpecialDirection resolvedDirection = direction;
+        SetState(CharacterState.Attack);
+        OnSpecialPerformed(resolvedDirection, SpecialDamage);
     }
 
     /// <summary>
@@ -149,13 +175,44 @@ public abstract partial class CharacterBase : CharacterBody2D
     /// <param name="delta">delta represents time.</param>
     public override void _PhysicsProcess(double delta)
     {
+        if (IsDead) return;
+
+        HandleCombatInput();
+
         if (CurrentState == CharacterState.HitStun && _hitStunRemaining > 0)
         {
             _hitStunRemaining -= (float)delta;
             if (_hitStunRemaining <= 0)
-            {
                 SetState(CharacterState.Idle);
-            }
         }
+    }
+
+    private void HandleCombatInput()
+    {
+        if (CurrentState == CharacterState.HitStun || CurrentState == CharacterState.Dead)
+            return;
+
+        Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+
+        if (Input.IsActionJustPressed("attack"))
+        {
+            AttackDirection dir = AttackDirection.Horizontal;
+            if (move.Y < -0.5f) dir = AttackDirection.Up;
+            else if (move.Y > 0.5f && !IsOnFloor()) dir = AttackDirection.DownAir;
+
+            PerformAttack(dir);
+        }
+
+        if (Input.IsActionJustPressed("special"))
+        {
+            SpecialDirection dir = SpecialDirection.Neutral;
+            if (move.Y < -0.5f) dir = SpecialDirection.Up;
+            else if (Mathf.Abs(move.X) > 0.3f) dir = SpecialDirection.Horizontal;
+
+            PerformSpecial(dir);
+        }
+
+        //if (Input.IsActionJustPressed("dodge"))
+        //if (Input.IsActionJustPressed("jump"))
     }
 }
