@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://d3el4cyjkryxb"]
+
+[ext_resource type="Script" uid="uid://b61g60lnxqs6e" path="res://Scripts/Characters/Test/RegressionCharacter.cs" id="1_p37k8"]
+[ext_resource type="Texture2D" uid="uid://cwj6fbkekjlrs" path="res://icon.svg" id="2_wtslj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_deemx"]
+radius = 80.305664
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p37k8"]
+
+[node name="RegressionTest" type="Node2D" unique_id=1297599665]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=915314396]
+position = Vector2(-314, 12)
+script = ExtResource("1_p37k8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=2104888856]
+shape = SubResource("CircleShape2D_deemx")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=116598268]
+texture = ExtResource("2_wtslj")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1949312096]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=549577282]
+position = Vector2(0, 130)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=2059290267]
+scale = Vector2(80, 1)
+shape = SubResource("RectangleShape2D_p37k8")
