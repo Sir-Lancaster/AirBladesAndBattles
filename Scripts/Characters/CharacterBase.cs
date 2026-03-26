@@ -238,6 +238,8 @@ public abstract partial class CharacterBase : CharacterBody2D
             if (_hitStunRemaining <= 0)
                 SetState(CharacterState.Idle);
         }
+
+        MoveAndSlide();
     }
 
     private void HandleCombatInput()

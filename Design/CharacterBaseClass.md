@@ -4,7 +4,7 @@
 
 ## Our needs
 - health
-  - damage taking
+  - damage taking 
 - movement
   - walk
   - jump
@@ -41,13 +41,11 @@ call animation for movement type
 - combination special and attack for directional specials
 
 ## Attack
-- up 
-- down (in air)
-- horizontal
-- special (can be overridden)
-- neutral
-- up
-- horizontal
+- up *
+- down (in air) *
+- horizontal *
+- special (can be overridden) *
+- up *
 - dammage modifiers
 
 ## Dodging
