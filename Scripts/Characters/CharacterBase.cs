@@ -17,6 +17,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     [Export] public int MaxHP = 100;
     [Export] public float MoveSpeed = 200f;
     [Export] public float JumpVelocity = -420f;
+    [Export] public float Gravity = 900f;
     [Export] public int BasicDamage = 4;
     public int SpecialDamage => BasicDamage * 2;
 
@@ -206,7 +207,13 @@ public abstract partial class CharacterBase : CharacterBody2D
     {
         if (IsDead) return;
 
+        if (!IsOnFloor())
+        {
+            Velocity += new Vector2(0, Gravity * (float)delta);
+        }
+
         HandleCombatInput();
+        HandleMovementInput();
 
         if (CurrentState == CharacterState.Dodge)
         {
@@ -265,5 +272,32 @@ public abstract partial class CharacterBase : CharacterBody2D
         }
 
         //if (Input.IsActionJustPressed("jump"))
+    }
+
+    private void HandleMovementInput()
+    {
+        if (CurrentState == CharacterState.HitStun || CurrentState == CharacterState.Dead)
+            return;
+
+        Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+
+        if (CurrentState != CharacterState.Attack && CurrentState != CharacterState.Dodge)
+        {
+            Velocity = new Vector2(move.X * MoveSpeed, Velocity.Y);
+
+            if (IsOnFloor())
+            {
+                if (move.X == 0)
+                    SetState(CharacterState.Idle);
+                else
+                    SetState(CharacterState.Run);
+            }
+        }
+
+        if (Input.IsActionJustPressed("jump") && IsOnFloor())
+        {
+            Velocity = new Vector2(Velocity.X, JumpVelocity);
+            SetState(CharacterState.Jump);
+        }
     }
 }
