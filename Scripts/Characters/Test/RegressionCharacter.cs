@@ -65,7 +65,7 @@ public partial class RegressionCharacter : CharacterBase
         base._PhysicsProcess(delta);
         
         // Debug: press 'delete' to take 10 damage
-        if (Input.IsActionJustPressed("ui_text_delete"))
+        if (Input.IsPhysicalKeyPressed(Key.Delete))
         {
             TakeDamage(10);
             GD.Print($"{CharacterLabel} DEBUG: TakeDamage(10) called");
