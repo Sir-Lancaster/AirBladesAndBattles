@@ -272,8 +272,6 @@ public abstract partial class CharacterBase : CharacterBody2D
             DodgeDirection dir = Mathf.Abs(move.X) > 0.3f ? DodgeDirection.Horizontal : DodgeDirection.Neutral;
             TryStartDodge(dir);
         }
-
-        //if (Input.IsActionJustPressed("jump"))
     }
 
     private void HandleMovementInput()
