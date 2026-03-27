@@ -59,4 +59,16 @@ public partial class RegressionCharacter : CharacterBase
         if (!IsDead && CurrentState == CharacterState.Attack)
             SetState(CharacterState.Idle);
     }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
+        
+        // Debug: press 'delete' to take 10 damage
+        if (Input.IsActionJustPressed("ui_text_delete"))
+        {
+            TakeDamage(10);
+            GD.Print($"{CharacterLabel} DEBUG: TakeDamage(10) called");
+        }
+    }
 }
