@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bs2tpyjdgv26w"]
+
+[ext_resource type="Script" uid="uid://c4xfvxsyoacan" path="res://Scripts/Utility/Hitbox.cs" id="1_hitbox"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xwohg"]
+radius = 13.0
+height = 72.0
+
+[node name="Hitbox" type="Area2D" unique_id=775310356]
+script = ExtResource("1_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1545320923]
+shape = SubResource("CapsuleShape2D_xwohg")
+debug_color = Color(1, 0.26666668, 0.07058824, 0.41960785)
