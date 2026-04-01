@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://dk13b8nao4v4o"]
+
+[ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="1_7b7cw"]
+[ext_resource type="Shader" uid="uid://c3bh24h3oaode" path="res://Scenes/Stages/Clocktower.gdshader" id="1_iukx0"]
+[ext_resource type="Script" uid="uid://cg63uwcwfwyeh" path="res://Scripts/Characters/Steampunk/Gear.cs" id="1_sonsx"]
+[ext_resource type="Texture2D" uid="uid://baflvdpvtmlpl" path="res://Assets/Characters/steampunk/Gear-Silhouette-Png-Picture-1920x1920.png" id="4_i5jib"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ss6kr"]
+shader = ExtResource("1_iukx0")
+shader_parameter/pixel_size = 4.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iukx0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7b7cw"]
+
+[node name="Clocktower" type="Node2D" unique_id=1738674402]
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=532533465]
+position = Vector2(151, 748)
+polygon = PackedVector2Array(258, 239, 425, 103, 772, 125, 891, 290, 1034, 600, 623, 631, 604, 328, 167, 553, 135, 175)
+
+[node name="Polygon2D2" type="Polygon2D" parent="." unique_id=2049851980]
+use_parent_material = true
+position = Vector2(695, 874)
+polygon = PackedVector2Array(398, -201, 993, -202, 957, -137, 447, -133)
+
+[node name="Polygon2D3" type="Polygon2D" parent="." unique_id=719851525]
+use_parent_material = true
+position = Vector2(-32, 545)
+polygon = PackedVector2Array(398, -201, 993, -202, 957, -137, 813.9103, -135.8778, 447, -133)
+
+[node name="gear" type="Polygon2D" parent="." unique_id=2083079535]
+position = Vector2(730, 581)
+scale = Vector2(1.042, 1)
+color = Color(0.43376145, 0.30957526, 0.037444618, 1)
+offset = Vector2(-535, 315)
+polygon = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
+uv = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
+script = ExtResource("1_sonsx")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
+material = SubResource("ShaderMaterial_ss6kr")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.000122
+offset_top = -1.9999847
+offset_right = 118.00012
+offset_bottom = 98.00003
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(20, 20)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1847418280]
+material = SubResource("ShaderMaterial_iukx0")
+use_parent_material = true
+position = Vector2(938, 556)
+
+[node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("1_7b7cw")]
+position = Vector2(1162, 377)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=311221569]
+position = Vector2(0, 130)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1091557313]
+position = Vector2(945, 454)
+scale = Vector2(80, 1)
+shape = SubResource("RectangleShape2D_7b7cw")
+
+[node name="GearSilhouettePngPicture1920x1920" type="Sprite2D" parent="." unique_id=1770907861]
+position = Vector2(602, -391)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_i5jib")
