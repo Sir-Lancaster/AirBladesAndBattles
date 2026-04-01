@@ -53,7 +53,7 @@ public partial class SirEdward: CharacterBase
             _ => "idle"
         };
 
-        _edward.Play("idle");
+        _edward.Play(anim);
         GD.Print($"{CharacterLabel} play animation for: {state}");
     }
 
