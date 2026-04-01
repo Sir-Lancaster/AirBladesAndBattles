@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b61g60lnxqs6e" path="res://Scripts/Characters/Test/RegressionCharacter.cs" id="1_p37k8"]
 [ext_resource type="Texture2D" uid="uid://cwj6fbkekjlrs" path="res://icon.svg" id="2_wtslj"]
+[ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="3_wtslj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_deemx"]
 radius = 80.305664
@@ -28,3 +29,6 @@ position = Vector2(0, 130)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=2059290267]
 scale = Vector2(80, 1)
 shape = SubResource("RectangleShape2D_p37k8")
+
+[node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("3_wtslj")]
+position = Vector2(174, -79)

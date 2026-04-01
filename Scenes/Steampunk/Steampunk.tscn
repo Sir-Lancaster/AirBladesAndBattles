@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://btfcbuwxkk2ur"]
+
+[ext_resource type="Script" uid="uid://84eagvhr1wor" path="res://Scripts/Characters/Steampunk/Steampunk.cs" id="1_vw2n7"]
+[ext_resource type="Texture2D" uid="uid://qq2sx3thx74t" path="res://Assets/Characters/steampunk/idle.png" id="2_1lbay"]
+[ext_resource type="Texture2D" uid="uid://dwogao0vwa72s" path="res://Assets/Characters/steampunk/steampunkgirl_run.png" id="3_1lbay"]
+[ext_resource type="Texture2D" uid="uid://cjugvwag84b13" path="res://Assets/Characters/steampunk/steampunkgirl_jump.png" id="3_ao7ax"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ao7ax"]
+radius = 27.0
+height = 230.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_210kw"]
+atlas = ExtResource("3_ao7ax")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kta2p"]
+atlas = ExtResource("3_ao7ax")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_or3q2"]
+atlas = ExtResource("3_ao7ax")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36cvq"]
+atlas = ExtResource("2_1lbay")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d8qst"]
+atlas = ExtResource("2_1lbay")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_imcgk"]
+atlas = ExtResource("2_1lbay")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_txpwu"]
+atlas = ExtResource("2_1lbay")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bqvx6"]
+atlas = ExtResource("3_ao7ax")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nf6bq"]
+atlas = ExtResource("3_ao7ax")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f8x6a"]
+atlas = ExtResource("3_ao7ax")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ao7ax"]
+atlas = ExtResource("3_1lbay")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ttpb7"]
+atlas = ExtResource("3_1lbay")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_82gnm"]
+atlas = ExtResource("3_1lbay")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_no8s3"]
+atlas = ExtResource("3_1lbay")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pi14c"]
+atlas = ExtResource("3_1lbay")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_838xe"]
+atlas = ExtResource("3_1lbay")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ttpb7"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"dodge",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_210kw")
+}, {
+"duration": 0.2,
+"texture": SubResource("AtlasTexture_kta2p")
+}, {
+"duration": 0.4,
+"texture": SubResource("AtlasTexture_or3q2")
+}],
+"loop": false,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36cvq")
+}, {
+"duration": 0.4,
+"texture": SubResource("AtlasTexture_d8qst")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_imcgk")
+}, {
+"duration": 0.4,
+"texture": SubResource("AtlasTexture_txpwu")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_bqvx6")
+}, {
+"duration": 0.15,
+"texture": SubResource("AtlasTexture_nf6bq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f8x6a")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_ao7ax")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ttpb7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_82gnm")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_no8s3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pi14c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_838xe")
+}],
+"loop": true,
+"name": &"run",
+"speed": 9.0
+}]
+
+[node name="Steampunk" type="CharacterBody2D" unique_id=1806914756]
+script = ExtResource("1_vw2n7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1583789845]
+position = Vector2(0, 11)
+shape = SubResource("CapsuleShape2D_ao7ax")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=429900338]
+texture_filter = 1
+position = Vector2(-16.999994, -1.9999999)
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_ttpb7")
+animation = &"attack"
