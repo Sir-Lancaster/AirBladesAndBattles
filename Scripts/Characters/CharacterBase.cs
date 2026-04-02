@@ -320,7 +320,7 @@ public void PerformAttack(AttackDirection direction)
             }
         }
 
-        if (Input.IsActionJustPressed("jump") && _jumpsRemaining > 0)
+        if (Input.IsActionJustPressed("jump") && _jumpsRemaining > 0 && CurrentState != CharacterState.Attack)
         {
                 _jumpsRemaining--;
                 Velocity = new Vector2(Velocity.X, JumpVelocity);

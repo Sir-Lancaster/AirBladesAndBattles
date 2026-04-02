@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://cg63uwcwfwyeh" path="res://Scripts/Characters/Steampunk/Gear.cs" id="1_sonsx"]
 [ext_resource type="Texture2D" uid="uid://baflvdpvtmlpl" path="res://Assets/Characters/steampunk/Gear-Silhouette-Png-Picture-1920x1920.png" id="4_i5jib"]
 
+[sub_resource type="SphereMesh" id="SphereMesh_sonsx"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ss6kr"]
 shader = ExtResource("1_iukx0")
 shader_parameter/pixel_size = 4.0
@@ -29,24 +31,46 @@ use_parent_material = true
 position = Vector2(-32, 545)
 polygon = PackedVector2Array(398, -201, 993, -202, 957, -137, 813.9103, -135.8778, 447, -133)
 
-[node name="gear" type="Polygon2D" parent="." unique_id=2083079535]
-position = Vector2(730, 581)
-scale = Vector2(1.042, 1)
-color = Color(0.43376145, 0.30957526, 0.037444618, 1)
-offset = Vector2(-535, 315)
+[node name="gear2" type="Polygon2D" parent="." unique_id=889926496]
+position = Vector2(740, 713)
+scale = Vector2(0.5, 0.5)
+color = Color(0.708496, 0.5126037, 0.08798642, 1)
+offset = Vector2(-540, 320)
 polygon = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
 uv = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
 script = ExtResource("1_sonsx")
+RotateClockwise = false
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="gear2" unique_id=171394345]
+modulate = Color(0.29954746, 0.29954746, 0.29954743, 1)
+position = Vector2(-0.26391602, 6.2735596)
+scale = Vector2(200, 200)
+mesh = SubResource("SphereMesh_sonsx")
+
+[node name="gear" type="Polygon2D" parent="." unique_id=2083079535]
+position = Vector2(853, 577)
+scale = Vector2(0.5, 0.5)
+color = Color(0.708496, 0.5126037, 0.08798642, 1)
+offset = Vector2(-540, 320)
+polygon = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
+uv = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
+script = ExtResource("1_sonsx")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="gear" unique_id=265755871]
+modulate = Color(0.29954746, 0.29954746, 0.29954743, 1)
+position = Vector2(-0.26391602, 6.2735596)
+scale = Vector2(200, 200)
+mesh = SubResource("SphereMesh_sonsx")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
 material = SubResource("ShaderMaterial_ss6kr")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 18.000122
-offset_top = -1.9999847
-offset_right = 118.00012
-offset_bottom = 98.00003
+offset_left = 5.000122
+offset_top = -0.99993896
+offset_right = 105.00012
+offset_bottom = 99.00012
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(20, 20)
