@@ -164,6 +164,6 @@ shape = SubResource("CapsuleShape2D_ao7ax")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=429900338]
 texture_filter = 1
 position = Vector2(-16.999994, -1.9999999)
-scale = Vector2(5, 5)
+scale = Vector2(2.5, 2.5)
 sprite_frames = SubResource("SpriteFrames_ttpb7")
 animation = &"attack"
