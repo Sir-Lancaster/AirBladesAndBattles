@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c5ftgdi1fb4io"]
+
+[ext_resource type="Script" uid="uid://5wcm0o003ot8" path="res://Scripts/Characters/Steampunk/Hitbox.cs" id="1_7p4qk"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hilu3"]
+radius = 51.0
+height = 102.0
+
+[node name="Hitbox" type="Area2D" unique_id=1612254155]
+script = ExtResource("1_7p4qk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1107623143]
+position = Vector2(33, 0)
+shape = SubResource("CapsuleShape2D_hilu3")

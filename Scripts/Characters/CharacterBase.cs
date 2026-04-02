@@ -294,7 +294,7 @@ public abstract partial class CharacterBase : CharacterBody2D
             }
         }
 
-        if (Input.IsActionJustPressed("jump") && IsOnFloor())
+        if (Input.IsActionJustPressed("jump") && IsOnFloor() && CurrentState != CharacterState.Attack)
         {
             Velocity = new Vector2(Velocity.X, JumpVelocity);
             SetState(CharacterState.Jump);
