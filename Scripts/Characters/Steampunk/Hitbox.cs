@@ -4,20 +4,17 @@ using Godot;
 public partial class Hitbox : Area2D
 {
     [Export] public int Damage = 4;
-    [Export] public float Lifetime = 0.12f;
     [Export] public bool OneHitPerTarget = true;
     [Export] public bool DestroyOnFirstHit = false;
 
     public Node OwnerNode { get; private set; }
 
     private readonly HashSet<ulong> _hitTargetIds = new();
-    private bool _lifetimeCountdownStarted;
 
     public override void _Ready()
     {
         AreaEntered += OnAreaEntered;
         BodyEntered += OnBodyEntered;
-        //EnsureLifetimeCountdown(Lifetime);
     }
 
     public void Activate(Node ownerNode, int damage, float lifetimeSeconds = -1f)
@@ -25,22 +22,11 @@ public partial class Hitbox : Area2D
         OwnerNode = ownerNode;
         Damage = damage;
 
-        if (lifetimeSeconds < 0f)
-            Lifetime = 0f; // Disable countdown
-        else
-            Lifetime = lifetimeSeconds;
-
-        EnsureLifetimeCountdown(Lifetime);
+        if (lifetimeSeconds > 0f)
+            StartLifetimeCountdown(lifetimeSeconds);
     }
 
-    private void EnsureLifetimeCountdown(float lifetime)
-    {
-        if (_lifetimeCountdownStarted || lifetime <= 0f)
-            return;
-
-        _lifetimeCountdownStarted = true;
-        StartLifetimeCountdown(lifetime);
-    }
+    public void UpdateDamage(int damage) => Damage = damage;
 
     private async void StartLifetimeCountdown(float seconds)
     {
@@ -51,36 +37,21 @@ public partial class Hitbox : Area2D
 
     private void OnAreaEntered(Area2D area)
     {
-        if (area == null) return;
-
-        Node parent = area.GetParent();
-        if (parent is Node2D node)
-            TryApplyDamage(node);
+        if (area?.GetParent() is Node2D parent)
+            TryApplyDamage(parent);
     }
 
-    private void OnBodyEntered(Node2D body)
-    {
-        if (body == null) return;
-        TryApplyDamage(body);
-    }
+    private void OnBodyEntered(Node2D body) => TryApplyDamage(body);
 
     private void TryApplyDamage(Node2D target)
     {
-        if (target == null)
+        if (target == null || target == OwnerNode) return;
+
+        if (OwnerNode != null && (OwnerNode.IsAncestorOf(target) || target.IsAncestorOf(OwnerNode)))
             return;
-
-        if (OwnerNode != null)
-        {
-            if (target == OwnerNode)
-                return;
-
-            if (OwnerNode.IsAncestorOf(target) || target.IsAncestorOf(OwnerNode))
-                return;
-        }
 
         ulong targetId = target.GetInstanceId();
-        if (OneHitPerTarget && _hitTargetIds.Contains(targetId))
-            return;
+        if (OneHitPerTarget && _hitTargetIds.Contains(targetId)) return;
 
         if (target is CharacterBase character)
         {
@@ -92,4 +63,3 @@ public partial class Hitbox : Area2D
         }
     }
 }
-
