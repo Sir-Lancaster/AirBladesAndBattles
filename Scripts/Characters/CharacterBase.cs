@@ -112,7 +112,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     /// Routes a normal attack by direction and triggers attack hooks for character-specific behavior.
     /// </summary>
     /// <param name="direction">Requested normal attack direction.</param>
-    public void PerformAttack(AttackDirection direction)
+public void PerformAttack(AttackDirection direction)
     {
         // Block attacks during locked states.
         if (CurrentState == CharacterState.HitStun ||
@@ -128,6 +128,7 @@ public abstract partial class CharacterBase : CharacterBody2D
         if (resolvedDirection == AttackDirection.DownAir && IsOnFloor())
             resolvedDirection = AttackDirection.Horizontal;
 
+        Velocity = new Vector2(0f, Velocity.Y);
         SetState(CharacterState.Attack);
         OnAttackPerformed(resolvedDirection, BasicDamage);
     }
@@ -146,7 +147,7 @@ public abstract partial class CharacterBase : CharacterBody2D
         {
             return;
         }
-
+        Velocity = new Vector2(0f, Velocity.Y);
         SpecialDirection resolvedDirection = direction;
         SetState(CharacterState.Attack);
         OnSpecialPerformed(resolvedDirection, SpecialDamage);
