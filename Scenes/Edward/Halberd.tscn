@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://1de3c472egrb"]
+
+[ext_resource type="Texture2D" uid="uid://belmq35pog31p" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="1_qsgn4"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u6wn7"]
+radius = 5.0
+height = 83.4386
+
+[node name="Halberd" type="Area2D" unique_id=1606870420]
+texture_filter = 1
+rotation = -0.4886922
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1800389579]
+position = Vector2(-1, 2.0000007)
+rotation = 0.7853982
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("CapsuleShape2D_u6wn7")
+debug_color = Color(1, 0.019232832, 0.0017920041, 0.41960785)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1169008954]
+texture = ExtResource("1_qsgn4")

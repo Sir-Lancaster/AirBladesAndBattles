@@ -10,10 +10,13 @@ public partial class SirEdward: CharacterBase
 
     [Export] public string CharacterLabel = "SirEdward";
     [Export] public float AttackRecovery = 0.30f;
-    [Export] public float SpecialAttackRecovery = 0.40f;
+    [Export] public float SpecialAttackRecovery = 1.2f;
 
     private static readonly PackedScene HitboxScene =
         GD.Load<PackedScene>("res://Scenes/Utility/Hitbox.tscn");
+
+    private static readonly PackedScene HalberdScene =
+        GD.Load<PackedScene>("res://Scenes/Edward/Halbered.tscn");
 
     public override void _Ready()
     {
@@ -24,12 +27,17 @@ public partial class SirEdward: CharacterBase
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-         // Debug: press 'delete' to take 10 damage
+
+        // Debug: press Delete to take 10 damage.
         if (Input.IsPhysicalKeyPressed(Key.Delete))
         {
             TakeDamage(10);
             GD.Print($"{CharacterLabel} DEBUG: TakeDamage(10) called");
         }
+
+        // Keep facing direction when not moving.
+        if (Mathf.Abs(Velocity.X) > 0.01f)
+            _edward.FlipH = Velocity.X < 0f;
     }
 
     protected override void OnStateChanged(CharacterState fromState, CharacterState toState)
@@ -78,6 +86,7 @@ public partial class SirEdward: CharacterBase
     {
         _currentAttackDirection = direction;
         _isSpecial = false;
+
         GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
         EndAttackAfter(AttackRecovery);
         SpawnAttackHitbox(direction, damage);
@@ -95,21 +104,20 @@ public partial class SirEdward: CharacterBase
                 int oldHp = CurrentHP;
                 CurrentHP = Mathf.Min(MaxHP, CurrentHP + 2);
                 OnHealthChanged(oldHp, CurrentHP);
-                GD.Print($"{CharacterLabel} newutral special: heal 2");
+                GD.Print($"{CharacterLabel} neutral special: heal 2");
                 break;
-            
+
             case SpecialDirection.Up:
-                // placeholder for throw+teleport flow
-                GD.Print($"{CharacterLabel} up special: TODO throw Halbered and teleport");
+                SpawnUpSpecialHalberd(damage);
+                GD.Print($"{CharacterLabel} up special: halberd throw");
                 break;
-            
+
             case SpecialDirection.Horizontal:
-                // pike Hitbox
-                // SpawnSpecialHitbox(direction, damage)
-                GD.Print($"{CharacterLabel} horixontal special: Pike");
+                // TODO: Pike stance hitbox.
+                GD.Print($"{CharacterLabel} horizontal special: pike");
                 break;
         }
-        
+
         EndAttackAfter(SpecialAttackRecovery);
     }
 
@@ -122,7 +130,6 @@ public partial class SirEdward: CharacterBase
     protected override void OnDodgeEnded(float dodgeCooldown)
     {
         PlayAnimationForState(CharacterState.Idle);
-        GD.Print($"{CharacterLabel} dodge end, cooldown: {dodgeCooldown}");
     }
 
     private async void EndAttackAfter(float seconds)
@@ -161,5 +168,37 @@ public partial class SirEdward: CharacterBase
         }
 
         _currentHitbox = hitbox;
+    }
+
+    private void SpawnUpSpecialHalberd(int damage)
+    {
+        var halberd = HalberdScene.Instantiate<Halberd>();
+
+        // Add to world so it flies independently.
+        GetParent().AddChild(halberd);
+        halberd.GlobalPosition = GlobalPosition + new Vector2(0f, -18f);
+
+        float facing = _edward.FlipH ? -1f : 1f;
+        Vector2 throwDirection = new Vector2(facing, -1.2f).Normalized(); // ~20 deg up
+
+        halberd.Launch(this, throwDirection, damage);
+
+        // Connect despawn signal to teleport Edward.
+        halberd.Despawned += OnHalberdDespawned;
+    }
+
+    private async void OnHalberdDespawned(Vector2 despawnPosition)
+    {
+        // Smoothly move to despawn position over 0.2 seconds.
+        var tween = CreateTween();
+        tween.SetTrans(Tween.TransitionType.Quad);
+        tween.SetEase(Tween.EaseType.InOut);
+        tween.TweenProperty(this, "global_position", despawnPosition, 0.2f);
+
+        // Wait for tween to finish, then hover for 0.5 seconds.
+        await ToSignal(tween, "finished");
+        Velocity = new Vector2(Velocity.X, 0f);
+
+        GD.Print($"{CharacterLabel} teleport complete");
     }
 }
