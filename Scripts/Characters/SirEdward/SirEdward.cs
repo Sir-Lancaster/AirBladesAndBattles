@@ -22,6 +22,7 @@ public partial class SirEdward: CharacterBase
     /// Tracks whether a hitbox exists as a child node currently.
     /// </summary>
     private Area2D _currentHitbox;
+    private int _healCount = 0;
 
     /// <summary>
     ///  A counter tracking the number of times Edward has healed this life.
