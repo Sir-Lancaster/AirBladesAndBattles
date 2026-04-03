@@ -7,6 +7,7 @@ public partial class SirEdward: CharacterBase
     private SpecialDirection _currentSpecialDirection;
     private bool _isSpecial;
     private Area2D _currentHitbox;
+    private int _healCount = 0;
 
     [Export] public string CharacterLabel = "SirEdward";
     [Export] public float AttackRecovery = 0.30f;
@@ -102,9 +103,15 @@ public partial class SirEdward: CharacterBase
             case SpecialDirection.Neutral:
                 // healing
                 int oldHp = CurrentHP;
-                CurrentHP = Mathf.Min(MaxHP, CurrentHP + 2);
-                OnHealthChanged(oldHp, CurrentHP);
-                GD.Print($"{CharacterLabel} neutral special: heal 2");
+                _healCount += 1;
+                if (_healCount < 3)
+                {
+                    CurrentHP = Mathf.Min(MaxHP, CurrentHP + 2);
+                    OnHealthChanged(oldHp, CurrentHP);
+                    GD.Print($"{CharacterLabel} neutral special: heal 2");
+                }
+                
+                // TODO: Once sound effect has been found, play error sound. 
                 break;
 
             case SpecialDirection.Up:
@@ -152,17 +159,17 @@ public partial class SirEdward: CharacterBase
         switch (dir)
         {
             case AttackDirection.Horizontal:
-                hitbox.Position = new Vector2(40f * facing, 0f); // in front
+                hitbox.Position = new Vector2(50f * facing, 0f); // in front
                 hitbox.RotationDegrees = 0f;
                 break;
 
             case AttackDirection.Up:
-                hitbox.Position = new Vector2(0f, -40f); // above
+                hitbox.Position = new Vector2(0f, -50f); // above
                 hitbox.RotationDegrees = -90f; // adjust visually as needed
                 break;
 
             case AttackDirection.DownAir:
-                hitbox.Position = new Vector2(0f, 40f); // below
+                hitbox.Position = new Vector2(0f, 50f); // below
                 hitbox.RotationDegrees = 90f;
                 break;
         }
