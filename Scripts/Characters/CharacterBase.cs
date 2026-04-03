@@ -17,7 +17,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     [Export] public int MaxHP = 100;
     [Export] public float MoveSpeed = 200f;
     [Export] public float JumpVelocity = -420f;
-    [Export] public float Gravity = 500f;
+    [Export] public float Gravity = 900f;
     [Export] public int BasicDamage = 4;
     [Export] public int MaxJumps = 2;
     public int SpecialDamage => BasicDamage * 2;
