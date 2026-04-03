@@ -1,61 +1,61 @@
-[gd_scene format=3 uid="uid://cl6q17a8no8jw"]
+[gd_scene format=3 uid="uid://hq871q66ehp1"]
 
-[ext_resource type="Texture2D" uid="uid://hlygte486oib" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_xq5cm"]
-[ext_resource type="Script" uid="uid://c1yj7jssn7deq" path="res://Scripts/Characters/SirEdward/SirEdward.cs" id="3_f8nev"]
-[ext_resource type="Texture2D" uid="uid://brcq8pbsivw63" path="res://Assets/Characters/SirEdward/Run/Edward-run.png" id="3_xq5cm"]
+[ext_resource type="Script" uid="uid://c1yj7jssn7deq" path="res://Scripts/Characters/SirEdward/SirEdward.cs" id="1_hkid1"]
+[ext_resource type="Texture2D" uid="uid://hlygte486oib" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_4souh"]
+[ext_resource type="Texture2D" uid="uid://brcq8pbsivw63" path="res://Assets/Characters/SirEdward/Run/Edward-run.png" id="3_o0hxx"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xq5cm"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cjqrx"]
 size = Vector2(4.6399975, 22.400002)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wtslj"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_deemx"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gigxg"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_am8aa"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ssyyn"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(256, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k0lbb"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(320, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cbsgr"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(384, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4ftwy"]
-atlas = ExtResource("2_xq5cm")
+atlas = ExtResource("2_4souh")
 region = Rect2(448, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xq5cm"]
-atlas = ExtResource("3_xq5cm")
+atlas = ExtResource("3_o0hxx")
 region = Rect2(0, 10, 69, 74)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f8nev"]
-atlas = ExtResource("3_xq5cm")
+atlas = ExtResource("3_o0hxx")
 region = Rect2(69, 10, 69, 74)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bavk4"]
-atlas = ExtResource("3_xq5cm")
+atlas = ExtResource("3_o0hxx")
 region = Rect2(138, 10, 69, 74)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hhisg"]
-atlas = ExtResource("3_xq5cm")
+atlas = ExtResource("3_o0hxx")
 region = Rect2(207, 10, 69, 74)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_8f6nc"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_r0g33"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -104,30 +104,18 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_p37k8"]
+[node name="Edward" type="Node2D" unique_id=339925622]
 
-[node name="RegressionTest" type="Node2D" unique_id=1297599665]
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=1848287570]
+position = Vector2(0, 12)
+script = ExtResource("1_hkid1")
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=915314396]
-position = Vector2(-314, 12)
-script = ExtResource("3_f8nev")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=2104888856]
-position = Vector2(-2.5, 2.0000038)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=801201815]
+position = Vector2(0, 2.0000038)
 scale = Vector2(6.25, 2.5)
-shape = SubResource("RectangleShape2D_xq5cm")
+shape = SubResource("RectangleShape2D_cjqrx")
 
-[node name="Edward" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1881018293]
+[node name="Edward" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=26168586]
 texture_filter = 1
-position = Vector2(-3, 0)
-sprite_frames = SubResource("SpriteFrames_8f6nc")
+sprite_frames = SubResource("SpriteFrames_r0g33")
 animation = &"idle"
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1949312096]
-
-[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=549577282]
-position = Vector2(0, 130)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=2059290267]
-scale = Vector2(80, 1)
-shape = SubResource("RectangleShape2D_p37k8")
