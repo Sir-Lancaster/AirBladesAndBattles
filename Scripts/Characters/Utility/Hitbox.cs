@@ -127,7 +127,6 @@ public partial class Hitbox : Area2D
         // Preferred flow: CharacterBase owns hit rules and returns whether hit was applied.
         if (character.HasMethod(TryRecieveHitMethod))
         {
-            // Zac, this TryRevieveHitMethod is what you need to make to handle the damage check in the base class.
             Variant result = character.Call(TryRecieveHitMethod, OwnerNode, this, Damage);
             applied = result.VariantType == Variant.Type.Bool ? result.AsBool() : true;
         }
