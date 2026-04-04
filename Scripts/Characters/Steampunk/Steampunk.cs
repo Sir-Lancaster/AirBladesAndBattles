@@ -60,7 +60,7 @@ public partial class Steampunk : CharacterBase
 			Velocity = new Vector2(move.X * MoveSpeed * 0.4f, Velocity.Y);
 			_specialUpHeldTime += (float)delta;
 
-			int currentDamage = SpecialDamage + (int)(_specialUpHeldTime * 1.5f);
+			int currentDamage = SpecialDamage + (int)(_specialUpHeldTime * 3f);
 
 			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
 				_specialUpHitboxLeft.UpdateDamage(currentDamage);

@@ -3,7 +3,6 @@
 [ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="1_7b7cw"]
 [ext_resource type="Shader" uid="uid://c3bh24h3oaode" path="res://Scenes/Stages/Clocktower.gdshader" id="1_iukx0"]
 [ext_resource type="Script" uid="uid://cg63uwcwfwyeh" path="res://Scripts/Characters/Steampunk/Gear.cs" id="1_sonsx"]
-[ext_resource type="Texture2D" uid="uid://baflvdpvtmlpl" path="res://Assets/Characters/steampunk/Gear-Silhouette-Png-Picture-1920x1920.png" id="4_i5jib"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_sonsx"]
 
@@ -67,10 +66,10 @@ material = SubResource("ShaderMaterial_ss6kr")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 5.000122
-offset_top = -0.99993896
-offset_right = 105.00012
-offset_bottom = 99.00012
+offset_left = 0.00012207031
+offset_top = -6.000004
+offset_right = 100.000244
+offset_bottom = 94.00006
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(20, 20)
@@ -90,8 +89,3 @@ position = Vector2(0, 130)
 position = Vector2(945, 454)
 scale = Vector2(80, 1)
 shape = SubResource("RectangleShape2D_7b7cw")
-
-[node name="GearSilhouettePngPicture1920x1920" type="Sprite2D" parent="." unique_id=1770907861]
-position = Vector2(602, -391)
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("4_i5jib")
