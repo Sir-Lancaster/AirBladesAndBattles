@@ -37,6 +37,7 @@ public partial class Hitbox : Area2D
     /// <summary>
     /// Wires overlap callbacks and starts the lifetime countdown.
     /// </summary>
+
     public override void _Ready()
     {
         // Detect characters on layer 2 (characters never collide with each other body-to-body,
@@ -112,7 +113,6 @@ public partial class Hitbox : Area2D
         TryApplyDamage(body);
     }
 
-    /// <summary>
     /// Attempts to apply damage to a target character.
     /// Delegates accept/reject logic to CharacterBase via TryRecieveHit.
     /// </summary>
