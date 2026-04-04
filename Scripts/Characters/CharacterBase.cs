@@ -47,6 +47,26 @@ public abstract partial class CharacterBase : CharacterBody2D
     // Base methods, owned by the core class.
 
     /// <summary>
+    /// Called by Hitbox via reflection when its area overlaps this character's hurtbox.
+    /// Rejects the hit if the attacker is self, or if the character is dead/invincible.
+    /// Otherwise applies damage and returns true so the hitbox records the hit.
+    /// </summary>
+    /// <param name="attacker">The node that owns the hitbox.</param>
+    /// <param name="hitbox">The hitbox that made contact.</param>
+    /// <param name="damage">Damage amount to apply.</param>
+    /// <returns>True if the hit was accepted and damage applied; false otherwise.</returns>
+    public bool TryRecieveHit(Node attacker, Hitbox _hitbox, int damage)
+    {
+        if (attacker == this) return false;
+        if (IsDead || IsInvincible) return false;
+
+        TakeDamage(damage);
+        return true;
+    }
+
+
+
+    /// <summary>
     /// TakeDamage() chacks that the character isn't dead or it returns early.
     /// It records the old hp, then calculates and saves the new HP into currentHp. 
     /// Resetting it to 0 if the damage would put current into the negative.
