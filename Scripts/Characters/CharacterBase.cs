@@ -19,6 +19,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     [Export] public float JumpVelocity = -420f;
     [Export] public float Gravity = 900f;
     [Export] public int BasicDamage = 4;
+    [Export] public int MaxJumps = 2;
     public int SpecialDamage => BasicDamage * 2;
 
     /// <summary>
@@ -40,6 +41,8 @@ public abstract partial class CharacterBase : CharacterBody2D
     private float _dodgeRemaining;
     private float _dodgeCooldownRemaining;
     private float _dodgeVelocityX;
+
+    private int _jumpsRemaining;
 
     // Base methods, owned by the core class.
 
@@ -196,6 +199,7 @@ public void PerformAttack(AttackDirection direction)
     {
         CurrentHP = MaxHP;
         IsDead = false;
+        _jumpsRemaining = MaxJumps;
         CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
         SetState(CharacterState.Idle);
     }
@@ -288,6 +292,7 @@ public void PerformAttack(AttackDirection direction)
 
             if (IsOnFloor())
             {
+                _jumpsRemaining = MaxJumps;
                 if (move.X == 0)
                     SetState(CharacterState.Idle);
                 else
@@ -295,10 +300,11 @@ public void PerformAttack(AttackDirection direction)
             }
         }
 
-        if (Input.IsActionJustPressed("jump") && IsOnFloor())
+        if (Input.IsActionJustPressed("jump") && _jumpsRemaining > 0)
         {
-            Velocity = new Vector2(Velocity.X, JumpVelocity);
-            SetState(CharacterState.Jump);
+                _jumpsRemaining--;
+                Velocity = new Vector2(Velocity.X, JumpVelocity);
+                SetState(CharacterState.Jump);
         }
     }
 }
