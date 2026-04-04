@@ -29,6 +29,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     [Export] public float DodgeIFrameTime = 0.28f;
     [Export] public float DodgeCooldown = 0.8f;
     [Export] public float HitStunTimer = 0.25f;
+    [Export] public float HitIFrameTime = 0.5f;
 
     /// <summary>
     /// Runtime character attributes.
@@ -91,6 +92,9 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
             OnDied();
             return;
         }
+
+        IsInvincible = true;
+        GetTree().CreateTimer(HitIFrameTime).Timeout += () => IsInvincible = false;
 
         _hitStunRemaining = HitStunTimer;
         SetState(CharacterState.HitStun);
