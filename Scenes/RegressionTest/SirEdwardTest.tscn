@@ -110,6 +110,7 @@ animations = [{
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=915314396]
 position = Vector2(-314, 12)
+scale = Vector2(1.8, 1.8)
 script = ExtResource("3_f8nev")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=2104888856]

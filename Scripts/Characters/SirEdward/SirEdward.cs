@@ -10,7 +10,7 @@ public partial class SirEdward: CharacterBase
     private int _healCount = 0;
 
     [Export] public string CharacterLabel = "SirEdward";
-    [Export] public float AttackRecovery = 0.30f;
+    [Export] public float AttackRecovery = 0.80f;
     [Export] public float SpecialAttackRecovery = 1.2f;
 
     private static readonly PackedScene HitboxScene =
