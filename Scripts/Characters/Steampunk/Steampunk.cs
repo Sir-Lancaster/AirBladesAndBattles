@@ -14,6 +14,7 @@ public partial class Steampunk : CharacterBase
 	private float _specialUpHeldTime;
 	private static readonly PackedScene HitboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Hitbox.tscn");
 	private static readonly PackedScene UpboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Upbox.tscn");
+	private static readonly PackedScene ProjectileScene = GD.Load<PackedScene>("res://Scenes/Steampunk/SteampunkProjectile.tscn");
 
 	public override void _Ready()
 	{
@@ -127,9 +128,12 @@ public partial class Steampunk : CharacterBase
 				hitbox.Position = new Vector2(0f, -40f);
 				break;
 			case AttackDirection.DownAir:
-				hitbox.Position = new Vector2(0f, 40f);
-				hitbox.RotationDegrees = 90f;
-				break;
+				hitbox.QueueFree(); // not used for this case
+				var downProjectile = ProjectileScene.Instantiate<SteampunkProjectile>();
+				GetParent().AddChild(downProjectile);
+				downProjectile.GlobalPosition = GlobalPosition + new Vector2(0f, 40f);
+				downProjectile.LaunchDown(this, damage);
+				return;
 		}
 
 		_currentHitbox = hitbox;
@@ -145,13 +149,6 @@ public partial class Steampunk : CharacterBase
 
 		switch (dir)
 		{
-			case SpecialDirection.Horizontal:
-				float facing = _sprite.FlipH ? -1f : 1f;
-				hitbox.Activate(this, damage, SpecialAttackRecovery);
-				hitbox.Position = new Vector2(facing > 0f ? 40f : -120f, 0f);
-				_currentHitbox = hitbox;
-				break;
-
 			case SpecialDirection.Up:
 				hitbox.Activate(this, damage, -1f);
 				hitbox.Position = new Vector2(-120f, 0f);
@@ -165,10 +162,11 @@ public partial class Steampunk : CharacterBase
 				break;
 
 			case SpecialDirection.Neutral:
-				hitbox.Activate(this, damage, SpecialAttackRecovery);
-				hitbox.Position = new Vector2(0f, 40f);
-				hitbox.RotationDegrees = 90f;
-				_currentHitbox = hitbox;
+				hitbox.QueueFree(); // not used for this case
+				var projectile = ProjectileScene.Instantiate<SteampunkProjectile>();
+				GetParent().AddChild(projectile);
+				projectile.GlobalPosition = GlobalPosition + new Vector2(_sprite.FlipH ? -40f : 40f, 0f);
+				projectile.Launch(this, damage, _sprite.FlipH);
 				break;
 		}
 	}
