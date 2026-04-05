@@ -8,6 +8,7 @@ height = 102.0
 
 [node name="Hitbox" type="Area2D" unique_id=1612254155]
 script = ExtResource("1_7p4qk")
+Lifetime = -1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1107623143]
 position = Vector2(33, 0)

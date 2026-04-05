@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b2jnpel0uhjvw"]
+
+[ext_resource type="Script" uid="uid://coah1irvan67" path="res://Scripts/Characters/Steampunk/SteampunkProjectile.cs" id="1_qhmtg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0ya1p"]
+size = Vector2(68.5, 57.5)
+
+[node name="SteampunkProjectile" type="Area2D" unique_id=876179384]
+script = ExtResource("1_qhmtg")
+Lifetime = 999.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1380476171]
+shape = SubResource("RectangleShape2D_0ya1p")
