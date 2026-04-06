@@ -2,50 +2,85 @@ using Godot;
 
 public partial class SirEdward: CharacterBase
 {
+    /// <summary>
+    /// This is the animated sprite child node of the CharacterBody2D.
+    /// </summary>
     private AnimatedSprite2D _edward;
+
+    /// <summary>
+    /// Tracking the current attack or special directions.
+    /// </summary>
     private AttackDirection _currentAttackDirection;
     private SpecialDirection _currentSpecialDirection;
+
+    /// <summary>
+    /// A boolean powering a switch for special or normal attack animations.
+    /// </summary>
     private bool _isSpecial;
+
+    /// <summary>
+    /// Tracks whether a hitbox exists as a child node currently.
+    /// </summary>
     private Area2D _currentHitbox;
+
+    /// <summary>
+    ///  A counter tracking the number of times Edward has healed this life.
+    /// </summary>
     private int _healCount = 0;
 
     [Export] public string CharacterLabel = "SirEdward";
-    [Export] public float AttackRecovery = 0.80f;
-    [Export] public float SpecialAttackRecovery = 1.2f;
 
+    /// <summary>
+    /// The time that passes after an attack has completed.
+    /// </summary>
+    [Export] public float AttackRecovery = 0.80f;
+
+    /// <summary>
+    /// The time that passes after a special attack has completed before you can use it again. 
+    /// </summary>
+    [Export] public float SpecialAttackRecovery = 1.35f;
+
+    /// <summary>
+    /// Get the hitbox scene so it can be spawned in when attacking.
+    /// </summary>
     private static readonly PackedScene HitboxScene =
         GD.Load<PackedScene>("res://Scenes/Utility/Hitbox.tscn");
 
+    /// <summary>
+    /// Get the halberd scene so that it can be spawned in when doing the up special.
+    /// </summary>
     private static readonly PackedScene HalberdScene =
-        GD.Load<PackedScene>("res://Scenes/Edward/Halbered.tscn");
+        GD.Load<PackedScene>("res://Scenes/Edward/Halberd.tscn");
 
+    /// <summary>
+    /// Get's and sets the private variable to get the node for the character. 
+    /// Calls the base class' _Ready() method.
+    /// </summary>
     public override void _Ready()
     {
         _edward = GetNode<AnimatedSprite2D>("Edward");
         base._Ready();
     }
 
+    /// <summary>
+    /// Extends the base class' _PhysicsProcess() function, keeps the character facing the direction of their movement.
+    /// </summary>
+    /// <param name="delta"></param>
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-
-        // Debug: press Delete to take 10 damage.
-        if (Input.IsPhysicalKeyPressed(Key.Delete))
-        {
-            TakeDamage(10);
-            GD.Print($"{CharacterLabel} DEBUG: TakeDamage(10) called");
-        }
 
         // Keep facing direction when not moving.
         if (Mathf.Abs(Velocity.X) > 0.01f)
             _edward.FlipH = Velocity.X < 0f;
     }
 
-    protected override void OnStateChanged(CharacterState fromState, CharacterState toState)
-    {
-        GD.Print($"{CharacterLabel} state: {fromState} -> {toState}");
-    }
-
+    /// <summary>
+    /// Contains a switch that converts each state to the string name of the animation sets defined in the animationPlayer on Godot for Edward.
+    /// Uses _isSpecial boolean, current attack and special directions to determine which animation to play in the attack state.
+    /// Calls the animation to play on the AnimatedSprite2D.
+    /// </summary>
+    /// <param name="state">The Character state that needs to be animated.</param>
     protected override void PlayAnimationForState(CharacterState state)
     {
         string anim = state switch
@@ -66,23 +101,41 @@ public partial class SirEdward: CharacterBase
         GD.Print($"{CharacterLabel} play animation for: {state}");
     }
 
+    /// <summary>
+    /// Keeping it only for if it becomes useful later when updating the UI or playing sound effects.
+    /// </summary>
+    /// <param name="oldHp">The intiger of the HP before change.</param>
+    /// <param name="newHp">The intiger of the HP after the change.</param>
     protected override void OnHealthChanged(int oldHp, int newHp)
     {
         GD.Print($"{CharacterLabel} HP: {oldHp} -> {newHp}");
     }
 
+    /// <summary>
+    /// Plays the animation for being hit.
+    /// </summary>
+    /// <param name="amount"></param>
     protected override void OnDamaged(int amount)
     {
         GD.Print($"{CharacterLabel} took damage: {amount}");
         PlayAnimationForState(CharacterState.HitStun);
     }
 
+    /// <summary>
+    /// When a character dies, call the animation for being hit.
+    /// </summary>
     protected override void OnDied()
     {
         GD.Print($"{CharacterLabel} died");
         PlayAnimationForState(CharacterState.Dead);
     }
 
+    /// <summary>
+    /// Plays the animation for the attack that is being performed.
+    /// Spawns the hitbox for the attack.
+    /// </summary>
+    /// <param name="direction">Tracks the direction of the attack.</param>
+    /// <param name="damage">Tracks the damage to be dealt.</param>
     protected override void OnAttackPerformed(AttackDirection direction, int damage)
     {
         _currentAttackDirection = direction;
@@ -92,7 +145,15 @@ public partial class SirEdward: CharacterBase
         EndAttackAfter(AttackRecovery);
         SpawnAttackHitbox(direction, damage);
     }
-
+    
+    /// <summary>
+    /// Tracks the direction, sets the boolean to true, and uses the direction in a switch to handle behavior.
+    /// Neutral represents a lack of direction, and heals Edward half a hit. Can be used twice per life.
+    /// Up throws the halbered until it collides with something, then moves Edward to that point and resets velocity.
+    /// Forces the character to be timed out for the recovery duration.
+    /// </summary>
+    /// <param name="direction">The direction of the attack.</param>
+    /// <param name="damage">The damage the attack is capable of doing to an enemy.</param>
     protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
     {
         _currentSpecialDirection = direction;
@@ -101,7 +162,7 @@ public partial class SirEdward: CharacterBase
         switch (direction)
         {
             case SpecialDirection.Neutral:
-                // healing
+                // Healing.
                 int oldHp = CurrentHP;
                 _healCount += 1;
                 if (_healCount < 3)
@@ -118,27 +179,37 @@ public partial class SirEdward: CharacterBase
                 SpawnUpSpecialHalberd(damage);
                 GD.Print($"{CharacterLabel} up special: halberd throw");
                 break;
-
-            case SpecialDirection.Horizontal:
-                // TODO: Pike stance hitbox.
-                GD.Print($"{CharacterLabel} horizontal special: pike");
-                break;
         }
 
         EndAttackAfter(SpecialAttackRecovery);
     }
 
+    /// <summary>
+    /// Plays the animation for dodging.
+    /// </summary>
+    /// <param name="direction">The direction of the dodges movement.</param>
+    /// <param name="dodgeDuration">The length of the dodge.</param>
+    /// <param name="iFrameDuration">The amount of time that the character is invulnerable.</param>
     protected override void OnDodgeStarted(DodgeDirection direction, float dodgeDuration, float iFrameDuration)
     {
         PlayAnimationForState(CharacterState.Dodge);
         GD.Print($"{CharacterLabel} dodge start: {direction}, duration: {dodgeDuration}, iframes: {iFrameDuration}");
     }
 
+    /// <summary>
+    /// When dodge ends, play idle animation.
+    /// </summary>
+    /// <param name="dodgeCooldown"></param>
     protected override void OnDodgeEnded(float dodgeCooldown)
     {
         PlayAnimationForState(CharacterState.Idle);
     }
 
+    /// <summary>
+    /// Creates a timer and keeps the character in the attack state until after the timer expires.
+    /// Resets teh tracking of the current hitbox.
+    /// </summary>
+    /// <param name="seconds">The attack cooldown timer length.</param> 
     private async void EndAttackAfter(float seconds)
     {
         await ToSignal(GetTree().CreateTimer(seconds), "timeout");
@@ -148,6 +219,12 @@ public partial class SirEdward: CharacterBase
             SetState(CharacterState.Idle);
     }
 
+    /// <summary>
+    /// Calls the hitbox scene and spawns in the hitbox in the direction of the attack.
+    /// uses a switch to handle the different directions.
+    /// </summary>
+    /// <param name="dir">A nullable direction where the default is horizontal in the facing direction of the character.</param>
+    /// <param name="damage">The amound of damage the attack will do.</param>
     private void SpawnAttackHitbox(AttackDirection? dir, int damage)
     {
         var hitbox = HitboxScene.Instantiate<Hitbox>();
@@ -176,7 +253,12 @@ public partial class SirEdward: CharacterBase
 
         _currentHitbox = hitbox;
     }
-
+    
+    /// <summary>
+    /// A helper to spawn in the halbered scene and launch the halberd up for the up special.
+    /// Tracks the despawn position globably to tween the character to it.
+    /// </summary>
+    /// <param name="damage">Tracks the damage the halberd can do.</param>
     private void SpawnUpSpecialHalberd(int damage)
     {
         var halberd = HalberdScene.Instantiate<Halberd>();
@@ -194,6 +276,10 @@ public partial class SirEdward: CharacterBase
         halberd.Despawned += OnHalberdDespawned;
     }
 
+    /// <summary>
+    /// When the halberd despawns, it moves Edward to the position of the despawn.
+    /// </summary>
+    /// <param name="despawnPosition">The global position where the halberd despawned.</param>
     private async void OnHalberdDespawned(Vector2 despawnPosition)
     {
         // Smoothly move to despawn position over 0.2 seconds.

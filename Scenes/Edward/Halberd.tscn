@@ -1,14 +1,16 @@
-[gd_scene format=3 uid="uid://1de3c472egrb"]
+[gd_scene format=3 uid="uid://criaf3khhjvxf"]
 
-[ext_resource type="Texture2D" uid="uid://belmq35pog31p" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="1_qsgn4"]
+[ext_resource type="Script" uid="uid://dy4r2yp0d3e2c" path="res://Scripts/Characters/SirEdward/Halberd.cs" id="1_7jkkv"]
+[ext_resource type="Texture2D" uid="uid://belmq35pog31p" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="2_8nnry"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u6wn7"]
 radius = 5.0
 height = 83.4386
 
-[node name="Halberd" type="Area2D" unique_id=1606870420]
+[node name="Halbered" type="Area2D" unique_id=1606870420]
 texture_filter = 1
 rotation = -0.4886922
+script = ExtResource("1_7jkkv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1800389579]
 position = Vector2(-1, 2.0000007)
@@ -18,4 +20,4 @@ shape = SubResource("CapsuleShape2D_u6wn7")
 debug_color = Color(1, 0.019232832, 0.0017920041, 0.41960785)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1169008954]
-texture = ExtResource("1_qsgn4")
+texture = ExtResource("2_8nnry")
