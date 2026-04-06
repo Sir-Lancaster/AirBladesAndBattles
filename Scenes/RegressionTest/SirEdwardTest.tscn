@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://dj6i5120mvxgb" path="res://Assets/Characters/SirEdward/Dodge/Edward-Dodge.png" id="2_f8nev"]
 [ext_resource type="Texture2D" uid="uid://hlygte486oib" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_xq5cm"]
+[ext_resource type="Texture2D" uid="uid://b7mebme2ykpau" path="res://Assets/Characters/SirEdward/HitStun/Edward-HitStun.png" id="3_bavk4"]
 [ext_resource type="Script" uid="uid://c1yj7jssn7deq" path="res://Scripts/Characters/SirEdward/SirEdward.cs" id="3_f8nev"]
 [ext_resource type="Texture2D" uid="uid://brcq8pbsivw63" path="res://Assets/Characters/SirEdward/Run/Edward-run.png" id="3_xq5cm"]
 
@@ -27,6 +28,38 @@ region = Rect2(192, 0, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_84esq"]
 atlas = ExtResource("2_f8nev")
 region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0q5j8"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5afhs"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yb8cb"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fbnbs"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p2kyp"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c6fax"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gn015"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xwgat"]
+atlas = ExtResource("3_bavk4")
+region = Rect2(448, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wtslj"]
 atlas = ExtResource("2_xq5cm")
@@ -100,6 +133,35 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_0q5j8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5afhs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yb8cb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fbnbs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p2kyp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c6fax")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gn015")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xwgat")
+}],
+"loop": true,
+"name": &"hitstun",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_wtslj")
 }, {
 "duration": 1.0,
@@ -163,7 +225,9 @@ shape = SubResource("RectangleShape2D_xq5cm")
 texture_filter = 1
 position = Vector2(-3, 0)
 sprite_frames = SubResource("SpriteFrames_8f6nc")
-animation = &"dodge"
+animation = &"hitstun"
+frame = 3
+frame_progress = 0.52319187
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1949312096]
 
