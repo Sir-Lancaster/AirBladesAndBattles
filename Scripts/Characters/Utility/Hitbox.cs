@@ -122,15 +122,8 @@ public partial class Hitbox : Area2D
         if (OneHitPerTarget && _hitTargetIds.Contains(targetId))
             return;
 
-        bool applied = false;
-
-        // Preferred flow: CharacterBase owns hit rules and returns whether hit was applied.
-        if (character.HasMethod(TryRecieveHitMethod))
-        {
-            Variant result = character.Call(TryRecieveHitMethod, OwnerNode, this, Damage);
-            applied = result.VariantType == Variant.Type.Bool ? result.AsBool() : true;
-        }
-
+        // CharacterBase owns hit rules and returns whether the hit was applied.
+        bool applied = character.TryReceiveHit(OwnerNode, this, Damage);
         if (!applied) return;
 
         _hitTargetIds.Add(targetId);
