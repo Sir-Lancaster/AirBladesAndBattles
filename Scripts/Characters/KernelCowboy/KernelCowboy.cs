@@ -7,6 +7,7 @@ public partial class KernelCowboy : CharacterBase
     private SpecialDirection _currentSpecialDirection;
     private bool _isSpecial;
     private Area2D _currentHitbox;
+    private LassoHandler _lassoHandler;
 
     [Export] public string CharacterLabel = "KernelCowboy";
     [Export] public float AttackRecovery = 0.30f;       // NEEDS EDITING: tune to match attack animation length
@@ -18,6 +19,20 @@ public partial class KernelCowboy : CharacterBase
     public override void _Ready()
     {
         _sprite = GetNode<AnimatedSprite2D>("KernelCowboy"); // NEEDS EDITING: use the actual node name from your scene
+
+        _lassoHandler = new LassoHandler();
+        AddChild(_lassoHandler);
+
+        // Neutral special: arc slam or miss
+        _lassoHandler.OnSlamComplete   = () => EndAttackAfter(SpecialAttackRecovery);
+        _lassoHandler.OnLassoMissed    = () => EndAttackAfter(SpecialAttackRecovery);
+
+        // Down air: stomp landing or fast-fall
+        _lassoHandler.OnDownAirComplete = () => EndAttackAfter(AttackRecovery);
+
+        // Special up: end attack immediately so the player can steer during the launch
+        _lassoHandler.OnRecoveryComplete = () => EndAttackAfter(0.05f);
+
         base._Ready();
     }
 
@@ -80,6 +95,16 @@ public partial class KernelCowboy : CharacterBase
         _currentAttackDirection = direction;
         _isSpecial = false;
         GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
+
+        if (direction == AttackDirection.DownAir)
+        {
+            // Down air: lasso pulls attacker to target and stomps.
+            // EndAttackAfter is driven by OnDownAirComplete callback, not here.
+            _lassoHandler.LaunchDownAirLasso();
+            return;
+        }
+
+        // Horizontal and Up attacks are whip hitboxes.
         EndAttackAfter(AttackRecovery);
         SpawnAttackHitbox(direction, damage);
     }
@@ -92,14 +117,17 @@ public partial class KernelCowboy : CharacterBase
         switch (direction)
         {
             case SpecialDirection.Neutral:
-                // NEEDS EDITING: implement KernelCowboy's neutral special
-                GD.Print($"{CharacterLabel} neutral special: TODO");
-                break;
+                float facing = _sprite.FlipH ? -1f : 1f;
+                _lassoHandler.LaunchLasso(facing);
+                GD.Print($"{CharacterLabel} neutral special: lasso launched");
+                return; // EndAttackAfter is driven by LassoHandler callbacks, not here.
 
             case SpecialDirection.Up:
-                // NEEDS EDITING: implement KernelCowboy's up special
-                GD.Print($"{CharacterLabel} up special: TODO");
-                break;
+                // Recovery lasso: hooks above and launches owner upward.
+                // EndAttackAfter is driven by OnRecoveryComplete callback, not here.
+                _lassoHandler.LaunchRecoveryLasso();
+                GD.Print($"{CharacterLabel} up special: recovery lasso launched");
+                return;
 
             case SpecialDirection.Horizontal:
                 // NEEDS EDITING: implement KernelCowboy's horizontal special
