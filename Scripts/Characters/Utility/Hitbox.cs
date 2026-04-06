@@ -29,23 +29,12 @@ public partial class Hitbox : Area2D
     private bool _lifetimeCountdownStarted;
 
     /// <summary>
-    /// Name of the CharacterBase gate method invoked via reflection:
-    /// <c>bool TryRecieveHit(Node attacker, Hitbox hitbox, int damage)</c>.
-    /// </summary>
-    /// <remarks>
-    /// Keep spelling aligned with CharacterBase. If CharacterBase uses "TryReceiveHit",
-    /// rename this constant and the method there to match.
-    /// </remarks>
-    private static readonly StringName TryRecieveHitMethod = "TryRecieveHit";
-
-    /// <summary>
     /// Wires overlap callbacks and starts the lifetime countdown.
     /// </summary>
     public override void _Ready()
     {
         AreaEntered += OnAreaEntered;
         BodyEntered += OnBodyEntered;
-        EnsureLifetimeCountdown();
     }
 
     /// <summary>
