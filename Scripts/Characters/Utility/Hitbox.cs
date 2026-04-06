@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Godot;
 
 /// <summary>
@@ -45,6 +46,8 @@ public partial class Hitbox : Area2D
     /// <param name="lifetimeSeconds">Optional lifetime override. Negative keeps current value.</param>
     public void Activate(Node ownerNode, int damage, float lifetimeSeconds = -1f)
     {
+        if (ownerNode == null) return;
+
         OwnerNode = ownerNode;
         Damage = damage;
 
@@ -112,6 +115,12 @@ public partial class Hitbox : Area2D
             return;
 
         // CharacterBase owns hit rules and returns whether the hit was applied.
+        if (OwnerNode == null)
+        {
+            GD.PushWarning("Hitbox.Activate() was never called, resulting in no OwnerNode.");
+            return;
+        }
+
         bool applied = character.TryReceiveHit(OwnerNode, this, Damage);
         if (!applied) return;
 
