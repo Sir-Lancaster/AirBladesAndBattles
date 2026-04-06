@@ -55,7 +55,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     /// <param name="hitbox">The hitbox that made contact.</param>
     /// <param name="damage">Damage amount to apply.</param>
     /// <returns>True if the hit was accepted and damage applied; false otherwise.</returns>
-    public bool TryRecieveHit(Node attacker, Hitbox _hitbox, int damage)
+    public bool TryReceiveHit(Node attacker, Hitbox _hitbox, int damage)
     {
         if (attacker == this) return false;
         if (IsDead || IsInvincible) return false;
