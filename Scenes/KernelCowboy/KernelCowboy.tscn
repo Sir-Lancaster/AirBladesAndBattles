@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://uplyextte3xf" path="res://Assets/Characters/KernelCowboy/KCIdle.png" id="4_h4s3l"]
 [ext_resource type="Texture2D" uid="uid://csynlb5ebn3x1" path="res://Assets/Characters/KernelCowboy/KCRun.png" id="5_s0hdb"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tvdwn"]
+size = Vector2(34, 46)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_6w8jf"]
 atlas = ExtResource("2_tvdwn")
 region = Rect2(0, 0, 85, 62)
@@ -147,6 +150,8 @@ animations = [{
 script = ExtResource("1_biypb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=1315968271]
+position = Vector2(-3, 15)
+shape = SubResource("RectangleShape2D_tvdwn")
 
 [node name="KernelCowboy" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=700865189]
 texture_filter = 1

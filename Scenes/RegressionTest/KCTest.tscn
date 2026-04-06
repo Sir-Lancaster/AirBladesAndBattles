@@ -1,3 +1,28 @@
 [gd_scene format=3 uid="uid://cs7qyghscvvuf"]
 
+[ext_resource type="PackedScene" uid="uid://kd4pmsasdhwj" path="res://Scenes/KernelCowboy/KernelCowboy.tscn" id="1_oet7g"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_r66lh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ghktd"]
+size = Vector2(599, 20)
+
 [node name="KcTest" type="Node2D" unique_id=1799208237]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=156738427]
+position = Vector2(577, 272)
+
+[node name="KernelCowboy" parent="CharacterBody2D" unique_id=698591539 instance=ExtResource("1_oet7g")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=950173838]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1526391613]
+position = Vector2(575, 322)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1491212209]
+position = Vector2(579, 366)
+physics_material_override = SubResource("PhysicsMaterial_r66lh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1493658316]
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_ghktd")
