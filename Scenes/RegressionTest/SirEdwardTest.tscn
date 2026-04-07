@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://cl6q17a8no8jw"]
 
+[ext_resource type="Texture2D" uid="uid://dbec14tt4s8gh" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Horizontal.png" id="2_c3yo8"]
 [ext_resource type="Texture2D" uid="uid://dj6i5120mvxgb" path="res://Assets/Characters/SirEdward/Dodge/Edward-Dodge.png" id="2_f8nev"]
 [ext_resource type="Texture2D" uid="uid://hlygte486oib" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_xq5cm"]
 [ext_resource type="Texture2D" uid="uid://b7mebme2ykpau" path="res://Assets/Characters/SirEdward/HitStun/Edward-HitStun.png" id="3_bavk4"]
@@ -9,7 +10,27 @@
 [ext_resource type="Texture2D" uid="uid://bbdl03u4fj7m6" path="res://Assets/Characters/SirEdward/Specials/Edward-special-up.png" id="7_6pbd7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xq5cm"]
-size = Vector2(4.6399975, 22.400002)
+size = Vector2(6.7555547, 22.400002)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lbgwv"]
+atlas = ExtResource("2_c3yo8")
+region = Rect2(0, 8, 94, 76)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cn2n3"]
+atlas = ExtResource("2_c3yo8")
+region = Rect2(94, 8, 94, 76)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jlsru"]
+atlas = ExtResource("2_c3yo8")
+region = Rect2(188, 8, 94, 76)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6y8kt"]
+atlas = ExtResource("2_c3yo8")
+region = Rect2(94, 8, 94, 76)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eg8nk"]
+atlas = ExtResource("2_c3yo8")
+region = Rect2(0, 8, 94, 76)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6pbd7"]
 atlas = ExtResource("2_f8nev")
@@ -183,6 +204,26 @@ region = Rect2(483, 0, 69, 84)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_lbgwv")
+}, {
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_cn2n3")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_jlsru")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_6y8kt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eg8nk")
+}],
+"loop": false,
+"name": &"attack_horizontal",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_6pbd7")
 }, {
 "duration": 1.0,
@@ -348,15 +389,17 @@ scale = Vector2(1.8, 1.8)
 script = ExtResource("3_f8nev")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=2104888856]
-position = Vector2(-3.0555725, 4.222226)
-scale = Vector2(6.25, 2.5)
+position = Vector2(-3.8888855, 4.222226)
+scale = Vector2(6.250001, 2.5)
 shape = SubResource("RectangleShape2D_xq5cm")
 
 [node name="Edward" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1881018293]
 texture_filter = 1
 position = Vector2(-3, 0)
 sprite_frames = SubResource("SpriteFrames_8f6nc")
-animation = &"idle"
+animation = &"attack_horizontal"
+frame = 4
+frame_progress = 1.0
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1949312096]
 

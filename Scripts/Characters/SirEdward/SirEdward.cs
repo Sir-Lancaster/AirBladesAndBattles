@@ -98,6 +98,17 @@ public partial class SirEdward: CharacterBase
             _ => "idle"
         };
 
+        // Sprite-only correction for horizontal normal attack frame alignment.
+        if (state == CharacterState.Attack && !_isSpecial && _currentAttackDirection == AttackDirection.Horizontal)
+        {
+            float facing = _edward.FlipH ? -1f : 1f; // left = -1, right = +1
+            _edward.Offset = new Vector2(15f * facing, -6f);
+        }
+        else
+        {
+            _edward.Offset = Vector2.Zero;
+        }
+
         _edward.Play(anim);
         GD.Print($"{CharacterLabel} play animation for: {state}");
     }
