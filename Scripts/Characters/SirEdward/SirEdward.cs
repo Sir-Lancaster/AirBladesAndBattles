@@ -278,6 +278,7 @@ public partial class SirEdward: CharacterBase
 
     /// <summary>
     /// When the halberd despawns, it moves Edward to the position of the despawn.
+    /// When teleport is complete, play jump animation.
     /// </summary>
     /// <param name="despawnPosition">The global position where the halberd despawned.</param>
     private async void OnHalberdDespawned(Vector2 despawnPosition)
@@ -293,5 +294,6 @@ public partial class SirEdward: CharacterBase
         Velocity = new Vector2(Velocity.X, 0f);
 
         GD.Print($"{CharacterLabel} teleport complete");
+        PlayAnimationForState(CharacterState.Jump);
     }
 }
