@@ -19,6 +19,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     [Export] public float JumpVelocity = -420f;
     [Export] public float Gravity = 900f;
     [Export] public int BasicDamage = 4;
+    [Export] public int MaxJumps = 2;
     public int SpecialDamage => BasicDamage * 2;
 
     /// <summary>
@@ -41,7 +42,29 @@ public abstract partial class CharacterBase : CharacterBody2D
     private float _dodgeCooldownRemaining;
     private float _dodgeVelocityX;
 
+    private int _jumpsRemaining;
+
     // Base methods, owned by the core class.
+
+    /// <summary>
+    /// Called by Hitbox via reflection when its area overlaps this character's hurtbox.
+    /// Rejects the hit if the attacker is self, or if the character is dead/invincible.
+    /// Otherwise applies damage and returns true so the hitbox records the hit.
+    /// </summary>
+    /// <param name="attacker">The node that owns the hitbox.</param>
+    /// <param name="hitbox">The hitbox that made contact.</param>
+    /// <param name="damage">Damage amount to apply.</param>
+    /// <returns>True if the hit was accepted and damage applied; false otherwise.</returns>
+    public bool TryReceiveHit(Node attacker, Hitbox _hitbox, int damage)
+    {
+        if (attacker == this) return false;
+        if (IsDead || IsInvincible) return false;
+
+        TakeDamage(damage);
+        return true;
+    }
+
+
 
     /// <summary>
     /// TakeDamage() chacks that the character isn't dead or it returns early.
@@ -196,6 +219,7 @@ public void PerformAttack(AttackDirection direction)
     {
         CurrentHP = MaxHP;
         IsDead = false;
+        _jumpsRemaining = MaxJumps;
         CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
         SetState(CharacterState.Idle);
     }
@@ -288,6 +312,7 @@ public void PerformAttack(AttackDirection direction)
 
             if (IsOnFloor())
             {
+                _jumpsRemaining = MaxJumps;
                 if (move.X == 0)
                     SetState(CharacterState.Idle);
                 else
@@ -295,10 +320,11 @@ public void PerformAttack(AttackDirection direction)
             }
         }
 
-        if (Input.IsActionJustPressed("jump") && IsOnFloor())
+        if (Input.IsActionJustPressed("jump") && _jumpsRemaining > 0)
         {
-            Velocity = new Vector2(Velocity.X, JumpVelocity);
-            SetState(CharacterState.Jump);
+                _jumpsRemaining--;
+                Velocity = new Vector2(Velocity.X, JumpVelocity);
+                SetState(CharacterState.Jump);
         }
     }
 }
