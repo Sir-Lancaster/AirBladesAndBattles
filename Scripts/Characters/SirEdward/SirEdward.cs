@@ -266,7 +266,7 @@ public partial class SirEdward: CharacterBase
 
         // Add to world so it flies independently.
         GetParent().AddChild(halberd);
-        halberd.GlobalPosition = GlobalPosition + new Vector2(0f, -18f);
+        halberd.GlobalPosition = GlobalPosition + new Vector2(0f, -20f);
 
         float facing = _edward.FlipH ? -1f : 1f;
         Vector2 throwDirection = new Vector2(facing, -1.2f).Normalized(); // ~20 deg up
