@@ -103,6 +103,10 @@ public partial class SirEdward: CharacterBase
             float facing = _edward.FlipH ? -1f : 1f; // left = -1, right = +1
             _edward.Offset = new Vector2(15f * facing, -6f);
         }
+        else if (state == CharacterState.Attack && _isSpecial && _currentSpecialDirection == SpecialDirection.Neutral)
+        {
+            _edward.Offset = new Vector2(_edward.Position.X, -10f);
+        }
         else
         {
             _edward.Offset = Vector2.Zero;
@@ -170,6 +174,9 @@ public partial class SirEdward: CharacterBase
         _currentSpecialDirection = direction;
         _isSpecial = true;
         
+        // Play animation AFTER setting _isSpecial
+        PlayAnimationForState(CharacterState.Attack);
+        
         switch (direction)
         {
             case SpecialDirection.Neutral:
@@ -193,6 +200,7 @@ public partial class SirEdward: CharacterBase
         }
 
         EndAttackAfter(SpecialAttackRecovery);
+        _isSpecial = false;
     }
 
     /// <summary>
