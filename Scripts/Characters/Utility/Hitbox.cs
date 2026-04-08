@@ -38,6 +38,9 @@ public partial class Hitbox : Area2D
         BodyEntered += OnBodyEntered;
     }
 
+    /// <summary>Updates the damage value mid-lifetime (e.g. for held attacks).</summary>
+    public void UpdateDamage(int damage) => Damage = damage;
+
     /// <summary>
     /// Initializes owner, damage, and optional lifetime override.
     /// </summary>

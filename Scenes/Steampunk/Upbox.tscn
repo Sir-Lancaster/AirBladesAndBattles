@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://n2gvhknpc3x4"]
 
-[ext_resource type="Script" uid="uid://5wcm0o003ot8" path="res://Scripts/Characters/Steampunk/Hitbox.cs" id="1_7p4qk"]
+[ext_resource type="Script" uid="uid://gjrfbt2fa8xu" path="res://Scripts/Characters/Utility/Hitbox.cs" id="1_7p4qk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hilu3"]
 radius = 79.0

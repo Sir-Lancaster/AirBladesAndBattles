@@ -156,12 +156,13 @@ public partial class Steampunk : CharacterBase
 					hitbox.RotationDegrees = 0f;
 					_specialUpHitboxLeft = hitbox;
 
-				var hitboxRight = HitboxScene.Instantiate<Hitbox>();
-				AddChild(hitboxRight);
-				hitboxRight.Activate(this, damage, -1f);
-				hitboxRight.Position = new Vector2(40f, 0f);
-				_specialUpHitboxRight = hitboxRight;
-				break;
+					var hitboxRight = HitboxScene.Instantiate<Hitbox>();
+					AddChild(hitboxRight);
+					hitboxRight.Activate(this, damage, -1f);
+					hitboxRight.Position = new Vector2(40f, 0f);
+					_specialUpHitboxRight = hitboxRight;
+					break;
+				}
 
 			case SpecialDirection.Neutral:
 				hitbox.QueueFree(); // not used for this case
