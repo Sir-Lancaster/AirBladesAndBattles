@@ -68,6 +68,12 @@ public partial class SirEdward: CharacterBase
         // Keep facing direction when not moving.
         if (Mathf.Abs(Velocity.X) > 0.01f)
             _edward.FlipH = Velocity.X < 0f;
+        
+        if (_currentAttackDirection == AttackDirection.DownAir && _currentHitbox != null && IsOnFloor())
+        {
+            _currentHitbox.QueueFree();
+            _currentHitbox = null;
+        }
     }
 
     /// <summary>
@@ -249,7 +255,6 @@ public partial class SirEdward: CharacterBase
     {
         var hitbox = HitboxScene.Instantiate<Hitbox>();
         AddChild(hitbox); // local to Edward
-        hitbox.Activate(this, damage, AttackRecovery);
 
         float facing = _edward.FlipH ? -1f : 1f;
 
@@ -258,16 +263,21 @@ public partial class SirEdward: CharacterBase
             case AttackDirection.Horizontal:
                 hitbox.Position = new Vector2(50f * facing, 0f); // in front
                 hitbox.RotationDegrees = 0f;
+                hitbox.Activate(this, damage, AttackRecovery);
+
                 break;
 
             case AttackDirection.Up:
                 hitbox.Position = new Vector2(0f, -50f); // above
                 hitbox.RotationDegrees = -90f; // adjust visually as needed
+                hitbox.Activate(this, damage, AttackRecovery);
                 break;
 
             case AttackDirection.DownAir:
                 hitbox.Position = new Vector2(0f, 40f); // below
                 hitbox.RotationDegrees = 90f;
+                hitbox.Activate(this, damage, 0f);
+                _currentHitbox = hitbox;
                 break;
         }
 
