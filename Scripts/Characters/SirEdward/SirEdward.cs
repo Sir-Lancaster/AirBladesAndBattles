@@ -22,6 +22,7 @@ public partial class SirEdward: CharacterBase
     /// Tracks whether a hitbox exists as a child node currently.
     /// </summary>
     private Area2D _currentHitbox;
+    private Hitbox _downAirHitbox;
     private int _healCount = 0;
     [Export] public string CharacterLabel = "SirEdward";
 
@@ -69,10 +70,10 @@ public partial class SirEdward: CharacterBase
         if (Mathf.Abs(Velocity.X) > 0.01f)
             _edward.FlipH = Velocity.X < 0f;
         
-        if (_currentAttackDirection == AttackDirection.DownAir && _currentHitbox != null && IsOnFloor())
+        if (_downAirHitbox != null && IsOnFloor())
         {
-            _currentHitbox.QueueFree();
-            _currentHitbox = null;
+            _downAirHitbox.QueueFree();
+            _downAirHitbox = null;
         }
     }
 
@@ -277,7 +278,7 @@ public partial class SirEdward: CharacterBase
                 hitbox.Position = new Vector2(0f, 40f); // below
                 hitbox.RotationDegrees = 90f;
                 hitbox.Activate(this, damage, 0f);
-                _currentHitbox = hitbox;
+                _downAirHitbox = hitbox;
                 break;
         }
 
