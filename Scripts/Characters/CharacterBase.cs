@@ -8,7 +8,7 @@ public abstract partial class CharacterBase : CharacterBody2D
     /// </summary>
     public enum CharacterState { Idle, Run, Jump, Dodge, Attack, HitStun, Dead }
     public enum AttackDirection { Horizontal, Up, DownAir }
-    public enum SpecialDirection { Neutral, Up, Horizontal }
+    public enum SpecialDirection { Neutral, Up, horizontal } // Horizontal will not be added for the school project, but may be implemented later.
     public enum DodgeDirection { Neutral, Horizontal }
 
     /// <summary>
@@ -287,7 +287,7 @@ public void PerformAttack(AttackDirection direction)
         {
             SpecialDirection dir = SpecialDirection.Neutral;
             if (move.Y < -0.5f) dir = SpecialDirection.Up;
-            else if (Mathf.Abs(move.X) > 0.3f) dir = SpecialDirection.Horizontal;
+            else if (Mathf.Abs(move.X) > 0.3f) dir = SpecialDirection.Neutral;
 
             PerformSpecial(dir);
         }
