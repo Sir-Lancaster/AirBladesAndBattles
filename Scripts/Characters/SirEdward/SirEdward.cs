@@ -23,12 +23,6 @@ public partial class SirEdward: CharacterBase
     /// </summary>
     private Area2D _currentHitbox;
     private int _healCount = 0;
-
-    /// <summary>
-    ///  A counter tracking the number of times Edward has healed this life.
-    /// </summary>
-    private int _healCount = 0;
-
     [Export] public string CharacterLabel = "SirEdward";
 
     /// <summary>
@@ -104,6 +98,11 @@ public partial class SirEdward: CharacterBase
             float facing = _edward.FlipH ? -1f : 1f; // left = -1, right = +1
             _edward.Offset = new Vector2(15f * facing, -6f);
         }
+        else if (state == CharacterState.Attack && !_isSpecial && _currentAttackDirection == AttackDirection.Up)
+        {
+            float facing = _edward.FlipH ? -1f : 1f;
+            _edward.Offset = new Vector2(7.5f * facing, -17.5f);
+        }
         else if (state == CharacterState.Attack && _isSpecial && _currentSpecialDirection == SpecialDirection.Neutral)
         {
             _edward.Offset = new Vector2(_edward.Position.X, -10f);
@@ -158,6 +157,7 @@ public partial class SirEdward: CharacterBase
         _isSpecial = false;
 
         GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
+        PlayAnimationForState(CharacterState.Attack);
         EndAttackAfter(AttackRecovery);
         SpawnAttackHitbox(direction, damage);
     }
@@ -266,7 +266,7 @@ public partial class SirEdward: CharacterBase
                 break;
 
             case AttackDirection.DownAir:
-                hitbox.Position = new Vector2(0f, 50f); // below
+                hitbox.Position = new Vector2(0f, 40f); // below
                 hitbox.RotationDegrees = 90f;
                 break;
         }
