@@ -341,7 +341,7 @@ public partial class LassoHandler : Node
                 target.TakeDamage(ShockwaveDamage);
         }
 
-        await _owner.GetTree().CreateTimer(ShockwaveLifetime).ToSignal("timeout");
+        await ToSignal(_owner.GetTree().CreateTimer(ShockwaveLifetime), SceneTreeTimer.SignalName.Timeout);
         if (IsInstanceValid(area))
             area.QueueFree();
     }
