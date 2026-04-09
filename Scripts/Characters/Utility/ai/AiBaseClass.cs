@@ -1,6 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Godot;
 
-public abstract partial class CharacterBase : CharacterBody2D, IDamageable
+public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 {
     /// <summary>
     /// Enums include the characters states, the possible attack directions,
@@ -41,6 +43,9 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     private float _dodgeRemaining;
     private float _dodgeCooldownRemaining;
     private float _dodgeVelocityX;
+    private float _aiAttackCooldownRemaining;
+
+    [Export] public float AiAttackCooldown = 1.0f;
 
     private int _jumpsRemaining;
 
@@ -119,7 +124,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
 
         if (direction == DodgeDirection.Horizontal)
         {
-            float inputX    = Input.GetVector("move_left", "move_right", "move_up", "move_down").X;
+            float inputX = AiInput.MoveDirection.X;
             _dodgeVelocityX = (inputX >= 0f ? 1f : -1f) * MoveSpeed * 1.5f;
         }
 
@@ -210,6 +215,18 @@ public void PerformAttack(AttackDirection direction)
     protected virtual void OnDodgeStarted(DodgeDirection direction, float dodgeDuration, float iFrameDuration) { }
     protected virtual void OnDodgeEnded(float dodgeCooldown) { }
 
+    // AI input state — set by the subclass each frame before calling base._PhysicsProcess.
+    protected struct AiInputState
+    {
+        public Vector2 MoveDirection;
+        public bool AttackJustPressed;
+        public bool SpecialJustPressed;
+        public bool SpecialHeld;
+        public bool DodgeJustPressed;
+        public bool JumpJustPressed;
+    }
+    protected AiInputState AiInput;
+
     // Basic Godot Overrides
 
     /// <summary>
@@ -257,6 +274,9 @@ public void PerformAttack(AttackDirection direction)
         if (_dodgeCooldownRemaining > 0)
             _dodgeCooldownRemaining -= (float)delta;
 
+        if (_aiAttackCooldownRemaining > 0)
+            _aiAttackCooldownRemaining -= (float)delta;
+
         if (CurrentState == CharacterState.HitStun && _hitStunRemaining > 0)
         {
             _hitStunRemaining -= (float)delta;
@@ -272,29 +292,24 @@ public void PerformAttack(AttackDirection direction)
         if (CurrentState == CharacterState.HitStun || CurrentState == CharacterState.Dead)
             return;
 
-        Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-
-        if (Input.IsActionJustPressed("attack"))
+        if (AiInput.AttackJustPressed)
         {
             AttackDirection dir = AttackDirection.Horizontal;
-            if (move.Y < -0.5f) dir = AttackDirection.Up;
-            else if (move.Y > 0.5f && !IsOnFloor()) dir = AttackDirection.DownAir;
-
+            if (AiInput.MoveDirection.Y < -0.5f) dir = AttackDirection.Up;
+            else if (AiInput.MoveDirection.Y > 0.5f && !IsOnFloor()) dir = AttackDirection.DownAir;
             PerformAttack(dir);
         }
 
-        if (Input.IsActionJustPressed("special"))
+        if (AiInput.SpecialJustPressed)
         {
             SpecialDirection dir = SpecialDirection.Neutral;
-            if (move.Y < -0.5f) dir = SpecialDirection.Up;
-            else if (Mathf.Abs(move.X) > 0.3f) dir = SpecialDirection.Neutral;
-
+            if (AiInput.MoveDirection.Y < -0.5f) dir = SpecialDirection.Up;
             PerformSpecial(dir);
         }
 
-        if (Input.IsActionJustPressed("dodge"))
+        if (AiInput.DodgeJustPressed)
         {
-            DodgeDirection dir = Mathf.Abs(move.X) > 0.3f ? DodgeDirection.Horizontal : DodgeDirection.Neutral;
+            DodgeDirection dir = Mathf.Abs(AiInput.MoveDirection.X) > 0.3f ? DodgeDirection.Horizontal : DodgeDirection.Neutral;
             TryStartDodge(dir);
         }
     }
@@ -304,27 +319,103 @@ public void PerformAttack(AttackDirection direction)
         if (CurrentState == CharacterState.HitStun || CurrentState == CharacterState.Dead)
             return;
 
-        Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-
         if (CurrentState != CharacterState.Attack && CurrentState != CharacterState.Dodge)
         {
-            Velocity = new Vector2(move.X * MoveSpeed, Velocity.Y);
+            Velocity = new Vector2(AiInput.MoveDirection.X * MoveSpeed, Velocity.Y);
 
             if (IsOnFloor())
             {
                 _jumpsRemaining = MaxJumps;
-                if (move.X == 0)
+                if (AiInput.MoveDirection.X == 0)
                     SetState(CharacterState.Idle);
                 else
                     SetState(CharacterState.Run);
             }
         }
 
-        if (Input.IsActionJustPressed("jump") && _jumpsRemaining > 0 && CurrentState != CharacterState.Attack)
+        if (AiInput.JumpJustPressed && _jumpsRemaining > 0 && CurrentState != CharacterState.Attack)
         {
-                _jumpsRemaining--;
-                Velocity = new Vector2(Velocity.X, JumpVelocity);
-                SetState(CharacterState.Jump);
+            _jumpsRemaining--;
+            Velocity = new Vector2(Velocity.X, JumpVelocity);
+            SetState(CharacterState.Jump);
         }
+    }
+
+    // --- Attack selection ---
+
+    protected struct AttackOption
+    {
+        public float MinAngle, MaxAngle; // degrees, 0-360 (0=right, 90=down, 180=left, 270=up)
+        public float MinDist, MaxDist;   // world units; use 0/float.MaxValue for "any distance"
+        public Action Execute;
+    }
+
+    private readonly List<AttackOption> _attackOptions = new();
+    private readonly System.Random _rng = new();
+
+    /// <summary>
+    /// Registers an attack the AI can use when the target falls within the given angle and distance range.
+    /// Multiple overlapping entries are resolved by random selection.
+    /// Angles are in degrees, 0-360 (0=right, 90=down, 180=left, 270=up).
+    /// Ranges that wrap around 360 are supported (e.g. MinAngle=315, MaxAngle=45 covers "to the right").
+    /// </summary>
+    protected void RegisterAttack(float minAngle, float maxAngle, float minDist, float maxDist, Action execute)
+    {
+        _attackOptions.Add(new AttackOption
+        {
+            MinAngle = minAngle, MaxAngle = maxAngle,
+            MinDist = minDist,   MaxDist = maxDist,
+            Execute = execute
+        });
+    }
+
+    /// <summary>
+    /// Evaluates all registered attacks against the vector to the target.
+    /// If one or more match, picks one at random and executes it, returning true.
+    /// If nothing matches, returns false — the caller should fall back to MoveTowardTarget.
+    /// Only considers attacks when the character is in a state that allows attacking.
+    /// </summary>
+    protected bool TrySelectAttack(Vector2 toTarget)
+    {
+        if (CurrentState == CharacterState.Attack ||
+            CurrentState == CharacterState.HitStun ||
+            CurrentState == CharacterState.Dead)
+            return false;
+
+        if (_aiAttackCooldownRemaining > 0) return false;
+
+        float angle = Mathf.RadToDeg(Mathf.Atan2(toTarget.Y, toTarget.X));
+        if (angle < 0f) angle += 360f;
+        float dist = toTarget.Length();
+
+        var matches = new System.Collections.Generic.List<AttackOption>();
+        foreach (var opt in _attackOptions)
+        {
+            if (AngleInRange(angle, opt.MinAngle, opt.MaxAngle) && dist >= opt.MinDist && dist <= opt.MaxDist)
+                matches.Add(opt);
+        }
+
+        if (matches.Count == 0) return false;
+
+        matches[_rng.Next(matches.Count)].Execute();
+        _aiAttackCooldownRemaining = AiAttackCooldown;
+        return true;
+    }
+
+    /// <summary>
+    /// Fallback movement when no attack matches. Walks toward the target horizontally
+    /// and jumps if the target is significantly above.
+    /// </summary>
+    protected void MoveTowardTarget(Vector2 toTarget)
+    {
+        AiInput.MoveDirection = new Vector2(Mathf.Sign(toTarget.X), 0f);
+        if (toTarget.Y < -80f)
+            AiInput.JumpJustPressed = true;
+    }
+
+    private static bool AngleInRange(float angle, float min, float max)
+    {
+        if (min <= max) return angle >= min && angle <= max;
+        return angle >= min || angle <= max; // wraps around 360
     }
 }

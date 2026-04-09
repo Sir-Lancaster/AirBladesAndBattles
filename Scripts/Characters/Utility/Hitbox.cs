@@ -2,9 +2,14 @@ using System.Collections.Generic;
 using System.IO;
 using Godot;
 
+public interface IDamageable
+{
+    bool TryReceiveHit(Node attacker, Hitbox hitbox, int damage);
+}
+
 /// <summary>
 /// Transient damage area used by attacks/specials.
-/// Detects overlap targets and delegates hit-validation to <c>CharacterBase</c>.
+/// Detects overlap targets and delegates hit-validation via IDamageable.
 /// </summary>
 public partial class Hitbox : Area2D
 {
@@ -110,21 +115,20 @@ public partial class Hitbox : Area2D
     /// <param name="target">Overlapped Node2D target.</param>
     private void TryApplyDamage(Node2D target)
     {
-        if (target is not CharacterBase character)
+        if (target is not IDamageable damageable)
             return;
 
-        ulong targetId = character.GetInstanceId();
+        ulong targetId = target.GetInstanceId();
         if (OneHitPerTarget && _hitTargetIds.Contains(targetId))
             return;
 
-        // CharacterBase owns hit rules and returns whether the hit was applied.
         if (OwnerNode == null)
         {
             GD.PushWarning("Hitbox.Activate() was never called, resulting in no OwnerNode.");
             return;
         }
 
-        bool applied = character.TryReceiveHit(OwnerNode, this, Damage);
+        bool applied = damageable.TryReceiveHit(OwnerNode, this, Damage);
         if (!applied) return;
 
         _hitTargetIds.Add(targetId);

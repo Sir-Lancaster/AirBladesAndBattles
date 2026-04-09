@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="1_7b7cw"]
 [ext_resource type="Shader" uid="uid://c3bh24h3oaode" path="res://Scenes/Stages/Clocktower.gdshader" id="1_iukx0"]
 [ext_resource type="Script" uid="uid://cg63uwcwfwyeh" path="res://Scripts/Characters/Steampunk/Gear.cs" id="1_sonsx"]
+[ext_resource type="PackedScene" uid="uid://bxwbr7c3r4hek" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="4_sonsx"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_sonsx"]
 
@@ -29,6 +30,21 @@ polygon = PackedVector2Array(398, -201, 993, -202, 957, -137, 447, -133)
 use_parent_material = true
 position = Vector2(-32, 545)
 polygon = PackedVector2Array(398, -201, 993, -202, 957, -137, 813.9103, -135.8778, 447, -133)
+
+[node name="gear3" type="Polygon2D" parent="." unique_id=1838237770]
+position = Vector2(865, 580)
+scale = Vector2(0.5, 0.5)
+color = Color(0.35050318, 0.24686277, 0.02450895, 1)
+offset = Vector2(-540, 320)
+polygon = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
+uv = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
+script = ExtResource("1_sonsx")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="gear3" unique_id=1955054361]
+modulate = Color(0.29954746, 0.29954746, 0.29954743, 1)
+position = Vector2(-0.26391602, 6.2735596)
+scale = Vector2(200, 200)
+mesh = SubResource("SphereMesh_sonsx")
 
 [node name="gear2" type="Polygon2D" parent="." unique_id=889926496]
 position = Vector2(740, 713)
@@ -81,6 +97,10 @@ position = Vector2(938, 556)
 
 [node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("1_7b7cw")]
 position = Vector2(1162, 377)
+
+[node name="Steampunk2" parent="." unique_id=1841756279 node_paths=PackedStringArray("Target") instance=ExtResource("4_sonsx")]
+position = Vector2(467.79895, 498.2488)
+Target = NodePath("../Steampunk")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=311221569]
 position = Vector2(0, 130)
