@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b04xcwjmjedjc"]
+
+[ext_resource type="PackedScene" uid="uid://bsl2awvp7ono0" path="res://Scenes/Vampire/Vampire.tscn" id="1_kt68r"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p37k8"]
+
+[node name="RegressionTest" type="Node2D" unique_id=1297599665]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1949312096]
+
+[node name="Vampire" parent="." unique_id=23730063 instance=ExtResource("1_kt68r")]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=549577282]
+position = Vector2(0, 130)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=2059290267]
+scale = Vector2(80, 1)
+shape = SubResource("RectangleShape2D_p37k8")
