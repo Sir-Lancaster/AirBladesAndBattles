@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://cs7qyghscvvuf"]
 
-[ext_resource type="PackedScene" uid="uid://kd4pmsasdhwj" path="res://Scenes/KernelCowboy/KernelCowboy.tscn" id="1_oet7g"]
+[ext_resource type="Script" uid="uid://cf2e67qxihqt8" path="res://Scripts/Characters/KernelCowboy/KernelCowboy.cs" id="1_2fosr"]
 [ext_resource type="Texture2D" uid="uid://q5eqbcp2c4c2" path="res://Assets/Characters/KernelCowboy/KCHorizontal.png" id="2_2fosr"]
 [ext_resource type="Texture2D" uid="uid://dporjlm4rxy6c" path="res://Assets/Characters/KernelCowboy/KCHurt.png" id="3_egudy"]
 [ext_resource type="Texture2D" uid="uid://uplyextte3xf" path="res://Assets/Characters/KernelCowboy/KCIdle.png" id="4_a4ul0"]
 [ext_resource type="Texture2D" uid="uid://csynlb5ebn3x1" path="res://Assets/Characters/KernelCowboy/KCRun.png" id="5_6st2j"]
+[ext_resource type="Texture2D" uid="uid://bcakucwayca25" path="res://Assets/Characters/KernelCowboy/KCJumping.png" id="5_egudy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2fosr"]
+size = Vector2(27, 49)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6w8jf"]
 atlas = ExtResource("2_2fosr")
@@ -53,6 +57,38 @@ region = Rect2(128, 0, 64, 80)
 [sub_resource type="AtlasTexture" id="AtlasTexture_u1w4a"]
 atlas = ExtResource("4_a4ul0")
 region = Rect2(192, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h4s3l"]
+atlas = ExtResource("5_egudy")
+region = Rect2(0, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s0hdb"]
+atlas = ExtResource("5_egudy")
+region = Rect2(64, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5327v"]
+atlas = ExtResource("5_egudy")
+region = Rect2(128, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hfl82"]
+atlas = ExtResource("5_egudy")
+region = Rect2(192, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1rrtd"]
+atlas = ExtResource("5_egudy")
+region = Rect2(256, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pefvp"]
+atlas = ExtResource("5_egudy")
+region = Rect2(320, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uhpeb"]
+atlas = ExtResource("5_egudy")
+region = Rect2(384, 0, 64, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gerlu"]
+atlas = ExtResource("5_egudy")
+region = Rect2(448, 0, 64, 80)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fovgh"]
 atlas = ExtResource("5_6st2j")
@@ -120,7 +156,36 @@ animations = [{
 "texture": SubResource("AtlasTexture_u1w4a")
 }],
 "loop": true,
-"name": &"Idle ",
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_h4s3l")
+}, {
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_s0hdb")
+}, {
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_5327v")
+}, {
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_hfl82")
+}, {
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_1rrtd")
+}, {
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_pefvp")
+}, {
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_uhpeb")
+}, {
+"duration": 0.3,
+"texture": SubResource("AtlasTexture_gerlu")
+}],
+"loop": false,
+"name": &"Jump",
 "speed": 5.0
 }, {
 "frames": [{
@@ -150,19 +215,20 @@ size = Vector2(599, 20)
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=156738427]
 position = Vector2(577, 272)
-
-[node name="KernelCowboy" parent="CharacterBody2D" unique_id=698591539 instance=ExtResource("1_oet7g")]
+script = ExtResource("1_2fosr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=950173838]
+position = Vector2(-3.5, 14.5)
+shape = SubResource("RectangleShape2D_2fosr")
 
-[node name="KernelCowboy2" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=879937727]
+[node name="KernelCowboy" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=879937727]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_7kmpb")
-animation = &"Idle "
+animation = &"Jump"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1526391613]
 position = Vector2(576, 222)
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(2, 2)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1491212209]
 position = Vector2(579, 366)

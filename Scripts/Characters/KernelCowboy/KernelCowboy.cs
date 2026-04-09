@@ -2,7 +2,7 @@ using Godot;
 
 public partial class KernelCowboy : CharacterBase
 {
-    private AnimatedSprite2D _sprite; // NEEDS EDITING: replace "KernelCowboy" node name below in _Ready()
+    private AnimatedSprite2D _KernelCowboy; // NEEDS EDITING: replace "KernelCowboy" node name below in _Ready()
     private AttackDirection _currentAttackDirection;
     private SpecialDirection _currentSpecialDirection;
     private bool _isSpecial;
@@ -18,7 +18,8 @@ public partial class KernelCowboy : CharacterBase
 
     public override void _Ready()
     {
-        _sprite = GetNode<AnimatedSprite2D>("KernelCowboy"); // NEEDS EDITING: use the actual node name from your scene
+        _KernelCowboy = GetNode<AnimatedSprite2D>("KernelCowboy"); // NEEDS EDITING: use the actual node name from your scene
+        GD.Print("Animations: ", string.Join(", ", _KernelCowboy.SpriteFrames.GetAnimationNames()));
 
         _lassoHandler = new LassoHandler();
         AddChild(_lassoHandler);
@@ -40,6 +41,9 @@ public partial class KernelCowboy : CharacterBase
     {
         base._PhysicsProcess(delta);
 
+        if (Velocity.X != 0)
+            _KernelCowboy.FlipH = Velocity.X < 0;
+
         // Debug: press 'delete' to take 10 damage
         if (Input.IsPhysicalKeyPressed(Key.Delete))
         {
@@ -57,19 +61,19 @@ public partial class KernelCowboy : CharacterBase
     {
         string anim = state switch
         {
-            CharacterState.Idle     => "idle",      // NEEDS EDITING: match your actual animation names
-            CharacterState.Run      => "run",        // NEEDS EDITING
-            CharacterState.Jump     => "jump",       // NEEDS EDITING
-            CharacterState.Dodge    => "dodge",      // NEEDS EDITING
+            CharacterState.Idle     => "Idle",      
+            CharacterState.Run      => "Run",        
+            CharacterState.Jump     => "Jump",      
+            CharacterState.Dodge    => "Dodge",      // NEEDS EDITING
             CharacterState.Attack   => _isSpecial
                 ? $"special_{_currentSpecialDirection.ToString().ToLower()}" // NEEDS EDITING: if your special anims are named differently
                 : $"attack_{_currentAttackDirection.ToString().ToLower()}",  // NEEDS EDITING: if your attack anims are named differently
             CharacterState.HitStun  => "hitstun",   // NEEDS EDITING
             CharacterState.Dead     => "dead",       // NEEDS EDITING
-            _                       => "idle"
+            _                       => "Idle"
         };
 
-        _sprite.Play(anim);
+        _KernelCowboy.Play(anim);
         GD.Print($"{CharacterLabel} play animation for: {state}");
     }
 
@@ -117,7 +121,7 @@ public partial class KernelCowboy : CharacterBase
         switch (direction)
         {
             case SpecialDirection.Neutral:
-                float facing = _sprite.FlipH ? -1f : 1f;
+                float facing = _KernelCowboy.FlipH ? -1f : 1f;
                 _lassoHandler.LaunchLasso(facing);
                 GD.Print($"{CharacterLabel} neutral special: lasso launched");
                 return; // EndAttackAfter is driven by LassoHandler callbacks, not here.
@@ -165,7 +169,7 @@ public partial class KernelCowboy : CharacterBase
         AddChild(hitbox);
         hitbox.Activate(this, damage, AttackRecovery);
 
-        float facing = _sprite.FlipH ? -1f : 1f;
+        float facing = _KernelCowboy.FlipH ? -1f : 1f;
 
         switch (dir)
         {
