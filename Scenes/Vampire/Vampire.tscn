@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bsl2awvp7ono0"]
+
+[ext_resource type="Script" uid="uid://dli1yriwb3ch5" path="res://Scripts/Characters/Vampire/Vampire.cs" id="1_1w3m4"]
+[ext_resource type="SpriteFrames" uid="uid://cf3h3oo51r0t4" path="res://Assets/Characters/Vampire/VampireIdle.tres" id="1_c6366"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c6366"]
+radius = 8.0
+height = 52.0
+
+[node name="Vampire" type="CharacterBody2D" unique_id=23730063]
+script = ExtResource("1_1w3m4")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1437073513]
+sprite_frames = ExtResource("1_c6366")
+frame_progress = 0.7333358
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1286848948]
+position = Vector2(1, 5)
+shape = SubResource("CapsuleShape2D_c6366")
