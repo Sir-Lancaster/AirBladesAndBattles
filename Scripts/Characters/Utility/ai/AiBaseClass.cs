@@ -4,18 +4,11 @@ using Godot;
 
 public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 {
-    /// <summary>
-    /// Enums include the characters states, the possible attack directions,
-    /// and the possible special directions.
-    /// </summary>
     public enum CharacterState { Idle, Run, Jump, Dodge, Attack, HitStun, Dead }
     public enum AttackDirection { Horizontal, Up, DownAir }
-    public enum SpecialDirection { Neutral, Up, horizontal } // Horizontal will not be added for the school project, but may be implemented later.
+    public enum SpecialDirection { Neutral, Up, horizontal }
     public enum DodgeDirection { Neutral, Horizontal }
 
-    /// <summary>
-    /// Core attributes for a character (HP, Speed, Jump height, Damages, State).
-    /// </summary>
     [Export] public int MaxHP = 100;
     [Export] public float MoveSpeed = 200f;
     [Export] public float JumpVelocity = -420f;
@@ -24,17 +17,14 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     [Export] public int MaxJumps = 2;
     public int SpecialDamage => BasicDamage * 2;
 
-    /// <summary>
-    /// Dodge and hitstun timers.
-    /// </summary>
     [Export] public float DodgeTime = 0.30f;
     [Export] public float DodgeIFrameTime = 0.28f;
     [Export] public float DodgeCooldown = 0.8f;
     [Export] public float HitStunTimer = 0.25f;
 
-    /// <summary>
-    /// Runtime character attributes.
-    /// </summary>
+    [Export] public float AiAttackCooldown = 1.0f;
+    [Export] public float AiSpecialCooldown = 5.0f;
+
     public bool IsDead { get; protected set; }
     public int CurrentHP { get; protected set; }
     public CharacterState CurrentState { get; protected set; }
@@ -45,42 +35,17 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     private float _dodgeVelocityX;
     private float _aiAttackCooldownRemaining;
     private float _aiSpecialCooldownRemaining;
-
-    [Export] public float AiAttackCooldown = 1.0f;
-    [Export] public float AiSpecialCooldown = 5.0f;
-
     private int _jumpsRemaining;
 
-    // Base methods, owned by the core class.
-
-    /// <summary>
-    /// Called by Hitbox via reflection when its area overlaps this character's hurtbox.
-    /// Rejects the hit if the attacker is self, or if the character is dead/invincible.
-    /// Otherwise applies damage and returns true so the hitbox records the hit.
-    /// </summary>
-    /// <param name="attacker">The node that owns the hitbox.</param>
-    /// <param name="hitbox">The hitbox that made contact.</param>
-    /// <param name="damage">Damage amount to apply.</param>
-    /// <returns>True if the hit was accepted and damage applied; false otherwise.</returns>
+    /// <summary>Rejects self-hits and hits on dead/invincible characters.</summary>
     public bool TryReceiveHit(Node attacker, Hitbox _hitbox, int damage)
     {
         if (attacker == this) return false;
         if (IsDead || IsInvincible) return false;
-
         TakeDamage(damage);
         return true;
     }
 
-
-
-    /// <summary>
-    /// TakeDamage() chacks that the character isn't dead or it returns early.
-    /// It records the old hp, then calculates and saves the new HP into currentHp. 
-    /// Resetting it to 0 if the damage would put current into the negative.
-    /// It then calls the appropriate virtual hooks. Then it checks to see if the damage killed the character.
-    /// Finally, it sets the hitstun timer and calls SetState with Hitstun as the new state.
-    /// </summary>
-    /// <param name="amount">amount is an integer containing the damage value the character will take.</param>
     public void TakeDamage(int amount)
     {
         if (IsDead || amount <= 0 || IsInvincible) return;
@@ -103,14 +68,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
         SetState(CharacterState.HitStun);
     }
 
-    /// <summary>
-    /// Attempts to start a dodge if the character is allowed to dodge right now.
-    /// Blocks during locked states and while the cooldown is active.
-    /// For a horizontal dodge the roll velocity is captured from the current input.
-    /// Starts the iFrame window, transitions to the Dodge state, and fires OnDodgeStarted.
-    /// </summary>
-    /// <param name="direction">Neutral for a spot dodge; Horizontal for a roll.</param>
-    /// <returns>True when dodge starts successfully; otherwise false.</returns>
     public bool TryStartDodge(DodgeDirection direction)
     {
         if (CurrentState == CharacterState.HitStun ||
@@ -121,8 +78,8 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
         if (_dodgeCooldownRemaining > 0) return false;
 
-        _dodgeRemaining  = DodgeTime;
-        _dodgeVelocityX  = 0f;
+        _dodgeRemaining = DodgeTime;
+        _dodgeVelocityX = 0f;
 
         if (direction == DodgeDirection.Horizontal)
         {
@@ -138,20 +95,13 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
         return true;
     }
 
-    /// <summary>
-    /// Routes a normal attack by direction and triggers attack hooks for character-specific behavior.
-    /// </summary>
-    /// <param name="direction">Requested normal attack direction.</param>
-public void PerformAttack(AttackDirection direction)
+    public void PerformAttack(AttackDirection direction)
     {
-        // Block attacks during locked states.
         if (CurrentState == CharacterState.HitStun ||
             CurrentState == CharacterState.Dead ||
             CurrentState == CharacterState.Dodge ||
             CurrentState == CharacterState.Attack)
-        {
             return;
-        }
 
         // Down-air only makes sense while airborne.
         AttackDirection resolvedDirection = direction;
@@ -163,57 +113,34 @@ public void PerformAttack(AttackDirection direction)
         OnAttackPerformed(resolvedDirection, BasicDamage);
     }
 
-    /// <summary>
-    /// Routes a special attack by direction and triggers special hooks for character-specific behavior.
-    /// </summary>
-    /// <param name="direction">Requested special attack direction.</param>
     public void PerformSpecial(SpecialDirection direction)
     {
-        // Block specials during locked states.
         if (CurrentState == CharacterState.HitStun ||
             CurrentState == CharacterState.Dead ||
             CurrentState == CharacterState.Dodge ||
             CurrentState == CharacterState.Attack)
-        {
             return;
-        }
+
         Velocity = new Vector2(0f, Velocity.Y);
-        SpecialDirection resolvedDirection = direction;
         SetState(CharacterState.Attack);
-        OnSpecialPerformed(resolvedDirection, SpecialDamage);
+        OnSpecialPerformed(direction, SpecialDamage);
     }
 
-    /// <summary>
-    /// SetState changes a character into a new state. Fist it contains a check to prevent changing
-    /// to a new state. Then it calls the virtual hook, changes the character state, and calls the 
-    /// virtual hook to play the animation for the state.
-    /// </summary>
-    /// <param name="newState">Contains the state the character is going to switch into.</param>
     protected void SetState(CharacterState newState)
     {
         if (CurrentState == newState) return;
-
         OnStateChanged(CurrentState, newState);
         CurrentState = newState;
         PlayAnimationForState(newState);
     }
 
-    // Virtual hooks to be overridden in individual characters.
-
-    // Lifecycle/State
     protected virtual void OnStateChanged(CharacterState currentState, CharacterState newState) { }
     protected virtual void PlayAnimationForState(CharacterState state) { }
-
-    // Health
     protected virtual void OnHealthChanged(int oldHp, int newHp) { }
     protected virtual void OnDamaged(int amount) { }
     protected virtual void OnDied() { }
-
-    // Combat
     protected virtual void OnAttackPerformed(AttackDirection direction, int damage) { }
     protected virtual void OnSpecialPerformed(SpecialDirection direction, int damage) { }
-
-    // Dodge
     protected virtual void OnDodgeStarted(DodgeDirection direction, float dodgeDuration, float iFrameDuration) { }
     protected virtual void OnDodgeEnded(float dodgeCooldown) { }
 
@@ -229,17 +156,12 @@ public void PerformAttack(AttackDirection direction)
     }
     protected AiInputState AiInput;
 
-    // Basic Godot Overrides
-
-    /// <summary>
-    /// Sets the character's HP to the max, IsDead to false, and puts the character into the idle state.
-    /// </summary>
     public override void _Ready()
     {
         CurrentHP = MaxHP;
         IsDead = false;
         _jumpsRemaining = MaxJumps;
-        CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
+        CurrentState = CharacterState.Run; // SetState requires a different current state to fire on first call.
         SetState(CharacterState.Idle);
 
         // Layer 2 = characters; mask 1 = world only.
@@ -248,18 +170,12 @@ public void PerformAttack(AttackDirection direction)
         CollisionMask = 1;
     }
 
-    /// <summary>
-    /// While a character is in hitstun state, the timer decreases.
-    /// </summary>
-    /// <param name="delta">delta represents time.</param>
     public override void _PhysicsProcess(double delta)
     {
         if (IsDead) return;
 
         if (!IsOnFloor())
-        {
             Velocity += new Vector2(0, Gravity * (float)delta);
-        }
 
         HandleCombatInput();
         HandleMovementInput();
@@ -278,14 +194,9 @@ public void PerformAttack(AttackDirection direction)
             }
         }
 
-        if (_dodgeCooldownRemaining > 0)
-            _dodgeCooldownRemaining -= (float)delta;
-
-        if (_aiAttackCooldownRemaining > 0)
-            _aiAttackCooldownRemaining -= (float)delta;
-
-        if (_aiSpecialCooldownRemaining > 0)
-            _aiSpecialCooldownRemaining -= (float)delta;
+        if (_dodgeCooldownRemaining > 0)      _dodgeCooldownRemaining -= (float)delta;
+        if (_aiAttackCooldownRemaining > 0)   _aiAttackCooldownRemaining -= (float)delta;
+        if (_aiSpecialCooldownRemaining > 0)  _aiSpecialCooldownRemaining -= (float)delta;
 
         if (CurrentState == CharacterState.HitStun && _hitStunRemaining > 0)
         {
@@ -312,8 +223,7 @@ public void PerformAttack(AttackDirection direction)
 
         if (AiInput.SpecialJustPressed)
         {
-            SpecialDirection dir = SpecialDirection.Neutral;
-            if (AiInput.MoveDirection.Y < -0.5f) dir = SpecialDirection.Up;
+            SpecialDirection dir = AiInput.MoveDirection.Y < -0.5f ? SpecialDirection.Up : SpecialDirection.Neutral;
             PerformSpecial(dir);
         }
 
@@ -336,10 +246,7 @@ public void PerformAttack(AttackDirection direction)
             if (IsOnFloor())
             {
                 _jumpsRemaining = MaxJumps;
-                if (AiInput.MoveDirection.X == 0)
-                    SetState(CharacterState.Idle);
-                else
-                    SetState(CharacterState.Run);
+                SetState(AiInput.MoveDirection.X == 0 ? CharacterState.Idle : CharacterState.Run);
             }
         }
 
@@ -356,40 +263,37 @@ public void PerformAttack(AttackDirection direction)
     protected struct AttackOption
     {
         public float MinAngle, MaxAngle; // degrees, 0-360 (0=right, 90=down, 180=left, 270=up)
-        public float MinDist, MaxDist;   // world units; use 0/float.MaxValue for "any distance"
+        public float MinDist, MaxDist;
         public Action Execute;
-        public Func<bool> IsAvailable;  // optional; null means always available
+        public Func<bool> IsAvailable; // null = always available
         public bool IsSpecial;
     }
 
-    private readonly List<AttackOption> _attackOptions = new();
+    private readonly List<AttackOption> _attackOptions = [];
+    private readonly List<AttackOption> _matchingAttacks = [];
     private readonly System.Random _rng = new();
 
     /// <summary>
-    /// Registers an attack the AI can use when the target falls within the given angle and distance range.
-    /// Multiple overlapping entries are resolved by random selection.
-    /// Angles are in degrees, 0-360 (0=right, 90=down, 180=left, 270=up).
-    /// Ranges that wrap around 360 are supported (e.g. MinAngle=315, MaxAngle=45 covers "to the right").
-    /// isAvailable is an optional predicate; when it returns false the attack is skipped entirely
-    /// so the selector falls through to other matching attacks (or movement as a last resort).
+    /// Registers an attack option. The AI executes it when the target is within the angle/distance
+    /// range and isAvailable (if set) returns true. isSpecial = true applies AiSpecialCooldown after use.
+    /// Angles: 0=right, 90=down, 180=left, 270=up. Wrapping ranges supported (e.g. 315–45 = rightward arc).
     /// </summary>
-    protected void RegisterAttack(float minAngle, float maxAngle, float minDist, float maxDist, Action execute, Func<bool> isAvailable = null, bool isSpecial = false)
+    protected void RegisterAttack(float minAngle, float maxAngle, float minDist, float maxDist,
+        Action execute, Func<bool> isAvailable = null, bool isSpecial = false)
     {
         _attackOptions.Add(new AttackOption
         {
             MinAngle = minAngle, MaxAngle = maxAngle,
-            MinDist = minDist,   MaxDist = maxDist,
-            Execute = execute,
+            MinDist  = minDist,  MaxDist  = maxDist,
+            Execute     = execute,
             IsAvailable = isAvailable,
-            IsSpecial = isSpecial
+            IsSpecial   = isSpecial
         });
     }
 
     /// <summary>
-    /// Evaluates all registered attacks against the vector to the target.
-    /// If one or more match, picks one at random and executes it, returning true.
-    /// If nothing matches, returns false — the caller should fall back to MoveTowardTarget.
-    /// Only considers attacks when the character is in a state that allows attacking.
+    /// Picks and executes a matching attack. Returns false if none match — caller should move instead.
+    /// Skips specials on AiSpecialCooldown and any attack whose IsAvailable returns false.
     /// </summary>
     protected bool TrySelectAttack(Vector2 toTarget)
     {
@@ -400,22 +304,20 @@ public void PerformAttack(AttackDirection direction)
 
         if (_aiAttackCooldownRemaining > 0) return false;
 
-        float angle = Mathf.RadToDeg(Mathf.Atan2(toTarget.Y, toTarget.X));
-        if (angle < 0f) angle += 360f;
-        float dist = toTarget.Length();
+        var (angle, dist) = ToAngleDist(toTarget);
 
-        var matches = new System.Collections.Generic.List<AttackOption>();
+        _matchingAttacks.Clear();
         foreach (var opt in _attackOptions)
         {
             if (opt.IsSpecial && _aiSpecialCooldownRemaining > 0) continue;
             if (AngleInRange(angle, opt.MinAngle, opt.MaxAngle) && dist >= opt.MinDist && dist <= opt.MaxDist
                 && (opt.IsAvailable == null || opt.IsAvailable()))
-                matches.Add(opt);
+                _matchingAttacks.Add(opt);
         }
 
-        if (matches.Count == 0) return false;
+        if (_matchingAttacks.Count == 0) return false;
 
-        var selected = matches[_rng.Next(matches.Count)];
+        var selected = _matchingAttacks[_rng.Next(_matchingAttacks.Count)];
         selected.Execute();
         _aiAttackCooldownRemaining = AiAttackCooldown;
         if (selected.IsSpecial)
@@ -424,16 +326,12 @@ public void PerformAttack(AttackDirection direction)
     }
 
     /// <summary>
-    /// Returns true if the target falls within the distance and angle range of any
-    /// registered attack, ignoring cooldown and current state.
-    /// Use this to suppress movement while waiting to attack again.
+    /// Returns true if the target is within any currently available attack's range.
+    /// Use this to suppress movement while waiting for the attack cooldown.
     /// </summary>
     protected bool IsInAttackRange(Vector2 toTarget)
     {
-        float angle = Mathf.RadToDeg(Mathf.Atan2(toTarget.Y, toTarget.X));
-        if (angle < 0f) angle += 360f;
-        float dist = toTarget.Length();
-
+        var (angle, dist) = ToAngleDist(toTarget);
         foreach (var opt in _attackOptions)
         {
             if (opt.IsSpecial && _aiSpecialCooldownRemaining > 0) continue;
@@ -444,15 +342,18 @@ public void PerformAttack(AttackDirection direction)
         return false;
     }
 
-    /// <summary>
-    /// Fallback movement when no attack matches. Walks toward the target horizontally
-    /// and jumps if the target is significantly above.
-    /// </summary>
     protected void MoveTowardTarget(Vector2 toTarget)
     {
         AiInput.MoveDirection = new Vector2(Mathf.Sign(toTarget.X), 0f);
         if (toTarget.Y < -80f)
             AiInput.JumpJustPressed = true;
+    }
+
+    private static (float Angle, float Dist) ToAngleDist(Vector2 v)
+    {
+        float angle = Mathf.RadToDeg(Mathf.Atan2(v.Y, v.X));
+        if (angle < 0f) angle += 360f;
+        return (angle, v.Length());
     }
 
     private static bool AngleInRange(float angle, float min, float max)

@@ -8,7 +8,6 @@ public partial class SteampunkAi : AiBaseClass
 	[Export] public string CharacterLabel = "Steampunk";
 	[Export] public float BasicAttackRecovery = 0.20f;
 	[Export] public float SpecialAttackRecovery = 0.35f;
-	private Hitbox _currentHitbox;
 	private Hitbox _specialUpHitboxLeft;
 	private Hitbox _specialUpHitboxRight;
 	private bool _holdingSpecialUp;
@@ -22,26 +21,17 @@ public partial class SteampunkAi : AiBaseClass
 	{
 		_sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_spriteBasePosition = _sprite.Position;
-		RegisterAttack(245f, 295f, 0f, 400f, AttackUp);    // up (target above, close range)
-		RegisterAttack(0f, 360f, 0f, 40f, AttackUp);      // up when really close
-		RegisterAttack(315f, 45f, 50f, 100f, AttackHorizontal);   	// right
-		RegisterAttack(135f, 225f, 50f, 100f, AttackHorizontal);	// left
-		RegisterAttack(315f, 45f, 200f, 1000f, SpecialHorizontal, () => _activeProjectile == null || !IsInstanceValid(_activeProjectile), isSpecial: true);   // right sp
-		RegisterAttack(135f, 225f, 200f, 1000f, SpecialHorizontal, () => _activeProjectile == null || !IsInstanceValid(_activeProjectile), isSpecial: true);  // left sp
-		//RegisterAttack(225f, 245f, 0f, 150f, SpecialUp);   // upper-left
-		//RegisterAttack(295f, 315f, 0f, 150f, SpecialUp);   // upper-right
+		RegisterAttack(245f, 295f, 0f, 400f, AttackUp);               // above
+		RegisterAttack(0f, 360f, 0f, 40f, AttackUp);                   // any direction when very close
+		RegisterAttack(315f, 45f, 50f, 100f, AttackHorizontal);        // right
+		RegisterAttack(135f, 225f, 50f, 100f, AttackHorizontal);       // left
+		RegisterAttack(315f, 45f, 200f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true);  // right, ranged
+		RegisterAttack(135f, 225f, 200f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true); // left, ranged
 		base._Ready();
 	}
 
-	private void AttackHorizontal()
-	{
-		AiInput.AttackJustPressed = true;
-	}
-
-	private void SpecialHorizontal()
-	{
-		AiInput.SpecialJustPressed = true;
-	}
+	private void AttackHorizontal() => AiInput.AttackJustPressed = true;
+	private void SpecialHorizontal() => AiInput.SpecialJustPressed = true;
 
 	private void AttackUp()
 	{
@@ -83,9 +73,9 @@ public partial class SteampunkAi : AiBaseClass
 		{
 			_holdingSpecialUp = false;
 			_specialUpHeldTime = 0f;
-			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
+			if (IsInstanceValid(_specialUpHitboxLeft))
 				_specialUpHitboxLeft.QueueFree();
-			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
+			if (IsInstanceValid(_specialUpHitboxRight))
 				_specialUpHitboxRight.QueueFree();
 
 			_specialUpHitboxLeft = null;
@@ -102,9 +92,9 @@ public partial class SteampunkAi : AiBaseClass
 
 			int currentDamage = SpecialDamage + (int)(_specialUpHeldTime * 3f);
 
-			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
+			if (IsInstanceValid(_specialUpHitboxLeft))
 				_specialUpHitboxLeft.UpdateDamage(currentDamage);
-			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
+			if (IsInstanceValid(_specialUpHitboxRight))
 				_specialUpHitboxRight.UpdateDamage(currentDamage);
 		}
 
@@ -120,21 +110,19 @@ public partial class SteampunkAi : AiBaseClass
 		_sprite.Position = _spriteBasePosition + (facingLeft ? new Vector2(20f, 0f) : Vector2.Zero);
 	}
 
-	private static string AnimName(CharacterState state) => state.ToString().ToLowerInvariant();
-
-	protected override void PlayAnimationForState(CharacterState state) => _sprite.Play(AnimName(state));
+	protected override void PlayAnimationForState(CharacterState state) =>
+		_sprite.Play(state.ToString().ToLowerInvariant());
 
 	private async void EndAttackAfter(float seconds)
 	{
 		await ToSignal(GetTree().CreateTimer(seconds), "timeout");
-		_currentHitbox = null;
 		if (!IsDead && CurrentState == CharacterState.Attack)
 			SetState(CharacterState.Idle);
 	}
 
 	protected override void OnAttackPerformed(AttackDirection direction, int damage)
 	{
-		if (direction == AttackDirection.DownAir && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		if (direction == AttackDirection.DownAir && IsInstanceValid(_activeProjectile))
 		{
 			SetState(CharacterState.Idle);
 			return;
@@ -146,7 +134,7 @@ public partial class SteampunkAi : AiBaseClass
 
 	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
 	{
-		if (direction == SpecialDirection.Neutral && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		if (direction == SpecialDirection.Neutral && IsInstanceValid(_activeProjectile))
 		{
 			SetState(CharacterState.Idle);
 			return;
@@ -159,9 +147,6 @@ public partial class SteampunkAi : AiBaseClass
 
 	private void SpawnAttackHitbox(AttackDirection? dir, int damage)
 	{
-		if (_currentHitbox != null && IsInstanceValid(_currentHitbox))
-			_currentHitbox.QueueFree();
-
 		PackedScene scene = dir == AttackDirection.Up ? UpboxScene : HitboxScene;
 		var hitbox = scene.Instantiate<Hitbox>();
 		AddChild(hitbox);
@@ -177,7 +162,7 @@ public partial class SteampunkAi : AiBaseClass
 				hitbox.Position = new Vector2(0f, -40f);
 				break;
 			case AttackDirection.DownAir:
-				hitbox.QueueFree(); // not used for this case
+				hitbox.QueueFree();
 				var downProjectile = ProjectileScene.Instantiate<SteampunkProjectile>();
 				GetParent().AddChild(downProjectile);
 				downProjectile.GlobalPosition = GlobalPosition + new Vector2(0f, 40f);
@@ -186,37 +171,29 @@ public partial class SteampunkAi : AiBaseClass
 				downProjectile.TreeExiting += () => _activeProjectile = null;
 				return;
 		}
-
-		_currentHitbox = hitbox;
 	}
 
 	private void SpawnSpecialHitbox(SpecialDirection? dir, int damage)
 	{
-		if (_currentHitbox != null && IsInstanceValid(_currentHitbox))
-			_currentHitbox.QueueFree();
-
-		var hitbox = HitboxScene.Instantiate<Hitbox>();
-		AddChild(hitbox);
-
 		switch (dir)
 		{
-			case SpecialDirection.Up: //tornado, need to increase damage as the attack is held, and needs to be able to move left and right
-				{
-					hitbox.Activate(this, damage, -1f);
-					hitbox.Position = new Vector2(-120f, 0f);
-					hitbox.RotationDegrees = 0f;
-					_specialUpHitboxLeft = hitbox;
+			case SpecialDirection.Up:
+			{
+				var hitboxLeft = HitboxScene.Instantiate<Hitbox>();
+				AddChild(hitboxLeft);
+				hitboxLeft.Activate(this, damage, -1f);
+				hitboxLeft.Position = new Vector2(-120f, 0f);
+				_specialUpHitboxLeft = hitboxLeft;
 
-					var hitboxRight = HitboxScene.Instantiate<Hitbox>();
-					AddChild(hitboxRight);
-					hitboxRight.Activate(this, damage, -1f);
-					hitboxRight.Position = new Vector2(40f, 0f);
-					_specialUpHitboxRight = hitboxRight;
-					break;
-				}
+				var hitboxRight = HitboxScene.Instantiate<Hitbox>();
+				AddChild(hitboxRight);
+				hitboxRight.Activate(this, damage, -1f);
+				hitboxRight.Position = new Vector2(40f, 0f);
+				_specialUpHitboxRight = hitboxRight;
+				break;
+			}
 
 			case SpecialDirection.Neutral:
-				hitbox.QueueFree(); // not used for this case
 				var projectile = ProjectileScene.Instantiate<SteampunkProjectile>();
 				GetParent().AddChild(projectile);
 				projectile.GlobalPosition = GlobalPosition + new Vector2(_sprite.FlipH ? -40f : 40f, 0f);
