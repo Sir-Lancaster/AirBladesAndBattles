@@ -39,6 +39,10 @@ public partial class Hitbox : Area2D
     /// </summary>
     public override void _Ready()
     {
+        // Detect characters on layer 2 (characters never collide with each other body-to-body,
+        // but hitboxes as Area2D still need to see them via their collision layer).
+        CollisionMask = 2;
+
         AreaEntered += OnAreaEntered;
         BodyEntered += OnBodyEntered;
     }

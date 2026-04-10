@@ -8,14 +8,14 @@ public partial class Steampunk : CharacterBase
 	[Export] public string CharacterLabel = "Steampunk";
 	[Export] public float BasicAttackRecovery = 0.40f;
 	[Export] public float SpecialAttackRecovery = 0.35f;
-	[Export] public float AttackHitboxDelay = 0.12f; // seconds into the animation before the hitbox appears
-	// How far to shift the wider attack sprite in the facing direction so it reads correctly.
+	[Export] public float AttackHitboxDelay = 0.12f; 
 	[Export] public float AttackAnimOffset = 80f;
 	private Hitbox _currentHitbox;
 	private Hitbox _specialUpHitboxLeft;
 	private Hitbox _specialUpHitboxRight;
 	private bool _holdingSpecialUp;
 	private float _specialUpHeldTime;
+	private SteampunkProjectile _activeProjectile;
 	private static readonly PackedScene HitboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Hitbox.tscn");
 	private static readonly PackedScene UpboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Upbox.tscn");
 	private static readonly PackedScene ProjectileScene = GD.Load<PackedScene>("res://Scenes/Steampunk/SteampunkProjectile.tscn");
@@ -130,6 +130,11 @@ public partial class Steampunk : CharacterBase
 
 	protected override void OnAttackPerformed(AttackDirection direction, int damage)
 	{
+		if (direction == AttackDirection.DownAir && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
 		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 		SetAnimation(GetAttackAnim(direction));
 		EndAttackAfter(BasicAttackRecovery);
@@ -145,6 +150,11 @@ public partial class Steampunk : CharacterBase
 
 	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
 	{
+		if (direction == SpecialDirection.Neutral && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
 		GD.Print($"{CharacterLabel} special: {direction}, damage: {damage}");
 		SetAnimation(GetSpecialAnim(direction));
 		if (direction != SpecialDirection.Up)
@@ -177,6 +187,8 @@ public partial class Steampunk : CharacterBase
 				GetParent().AddChild(downProjectile);
 				downProjectile.GlobalPosition = GlobalPosition + new Vector2(0f, 40f);
 				downProjectile.LaunchDown(this, damage);
+				_activeProjectile = downProjectile;
+				downProjectile.TreeExiting += () => _activeProjectile = null;
 				return;
 		}
 
@@ -214,6 +226,8 @@ public partial class Steampunk : CharacterBase
 				GetParent().AddChild(projectile);
 				projectile.GlobalPosition = GlobalPosition + new Vector2(_sprite.FlipH ? -40f : 40f, 0f);
 				projectile.Launch(this, damage, _sprite.FlipH);
+				_activeProjectile = projectile;
+				projectile.TreeExiting += () => _activeProjectile = null;
 				break;
 		}
 	}

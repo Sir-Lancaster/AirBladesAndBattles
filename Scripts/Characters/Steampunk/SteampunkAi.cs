@@ -13,6 +13,7 @@ public partial class SteampunkAi : AiBaseClass
 	private Hitbox _specialUpHitboxRight;
 	private bool _holdingSpecialUp;
 	private float _specialUpHeldTime;
+	private SteampunkProjectile _activeProjectile;
 	private static readonly PackedScene HitboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Hitbox.tscn");
 	private static readonly PackedScene UpboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Upbox.tscn");
 	private static readonly PackedScene ProjectileScene = GD.Load<PackedScene>("res://Scenes/Steampunk/SteampunkProjectile.tscn");
@@ -21,16 +22,31 @@ public partial class SteampunkAi : AiBaseClass
 	{
 		_sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_spriteBasePosition = _sprite.Position;
-		RegisterAttack(315f, 360f, 40f, 200f, AttackHorizontal);
-		RegisterAttack(0f, 45f, 40f, 200f, AttackHorizontal);
-		RegisterAttack(135f, 225f, 40f, 200f, AttackHorizontal);
-		RegisterAttack(225f, 315f, 0f, 150f, SpecialUp);
+		RegisterAttack(245f, 295f, 0f, 400f, AttackUp);    // up (target above, close range)
+		RegisterAttack(0f, 360f, 0f, 40f, AttackUp);      // up when really close
+		RegisterAttack(315f, 45f, 50f, 100f, AttackHorizontal);   	// right
+		RegisterAttack(135f, 225f, 50f, 100f, AttackHorizontal);	// left
+		RegisterAttack(315f, 45f, 200f, 1000f, SpecialHorizontal, () => _activeProjectile == null || !IsInstanceValid(_activeProjectile), isSpecial: true);   // right sp
+		RegisterAttack(135f, 225f, 200f, 1000f, SpecialHorizontal, () => _activeProjectile == null || !IsInstanceValid(_activeProjectile), isSpecial: true);  // left sp
+		//RegisterAttack(225f, 245f, 0f, 150f, SpecialUp);   // upper-left
+		//RegisterAttack(295f, 315f, 0f, 150f, SpecialUp);   // upper-right
 		base._Ready();
 	}
 
 	private void AttackHorizontal()
 	{
 		AiInput.AttackJustPressed = true;
+	}
+
+	private void SpecialHorizontal()
+	{
+		AiInput.SpecialJustPressed = true;
+	}
+
+	private void AttackUp()
+	{
+		AiInput.AttackJustPressed = true;
+		AiInput.MoveDirection = new Vector2(AiInput.MoveDirection.X, -1f);
 	}
 
 	private void SpecialUp()
@@ -46,7 +62,7 @@ public partial class SteampunkAi : AiBaseClass
 		if (Target != null && !Target.IsDead)
 		{
 			Vector2 toTarget = Target.GlobalPosition - GlobalPosition;
-			if (!TrySelectAttack(toTarget))
+			if (!TrySelectAttack(toTarget) && !IsInAttackRange(toTarget))
 				MoveTowardTarget(toTarget);
 		}
 
@@ -118,6 +134,11 @@ public partial class SteampunkAi : AiBaseClass
 
 	protected override void OnAttackPerformed(AttackDirection direction, int damage)
 	{
+		if (direction == AttackDirection.DownAir && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
 		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 		EndAttackAfter(BasicAttackRecovery);
 		SpawnAttackHitbox(direction, damage);
@@ -125,6 +146,11 @@ public partial class SteampunkAi : AiBaseClass
 
 	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
 	{
+		if (direction == SpecialDirection.Neutral && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
 		GD.Print($"{CharacterLabel} special: {direction}, damage: {damage}");
 		if (direction != SpecialDirection.Up)
 			EndAttackAfter(SpecialAttackRecovery);
@@ -156,6 +182,8 @@ public partial class SteampunkAi : AiBaseClass
 				GetParent().AddChild(downProjectile);
 				downProjectile.GlobalPosition = GlobalPosition + new Vector2(0f, 40f);
 				downProjectile.LaunchDown(this, damage);
+				_activeProjectile = downProjectile;
+				downProjectile.TreeExiting += () => _activeProjectile = null;
 				return;
 		}
 
@@ -193,6 +221,8 @@ public partial class SteampunkAi : AiBaseClass
 				GetParent().AddChild(projectile);
 				projectile.GlobalPosition = GlobalPosition + new Vector2(_sprite.FlipH ? -40f : 40f, 0f);
 				projectile.Launch(this, damage, _sprite.FlipH);
+				_activeProjectile = projectile;
+				projectile.TreeExiting += () => _activeProjectile = null;
 				break;
 		}
 	}

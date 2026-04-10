@@ -222,6 +222,11 @@ public void PerformAttack(AttackDirection direction)
         _jumpsRemaining = MaxJumps;
         CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
         SetState(CharacterState.Idle);
+
+        // Layer 2 = characters; mask 1 = world only.
+        // Characters pass through each other and through themselves (multi-player safe).
+        CollisionLayer = 2;
+        CollisionMask = 1;
     }
 
     /// <summary>

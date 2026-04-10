@@ -21,6 +21,13 @@ public partial class SteampunkProjectile : Hitbox
         base._Ready();
         DestroyOnFirstHit = true;
         BodyEntered += OnWallHit;
+        AreaEntered += OnHitboxCollision;
+    }
+
+    // Destroy when hitting another hitbox (another projectile or an active attack area).
+    private void OnHitboxCollision(Area2D area)
+    {
+        if (area is Hitbox) QueueFree();
     }
 
     /// <summary>
@@ -60,7 +67,7 @@ public partial class SteampunkProjectile : Hitbox
     // Destroy on contact with any non-character physics body (walls, platforms, etc.)
     private void OnWallHit(Node2D body)
     {
-        if (body is CharacterBase) return;
+        if (body is IDamageable) return;
         QueueFree();
     }
 }

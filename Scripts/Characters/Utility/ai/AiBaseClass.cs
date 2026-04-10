@@ -44,8 +44,10 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     private float _dodgeCooldownRemaining;
     private float _dodgeVelocityX;
     private float _aiAttackCooldownRemaining;
+    private float _aiSpecialCooldownRemaining;
 
     [Export] public float AiAttackCooldown = 1.0f;
+    [Export] public float AiSpecialCooldown = 5.0f;
 
     private int _jumpsRemaining;
 
@@ -239,6 +241,11 @@ public void PerformAttack(AttackDirection direction)
         _jumpsRemaining = MaxJumps;
         CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
         SetState(CharacterState.Idle);
+
+        // Layer 2 = characters; mask 1 = world only.
+        // Characters pass through each other and through themselves (multi-player safe).
+        CollisionLayer = 2;
+        CollisionMask = 1;
     }
 
     /// <summary>
@@ -276,6 +283,9 @@ public void PerformAttack(AttackDirection direction)
 
         if (_aiAttackCooldownRemaining > 0)
             _aiAttackCooldownRemaining -= (float)delta;
+
+        if (_aiSpecialCooldownRemaining > 0)
+            _aiSpecialCooldownRemaining -= (float)delta;
 
         if (CurrentState == CharacterState.HitStun && _hitStunRemaining > 0)
         {
@@ -348,6 +358,8 @@ public void PerformAttack(AttackDirection direction)
         public float MinAngle, MaxAngle; // degrees, 0-360 (0=right, 90=down, 180=left, 270=up)
         public float MinDist, MaxDist;   // world units; use 0/float.MaxValue for "any distance"
         public Action Execute;
+        public Func<bool> IsAvailable;  // optional; null means always available
+        public bool IsSpecial;
     }
 
     private readonly List<AttackOption> _attackOptions = new();
@@ -358,14 +370,18 @@ public void PerformAttack(AttackDirection direction)
     /// Multiple overlapping entries are resolved by random selection.
     /// Angles are in degrees, 0-360 (0=right, 90=down, 180=left, 270=up).
     /// Ranges that wrap around 360 are supported (e.g. MinAngle=315, MaxAngle=45 covers "to the right").
+    /// isAvailable is an optional predicate; when it returns false the attack is skipped entirely
+    /// so the selector falls through to other matching attacks (or movement as a last resort).
     /// </summary>
-    protected void RegisterAttack(float minAngle, float maxAngle, float minDist, float maxDist, Action execute)
+    protected void RegisterAttack(float minAngle, float maxAngle, float minDist, float maxDist, Action execute, Func<bool> isAvailable = null, bool isSpecial = false)
     {
         _attackOptions.Add(new AttackOption
         {
             MinAngle = minAngle, MaxAngle = maxAngle,
             MinDist = minDist,   MaxDist = maxDist,
-            Execute = execute
+            Execute = execute,
+            IsAvailable = isAvailable,
+            IsSpecial = isSpecial
         });
     }
 
@@ -391,15 +407,41 @@ public void PerformAttack(AttackDirection direction)
         var matches = new System.Collections.Generic.List<AttackOption>();
         foreach (var opt in _attackOptions)
         {
-            if (AngleInRange(angle, opt.MinAngle, opt.MaxAngle) && dist >= opt.MinDist && dist <= opt.MaxDist)
+            if (opt.IsSpecial && _aiSpecialCooldownRemaining > 0) continue;
+            if (AngleInRange(angle, opt.MinAngle, opt.MaxAngle) && dist >= opt.MinDist && dist <= opt.MaxDist
+                && (opt.IsAvailable == null || opt.IsAvailable()))
                 matches.Add(opt);
         }
 
         if (matches.Count == 0) return false;
 
-        matches[_rng.Next(matches.Count)].Execute();
+        var selected = matches[_rng.Next(matches.Count)];
+        selected.Execute();
         _aiAttackCooldownRemaining = AiAttackCooldown;
+        if (selected.IsSpecial)
+            _aiSpecialCooldownRemaining = AiSpecialCooldown;
         return true;
+    }
+
+    /// <summary>
+    /// Returns true if the target falls within the distance and angle range of any
+    /// registered attack, ignoring cooldown and current state.
+    /// Use this to suppress movement while waiting to attack again.
+    /// </summary>
+    protected bool IsInAttackRange(Vector2 toTarget)
+    {
+        float angle = Mathf.RadToDeg(Mathf.Atan2(toTarget.Y, toTarget.X));
+        if (angle < 0f) angle += 360f;
+        float dist = toTarget.Length();
+
+        foreach (var opt in _attackOptions)
+        {
+            if (opt.IsSpecial && _aiSpecialCooldownRemaining > 0) continue;
+            if (AngleInRange(angle, opt.MinAngle, opt.MaxAngle) && dist >= opt.MinDist && dist <= opt.MaxDist
+                && (opt.IsAvailable == null || opt.IsAvailable()))
+                return true;
+        }
+        return false;
     }
 
     /// <summary>
