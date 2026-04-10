@@ -4,9 +4,13 @@ public partial class Steampunk : CharacterBase
 {
 	private AnimatedSprite2D _sprite;
 	private Vector2 _spriteBasePosition;
+	private string _activeAnimation = "idle";
 	[Export] public string CharacterLabel = "Steampunk";
-	[Export] public float BasicAttackRecovery = 0.20f;
+	[Export] public float BasicAttackRecovery = 0.40f;
 	[Export] public float SpecialAttackRecovery = 0.35f;
+	[Export] public float AttackHitboxDelay = 0.12f; // seconds into the animation before the hitbox appears
+	// How far to shift the wider attack sprite in the facing direction so it reads correctly.
+	[Export] public float AttackAnimOffset = 80f;
 	private Hitbox _currentHitbox;
 	private Hitbox _specialUpHitboxLeft;
 	private Hitbox _specialUpHitboxRight;
@@ -78,12 +82,43 @@ public partial class Steampunk : CharacterBase
 	private void UpdateFacing(bool facingLeft)
 	{
 		_sprite.FlipH = facingLeft;
-		_sprite.Position = _spriteBasePosition + (facingLeft ? new Vector2(20f, 0f) : Vector2.Zero);
+		float xOffset = facingLeft ? 20f : 0f;
+		if (_activeAnimation == "attack")
+			xOffset += facingLeft ? -AttackAnimOffset : AttackAnimOffset;
+		_sprite.Position = _spriteBasePosition + new Vector2(xOffset, 0f);
 	}
 
-	private static string AnimName(CharacterState state) => state.ToString().ToLowerInvariant();
+	// SetAnimation is the single place that updates _activeAnimation, plays the clip,
+	// and refreshes the facing offset so the wider attack sprite shifts correctly.
+	private void SetAnimation(string name)
+	{
+		_activeAnimation = name;
+		_sprite.Play(name);
+		UpdateFacing(_sprite.FlipH);
+	}
 
-	protected override void PlayAnimationForState(CharacterState state) => _sprite.Play(AnimName(state));
+	// Attack state animations are deferred to OnAttackPerformed/OnSpecialPerformed so we
+	// know the direction before choosing a clip. All other states map directly to name.
+	protected override void PlayAnimationForState(CharacterState state)
+	{
+		if (state == CharacterState.Attack) return;
+		SetAnimation(state.ToString().ToLowerInvariant());
+	}
+
+	private static string GetAttackAnim(AttackDirection dir) => dir switch
+	{
+		AttackDirection.Horizontal => "attack",
+		AttackDirection.Up        => "attack",   // swap for "attack_up" when the asset is ready
+		AttackDirection.DownAir   => "attack",   // swap for "attack_air" when the asset is ready
+		_                         => "attack"
+	};
+
+	private static string GetSpecialAnim(SpecialDirection dir) => dir switch
+	{
+		SpecialDirection.Up      => "attack",    // swap for "special_up" when the asset is ready
+		SpecialDirection.Neutral => "attack",    // swap for "special_neutral" when the asset is ready
+		_                        => "attack"
+	};
 
 	private async void EndAttackAfter(float seconds)
 	{
@@ -96,13 +131,22 @@ public partial class Steampunk : CharacterBase
 	protected override void OnAttackPerformed(AttackDirection direction, int damage)
 	{
 		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
+		SetAnimation(GetAttackAnim(direction));
 		EndAttackAfter(BasicAttackRecovery);
-		SpawnAttackHitbox(direction, damage);
+		SpawnAttackHitboxAfter(AttackHitboxDelay, direction, damage);
+	}
+
+	private async void SpawnAttackHitboxAfter(float delay, AttackDirection direction, int damage)
+	{
+		await ToSignal(GetTree().CreateTimer(delay), "timeout");
+		if (!IsDead && CurrentState == CharacterState.Attack)
+			SpawnAttackHitbox(direction, damage);
 	}
 
 	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
 	{
 		GD.Print($"{CharacterLabel} special: {direction}, damage: {damage}");
+		SetAnimation(GetSpecialAnim(direction));
 		if (direction != SpecialDirection.Up)
 			EndAttackAfter(SpecialAttackRecovery);
 		SpawnSpecialHitbox(direction, damage);
