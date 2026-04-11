@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://d3el4cyjkryxb"]
 
 [ext_resource type="Script" uid="uid://b61g60lnxqs6e" path="res://Scripts/Characters/Test/RegressionCharacter.cs" id="1_p37k8"]
-[ext_resource type="Texture2D" uid="uid://cwj6fbkekjlrs" path="res://icon.svg" id="2_wtslj"]
-[ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="3_wtslj"]
+
+[ext_resource type="Texture2D" uid="uid://cwj6fbkekjlrs" path="res://icon.svg" id="2_p37k8"]
+
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_deemx"]
 radius = 80.305664
@@ -18,8 +19,8 @@ script = ExtResource("1_p37k8")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=2104888856]
 shape = SubResource("CircleShape2D_deemx")
 
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=116598268]
-texture = ExtResource("2_wtslj")
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=2081929209]
+texture = ExtResource("2_p37k8")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1949312096]
 
