@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://bcnnp8261mvta"]
+[gd_scene format=3 uid="uid://j6muiu81ag7e"]
 
-[ext_resource type="Script" uid="uid://ckksrltympwne" path="res://Scripts/Characters/Steampunk/Gears.cs" id="1_mscjj"]
-[ext_resource type="Script" uid="uid://cg63uwcwfwyeh" path="res://Scripts/Characters/Steampunk/Gear.cs" id="1_vafe5"]
+[ext_resource type="Script" path="res://Scripts/Stages/Utility/Gears.cs" id="1_mscjj"]
+[ext_resource type="Script" path="res://Scripts/Stages/Utility/Gear.cs" id="1_vafe5"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_mscjj"]
 blend_mode = 4

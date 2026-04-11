@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cjl4jc02bgl4p"]
 
-[ext_resource type="Script" uid="uid://cg63uwcwfwyeh" path="res://Scripts/Characters/Steampunk/Gear.cs" id="1_hwk7x"]
+[ext_resource type="Script" path="res://Scripts/Stages/Utility/Gear.cs" id="1_hwk7x"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_mscjj"]
 blend_mode = 4
