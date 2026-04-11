@@ -4,7 +4,7 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hilu3"]
 radius = 79.0
-height = 268.0
+height = 236.0
 
 [node name="Upbox" type="Area2D" unique_id=438428966]
 script = ExtResource("1_7p4qk")
