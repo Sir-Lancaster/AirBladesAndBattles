@@ -92,6 +92,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
             return;
         }
 
+        Velocity = new Vector2(0f, Velocity.Y);
         _hitStunRemaining = HitStunTimer;
         SetState(CharacterState.HitStun);
     }
