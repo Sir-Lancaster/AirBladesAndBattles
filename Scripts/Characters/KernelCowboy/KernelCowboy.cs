@@ -8,10 +8,14 @@ public partial class KernelCowboy : CharacterBase
     private bool _isSpecial;
     private Area2D _currentHitbox;
     private LassoHandler _lassoHandler;
+    private bool _waitingForLassoPause;
 
     [Export] public string CharacterLabel = "KernelCowboy";
     [Export] public float AttackRecovery = 0.30f;       // NEEDS EDITING: tune to match attack animation length
     [Export] public float SpecialAttackRecovery = 0.40f; // NEEDS EDITING: tune to match special animation length
+
+    /// <summary>Frame of the Special animation to pause on while waiting for a lasso hit.</summary>
+    [Export] public int LassoPauseFrame = 3; // NEEDS EDITING: set to the frame where the throw is released
 
     private static readonly PackedScene HitboxScene =
         GD.Load<PackedScene>("res://Scenes/Utility/Hitbox.tscn");
@@ -21,12 +25,22 @@ public partial class KernelCowboy : CharacterBase
         _KernelCowboy = GetNode<AnimatedSprite2D>("KernelCowboy"); // NEEDS EDITING: use the actual node name from your scene
         GD.Print("Animations: ", string.Join(", ", _KernelCowboy.SpriteFrames.GetAnimationNames()));
 
-        _lassoHandler = new LassoHandler();
-        AddChild(_lassoHandler);
+        _lassoHandler = GetNode<LassoHandler>("LassoHandler");
 
-        // Neutral special: arc slam or miss
-        _lassoHandler.OnSlamComplete   = () => EndAttackAfter(SpecialAttackRecovery);
-        _lassoHandler.OnLassoMissed    = () => EndAttackAfter(SpecialAttackRecovery);
+        // Neutral special: pause animation at throw frame, resume on connect or miss
+        _lassoHandler.OnLassoConnected = () => _KernelCowboy.SpeedScale = 1.0f;
+        _lassoHandler.OnLassoMissed    = () => { _KernelCowboy.SpeedScale = 1.0f; _KernelCowboy.Stop(); EndAttackAfter(SpecialAttackRecovery); };
+        _lassoHandler.OnSlamComplete   = () => { _KernelCowboy.SpeedScale = 1.0f; EndAttackAfter(SpecialAttackRecovery); };
+
+        // Pause the Special animation only during a neutral special throw, and only once.
+        _KernelCowboy.FrameChanged += () =>
+        {
+            if (_waitingForLassoPause && _KernelCowboy.Frame == LassoPauseFrame)
+            {
+                _waitingForLassoPause = false;
+                _KernelCowboy.SpeedScale = 0.0f;
+            }
+        };
 
         // Down air: stomp landing or fast-fall
         _lassoHandler.OnDownAirComplete = () => EndAttackAfter(AttackRecovery);
@@ -64,11 +78,8 @@ public partial class KernelCowboy : CharacterBase
             CharacterState.Idle     => "Idle",      
             CharacterState.Run      => "Run",        
             CharacterState.Jump     => "Jump",      
-            CharacterState.Dodge    => "Dodge",      // NEEDS EDITING
-            CharacterState.Attack   => _isSpecial
-                ? $"special_{_currentSpecialDirection.ToString().ToLower()}" // NEEDS EDITING: if your special anims are named differently
-                : $"attack_{_currentAttackDirection.ToString().ToLower()}",  // NEEDS EDITING: if your attack anims are named differently
-            CharacterState.HitStun  => "hitstun",   // NEEDS EDITING
+            CharacterState.Dodge    => "Dodge",
+            CharacterState.HitStun  => "Hurt",   // NEEDS EDITING
             CharacterState.Dead     => "dead",       // NEEDS EDITING
             _                       => "Idle"
         };
@@ -98,6 +109,14 @@ public partial class KernelCowboy : CharacterBase
     {
         _currentAttackDirection = direction;
         _isSpecial = false;
+
+        string attackAnim = direction switch
+        {
+            AttackDirection.Up      => "Up",
+            AttackDirection.DownAir => "Down",
+            _                       => "Horizontal"
+        };
+        _KernelCowboy.Play(attackAnim);
         GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 
         if (direction == AttackDirection.DownAir)
@@ -108,8 +127,8 @@ public partial class KernelCowboy : CharacterBase
             return;
         }
 
-        // Horizontal and Up attacks are whip hitboxes.
-        EndAttackAfter(AttackRecovery);
+        // Horizontal and Up attacks are whip hitboxes — end when animation finishes.
+        EndAttackOnAnimationFinished();
         SpawnAttackHitbox(direction, damage);
     }
 
@@ -118,10 +137,14 @@ public partial class KernelCowboy : CharacterBase
         _currentSpecialDirection = direction;
         _isSpecial = true;
 
+        string specialAnim = direction == SpecialDirection.Up ? "UpSpecial" : "Special";
+        _KernelCowboy.Play(specialAnim);
+
         switch (direction)
         {
             case SpecialDirection.Neutral:
                 float facing = _KernelCowboy.FlipH ? -1f : 1f;
+                _waitingForLassoPause = true;
                 _lassoHandler.LaunchLasso(facing);
                 GD.Print($"{CharacterLabel} neutral special: lasso launched");
                 return; // EndAttackAfter is driven by LassoHandler callbacks, not here.
@@ -133,7 +156,7 @@ public partial class KernelCowboy : CharacterBase
                 GD.Print($"{CharacterLabel} up special: recovery lasso launched");
                 return;
 
-            case SpecialDirection.Horizontal:
+            //case SpecialDirection.Horizontal:
                 // NEEDS EDITING: implement KernelCowboy's horizontal special
                 GD.Print($"{CharacterLabel} horizontal special: TODO");
                 break;
@@ -154,9 +177,21 @@ public partial class KernelCowboy : CharacterBase
         GD.Print($"{CharacterLabel} dodge end, cooldown: {dodgeCooldown}");
     }
 
+    // Waits for the currently playing animation to finish, then ends the attack state.
+    // Falls back to a fixed timer for moves where the animation keeps looping (lasso hold, etc.)
+    private async void EndAttackOnAnimationFinished()
+    {
+        await ToSignal(_KernelCowboy, AnimatedSprite2D.SignalName.AnimationFinished);
+        _currentHitbox = null;
+
+        if (!IsDead && CurrentState == CharacterState.Attack)
+            SetState(CharacterState.Idle);
+    }
+
+    // Used by lasso callbacks where game logic (not animation) determines when the move ends.
     private async void EndAttackAfter(float seconds)
     {
-        await ToSignal(GetTree().CreateTimer(seconds), "timeout");
+        await ToSignal(GetTree().CreateTimer(seconds), SceneTreeTimer.SignalName.Timeout);
         _currentHitbox = null;
 
         if (!IsDead && CurrentState == CharacterState.Attack)
