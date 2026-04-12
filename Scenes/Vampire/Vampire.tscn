@@ -1,7 +1,86 @@
 [gd_scene format=3 uid="uid://bsl2awvp7ono0"]
 
 [ext_resource type="Script" uid="uid://dli1yriwb3ch5" path="res://Scripts/Characters/Vampire/Vampire.cs" id="1_1w3m4"]
-[ext_resource type="SpriteFrames" uid="uid://cf3h3oo51r0t4" path="res://Assets/Characters/Vampire/VampireIdle.tres" id="1_c6366"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_c6366"]
+load_path = "res://.godot/imported/VampireIdleSprite-Sheet.png-b021ab78bf9cc86e41feca90b89e046f.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bsa7b"]
+atlas = SubResource("CompressedTexture2D_c6366")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_64wuh"]
+atlas = SubResource("CompressedTexture2D_c6366")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i8vea"]
+atlas = SubResource("CompressedTexture2D_c6366")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c62ht"]
+atlas = SubResource("CompressedTexture2D_c6366")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1w3m4"]
+load_path = "res://.godot/imported/VampireWalkSprite-Sheet.png-cb743e7a8b5988fca92c6b09de21d9ac.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jghh0"]
+atlas = SubResource("CompressedTexture2D_1w3m4")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hqkkt"]
+atlas = SubResource("CompressedTexture2D_1w3m4")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2sm2g"]
+atlas = SubResource("CompressedTexture2D_1w3m4")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1mnpq"]
+atlas = SubResource("CompressedTexture2D_1w3m4")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_acrvm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bsa7b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_64wuh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i8vea")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c62ht")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 12.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jghh0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hqkkt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2sm2g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1mnpq")
+}],
+"loop": true,
+"name": &"run",
+"speed": 12.0
+}]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c6366"]
 radius = 8.0
@@ -11,8 +90,9 @@ height = 52.0
 script = ExtResource("1_1w3m4")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1437073513]
-sprite_frames = ExtResource("1_c6366")
-frame_progress = 0.7333358
+sprite_frames = SubResource("SpriteFrames_acrvm")
+animation = &"new_animation"
+autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1286848948]
 position = Vector2(1, 5)
