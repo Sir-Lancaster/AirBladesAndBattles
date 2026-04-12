@@ -11,7 +11,6 @@
 [ext_resource type="Texture2D" uid="uid://ce6m3oeplfsk2" path="res://Assets/Characters/SirEdward/Jump/Edward-jump.png" id="5_hhisg"]
 [ext_resource type="Texture2D" uid="uid://bbdl03u4fj7m6" path="res://Assets/Characters/SirEdward/Specials/Edward-special-up.png" id="7_6pbd7"]
 [ext_resource type="Texture2D" uid="uid://j54kc5sv0dut" path="res://Assets/Characters/SirEdward/Specials/Edward-special-neutral.png" id="8_bn3sn"]
-[ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="12_0q5j8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xq5cm"]
 size = Vector2(6.7555547, 22.400002)
@@ -531,7 +530,3 @@ position = Vector2(0, 130)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=2059290267]
 scale = Vector2(80, 1)
 shape = SubResource("RectangleShape2D_p37k8")
-
-[node name="Steampunk" parent="." unique_id=1806914756 node_paths=PackedStringArray("Target") instance=ExtResource("12_0q5j8")]
-position = Vector2(188, -28)
-Target = NodePath("../CharacterBody2D")

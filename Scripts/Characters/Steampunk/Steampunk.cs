@@ -10,6 +10,7 @@ public partial class Steampunk : CharacterBase
 	[Export] public float SpecialAttackRecovery = 0.35f;
 	[Export] public float AttackHitboxDelay = 0.12f; 
 	[Export] public float AttackAnimOffset = 80f;
+	[Export] public float UpAttackLaunchSpeed = 800f;
 	private Hitbox _currentHitbox;
 	private Hitbox _specialUpHitboxLeft;
 	private Hitbox _specialUpHitboxRight;
@@ -108,14 +109,14 @@ public partial class Steampunk : CharacterBase
 	private static string GetAttackAnim(AttackDirection dir) => dir switch
 	{
 		AttackDirection.Horizontal => "attack",
-		AttackDirection.Up        => "attack",   // swap for "attack_up" when the asset is ready
+		AttackDirection.Up        => "wheel",
 		AttackDirection.DownAir   => "attack",   // swap for "attack_air" when the asset is ready
 		_                         => "attack"
 	};
 
 	private static string GetSpecialAnim(SpecialDirection dir) => dir switch
 	{
-		SpecialDirection.Up      => "attack",    // swap for "special_up" when the asset is ready
+		SpecialDirection.Up      => "tornado",
 		SpecialDirection.Neutral => "attack",    // swap for "special_neutral" when the asset is ready
 		_                        => "attack"
 	};
@@ -135,8 +136,20 @@ public partial class Steampunk : CharacterBase
 			SetState(CharacterState.Idle);
 			return;
 		}
+		if (direction == AttackDirection.Up && !IsOnFloor())
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
 		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 		SetAnimation(GetAttackAnim(direction));
+		if (direction == AttackDirection.Up)
+		{
+			float angleRad = Mathf.DegToRad(70f);
+			float facing = _sprite.FlipH ? -1f : 1f;
+			Velocity = new Vector2(facing * UpAttackLaunchSpeed * Mathf.Cos(angleRad),
+			                       -UpAttackLaunchSpeed * Mathf.Sin(angleRad));
+		}
 		EndAttackAfter(BasicAttackRecovery);
 		SpawnAttackHitboxAfter(AttackHitboxDelay, direction, damage);
 	}
@@ -176,10 +189,10 @@ public partial class Steampunk : CharacterBase
 		{
 			case AttackDirection.Horizontal:
 				float facing = _sprite.FlipH ? -1f : 1f;
-				hitbox.Position = new Vector2(facing > 0f ? 40f : -120f, 0f);
+				hitbox.Position = new Vector2(facing > 0f ? 50f : -100f, 0f);
 				break;
 			case AttackDirection.Up:
-				hitbox.Position = new Vector2(0f, -40f);
+				hitbox.Position = new Vector2(_sprite.FlipH ? 20f : 0f, -40f);
 				break;
 			case AttackDirection.DownAir:
 				hitbox.QueueFree(); // not used for this case
@@ -208,14 +221,14 @@ public partial class Steampunk : CharacterBase
 			case SpecialDirection.Up: //tornado, need to increase damage as the attack is held, and needs to be able to move left and right
 				{
 					hitbox.Activate(this, damage, -1f);
-					hitbox.Position = new Vector2(-120f, 0f);
+					hitbox.Position = new Vector2(-60f, 0f);
 					hitbox.RotationDegrees = 0f;
 					_specialUpHitboxLeft = hitbox;
 
 					var hitboxRight = HitboxScene.Instantiate<Hitbox>();
 					AddChild(hitboxRight);
 					hitboxRight.Activate(this, damage, -1f);
-					hitboxRight.Position = new Vector2(40f, 0f);
+					hitboxRight.Position = new Vector2(20f, 0f);
 					_specialUpHitboxRight = hitboxRight;
 					break;
 				}

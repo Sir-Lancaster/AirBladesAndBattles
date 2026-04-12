@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dk13b8nao4v4o"]
 
 [ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="1_7b7cw"]
-[ext_resource type="Shader" uid="uid://c3bh24h3oaode" path="res://Assets/Levels/Clocktower.gdshader" id="1_iukx0"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_iukx0"]
 [ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="3_i5jib"]
 [ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="4_sonsx"]
 
@@ -34,7 +34,6 @@ position = Vector2(607, 662)
 
 [node name="Gear" parent="." unique_id=1061900053 instance=ExtResource("3_i5jib")]
 position = Vector2(683, 500)
-RotateClockwise = null
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
 material = SubResource("ShaderMaterial_ss6kr")
@@ -57,9 +56,8 @@ position = Vector2(938, 556)
 [node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("1_7b7cw")]
 position = Vector2(1162, 377)
 
-[node name="Steampunk2" parent="." unique_id=1841756279 node_paths=PackedStringArray("Target") instance=ExtResource("4_sonsx")]
+[node name="Steampunk2" parent="." unique_id=1841756279 instance=ExtResource("4_sonsx")]
 position = Vector2(467.79895, 498.2488)
-Target = NodePath("../Steampunk")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=311221569]
 position = Vector2(0, 130)
