@@ -552,6 +552,8 @@ size = Vector2(939, 9)
 position = Vector2(577, 272)
 script = ExtResource("1_2fosr")
 LassoPauseFrame = 1
+MoveSpeed = 300.0
+JumpVelocity = -500.0
 
 [node name="LassoRope" type="Line2D" parent="CharacterBody2D" unique_id=2089675127]
 position = Vector2(-2.0544748, 2.7345133)
@@ -561,8 +563,8 @@ width = 20.0
 default_color = Color(0.36862746, 0.7921569, 0.88235295, 1)
 
 [node name="LassoHead" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1983804576]
-position = Vector2(-7, 16.999996)
-scale = Vector2(2.5, 2.5)
+position = Vector2(-57, 35)
+scale = Vector2(2.5, 2.46875)
 sprite_frames = SubResource("SpriteFrames_h884p")
 frame = 1
 frame_progress = 0.6307833
@@ -573,18 +575,20 @@ LassoSpeed = 600.0
 ArcHeight = 200.0
 ArcDuration = 0.5
 LandingOffset = 150.0
-DownAirLassoRange = 200.0
+LassoRadius = 80.0
+DownAirLassoSpeed = 800.0
 DownAirPullSpeed = 1000.0
 StompDamage = 6
 FastFallSpeed = 800.0
 DownAirLassoRadius = 5.0
 ShockwaveDamage = 3
-ShockwaveHeight = 50.0
-ShockwaveLifetime = 1.0
+ShockwaveHeight = 100.0
+ShockwaveLifetime = 5.0
 RecoveryLassoLength = 250.0
 HandAnchor = NodePath("../KernelCowboy/HandAnchor")
 LassoHead = NodePath("../LassoHead")
 LassoRope = NodePath("../LassoRope")
+RopeSag = 15.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=950173838]
 position = Vector2(-10, 36)

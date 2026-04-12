@@ -151,6 +151,7 @@ public partial class LassoHandler : Node
     private Area2D _downAirArea;
     private float _downAirTraveled;
     private bool _downAirPulling;
+    private float _downAirPullElapsed;
     private Vector2 _downAirTarget;
     private CharacterBase _downAirContact;
 
@@ -296,7 +297,9 @@ public partial class LassoHandler : Node
     {
         if (_downAirActive || _downAirPulling) return;
 
+        GD.Print("DownAir: launched");
         _downAirTraveled = 0f;
+        _downAirPullElapsed = 0f;
         _downAirActive = true;
         _downAirContact = null;
 
@@ -321,7 +324,7 @@ public partial class LassoHandler : Node
 
         if (_downAirTraveled >= DownAirLassoRange)
         {
-            // Nothing found — just fast fall.
+            GD.Print("DownAir: missed (max range), fast-falling");
             FreeArea(ref _downAirArea);
             _downAirActive = false;
             _ropeVisible = false;
@@ -334,22 +337,30 @@ public partial class LassoHandler : Node
     {
         if (!_downAirPulling) return;
 
+        _downAirPullElapsed += dt;
+
         Vector2 toTarget = _downAirTarget - _owner.GlobalPosition;
         float step = DownAirPullSpeed * dt;
 
         // Rope head is fixed at the hook point while the owner flies to it.
         _headPos = _downAirTarget;
 
-        if (toTarget.Length() <= step)
+        bool arrived = toTarget.Length() <= step;
+        bool timedOut = _downAirPullElapsed >= 1.5f;
+
+        if (arrived || timedOut)
         {
-            _owner.GlobalPosition = _downAirTarget;
+            if (arrived)
+                _owner.GlobalPosition = _downAirTarget;
+
             _downAirPulling = false;
+            _downAirPullElapsed = 0f;
             _ropeVisible = false;
 
             if (_downAirContact != null && IsInstanceValid(_downAirContact))
                 _downAirContact.TakeDamage(StompDamage);
 
-            SpawnShockwave(_downAirTarget);
+            SpawnShockwave(_owner.GlobalPosition);
 
             _downAirContact = null;
             OnDownAirComplete?.Invoke();
@@ -364,6 +375,7 @@ public partial class LassoHandler : Node
 
     private void OnDownAirBodyEntered(Node2D body)
     {
+        GD.Print($"DownAir: body entered — {body.Name} ({body.GetType().Name})");
         if (!_downAirActive || body == _owner) return;
 
         // Only pull toward CharacterBase targets. Hitting the floor or walls fast-falls instead.
@@ -380,7 +392,8 @@ public partial class LassoHandler : Node
         FreeArea(ref _downAirArea);
         _downAirActive = false;
 
-        _downAirTarget = contact.GlobalPosition;
+        // Land just above the target's center so we don't teleport into the floor.
+        _downAirTarget = contact.GlobalPosition + Vector2.Up * 40f; // NEEDS EDITING: tune to character heights
         _downAirContact = contact;
         _downAirPulling = true;
     }
@@ -495,8 +508,8 @@ public partial class LassoHandler : Node
         area.AddChild(shape);
 
         // Center each box so its inner edge starts at the landing point.
-        area.GlobalPosition = landingPoint + new Vector2(side * ShockwaveWidth * 0.5f, 0f);
         _owner.AddChild(area);
+        area.GlobalPosition = landingPoint + new Vector2(side * ShockwaveWidth * 0.5f, 0f);
 
         // Wait one physics frame so Godot registers overlaps.
         await ToSignal(_owner.GetTree(), SceneTree.SignalName.PhysicsFrame);
