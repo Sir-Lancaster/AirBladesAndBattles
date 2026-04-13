@@ -28,7 +28,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     [Export] public float DodgeTime = 0.30f;
     [Export] public float DodgeIFrameTime = 0.28f;
     [Export] public float DodgeCooldown = 0.8f;
-    [Export] public float HitIFrameTime = 0.5f;
+    [Export] public float HitIFrameTime = 0.25f;
 
     /// <summary>
     /// Runtime character attributes.

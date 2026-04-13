@@ -20,7 +20,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     [Export] public float DodgeTime = 0.30f;
     [Export] public float DodgeIFrameTime = 0.28f;
     [Export] public float DodgeCooldown = 0.8f;
-    [Export] public float HitIFrameTime = 0.5f;
+    [Export] public float HitIFrameTime = 0.25f;
 
     [Export] public float AiAttackCooldown = 1.0f;
     [Export] public float AiSpecialCooldown = 5.0f;
