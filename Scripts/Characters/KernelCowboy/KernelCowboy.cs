@@ -9,6 +9,7 @@ public partial class KernelCowboy : CharacterBase
     private Area2D _currentHitbox;
     private LassoHandler _lassoHandler;
     private bool _waitingForLassoPause;
+    private Hitbox _stompHitbox;
 
     [Export] public string CharacterLabel = "KernelCowboy";
     [Export] public float AttackRecovery = 0.30f;       // NEEDS EDITING: tune to match attack animation length
@@ -31,6 +32,7 @@ public partial class KernelCowboy : CharacterBase
         _lassoHandler.OnLassoConnected = () => _KernelCowboy.SpeedScale = 1.0f;
         _lassoHandler.OnLassoMissed    = () => { _KernelCowboy.SpeedScale = 1.0f; _KernelCowboy.Stop(); EndAttackAfter(SpecialAttackRecovery); };
         _lassoHandler.OnSlamComplete   = () => { _KernelCowboy.SpeedScale = 1.0f; EndAttackAfter(SpecialAttackRecovery); };
+        _lassoHandler.OnSlamSplash     = SpawnSlamSplashHitbox;
 
         // Pause the Special animation only during a neutral special throw, and only once.
         _KernelCowboy.FrameChanged += () =>
@@ -42,7 +44,16 @@ public partial class KernelCowboy : CharacterBase
             }
         };
 
-        // Down air: stomp landing or fast-fall
+        // Down air: stomp hitbox spawns when lasso hooks the floor, shockwave spawns when character lands
+        _lassoHandler.OnFloorHooked = SpawnStompHitbox;
+        _lassoHandler.OnStompLanded = pos =>
+        {
+            // Kill the stomp hitbox the instant the character hits the ground
+            if (_stompHitbox != null && IsInstanceValid(_stompHitbox))
+                _stompHitbox.QueueFree();
+            _stompHitbox = null;
+            SpawnShockwaveHitboxes(pos);
+        };
         _lassoHandler.OnDownAirComplete = () => EndAttackAfter(AttackRecovery);
 
         // Special up: end attack immediately so the player can steer during the launch
@@ -198,32 +209,118 @@ public partial class KernelCowboy : CharacterBase
             SetState(CharacterState.Idle);
     }
 
+    private static CapsuleShape2D MakeCapsule(float radius, float height)
+    {
+        var c = new CapsuleShape2D();
+        c.Radius = radius;
+        c.Height = height;
+        return c;
+    }
+
     private void SpawnAttackHitbox(AttackDirection? dir, int damage)
     {
         var hitbox = HitboxScene.Instantiate<Hitbox>();
-        AddChild(hitbox);
-        hitbox.Activate(this, damage, AttackRecovery);
+        var shape = hitbox.GetNode<CollisionShape2D>("CollisionShape2D");
 
         float facing = _KernelCowboy.FlipH ? -1f : 1f;
 
         switch (dir)
         {
             case AttackDirection.Horizontal:
-                hitbox.Position = new Vector2(40f * facing, 0f); // NEEDS EDITING: adjust offset to fit your character's size/art
+                shape.Shape = MakeCapsule(
+                    /* NEEDS EDITING — radius (half-width of the hitbox) */ 30f,
+                    /* NEEDS EDITING — height (reach in front of character) */ 100f);
+                hitbox.Position = new Vector2(
+                    /* NEEDS EDITING — how far in front of the character */ 70f * facing,
+                    /* NEEDS EDITING — vertical offset (+ = down, - = up) */ 40f);
                 hitbox.RotationDegrees = 0f;
                 break;
 
             case AttackDirection.Up:
-                hitbox.Position = new Vector2(0f, -40f); // NEEDS EDITING: adjust offset
+                shape.Shape = MakeCapsule(
+                    /* NEEDS EDITING — radius */ 45f,
+                    /* NEEDS EDITING — height (reach above character) */ 100f);
+                hitbox.Position = new Vector2(
+                    /* NEEDS EDITING — horizontal offset */ 0f,
+                    /* NEEDS EDITING — how far above the character (keep negative) */ -40f);
                 hitbox.RotationDegrees = -90f;
                 break;
 
             case AttackDirection.DownAir:
-                hitbox.Position = new Vector2(0f, 40f); // NEEDS EDITING: adjust offset
+                shape.Shape = MakeCapsule(
+                    /* NEEDS EDITING — radius */ 45f,
+                    /* NEEDS EDITING — height */ 100f);
+                hitbox.Position = new Vector2(
+                    /* NEEDS EDITING — horizontal offset */ 0f,
+                    /* NEEDS EDITING — how far below the character (keep positive) */ 40f);
                 hitbox.RotationDegrees = 90f;
                 break;
         }
 
+        AddChild(hitbox);
+        hitbox.Activate(this, damage, AttackRecovery);
         _currentHitbox = hitbox;
+    }
+
+    // Spawns immediately when the lasso hooks the floor — positioned below the player's collision body.
+    // Stays active until the character actually lands (freed manually by OnStompLanded callback).
+    private void SpawnStompHitbox(Vector2 _)
+    {
+        _stompHitbox = HitboxScene.Instantiate<Hitbox>();
+        var stompShape = _stompHitbox.GetNode<CollisionShape2D>("CollisionShape2D");
+        stompShape.Shape = MakeCapsule(
+            /* NEEDS EDITING — radius (how wide the stomp is) */ 45f,
+            /* NEEDS EDITING — height (how tall the stomp hitbox is) */ 100f);
+        AddChild(_stompHitbox);
+        _stompHitbox.GlobalPosition = GlobalPosition + new Vector2(
+            /* NEEDS EDITING — horizontal offset from character center */ 0f,
+            /* NEEDS EDITING — how far below the collision body (keep positive) */ 40f);
+        // Large lifetime so it never expires on its own — freed by OnStompLanded when character lands.
+        _stompHitbox.Activate(this, _lassoHandler.StompDamage, 5f);
+    }
+
+    // Spawns when the character body arrives at the floor — left and right shockwave hitboxes.
+    private void SpawnShockwaveHitboxes(Vector2 landingPos)
+    {
+        var shockLeft = HitboxScene.Instantiate<Hitbox>();
+        var shockLeftShape = shockLeft.GetNode<CollisionShape2D>("CollisionShape2D");
+        shockLeftShape.Shape = MakeCapsule(
+            /* NEEDS EDITING — radius (height of shockwave zone) */ 13f,
+            /* NEEDS EDITING — height (how far left the shockwave reaches) */ 120f);
+        AddChild(shockLeft);
+        shockLeft.GlobalPosition = landingPos + new Vector2(
+            /* NEEDS EDITING — horizontal distance to the left (keep negative) */ -_lassoHandler.ShockwaveWidth * 1f,
+            /* NEEDS EDITING — vertical offset from landing point */ 50f);
+        shockLeft.RotationDegrees = -90f;
+        shockLeft.Activate(this, _lassoHandler.ShockwaveDamage, _lassoHandler.ShockwaveLifetime);
+
+        var shockRight = HitboxScene.Instantiate<Hitbox>();
+        var shockRightShape = shockRight.GetNode<CollisionShape2D>("CollisionShape2D");
+        shockRightShape.Shape = MakeCapsule(
+            /* NEEDS EDITING — radius */ 13f,
+            /* NEEDS EDITING — height */ 120f);
+        AddChild(shockRight);
+        shockRight.GlobalPosition = landingPos + new Vector2(
+            /* NEEDS EDITING — horizontal distance to the right (keep positive) */ _lassoHandler.ShockwaveWidth * 1f,
+            /* NEEDS EDITING — vertical offset from landing point */ 50f);
+        shockRight.RotationDegrees = 90f;
+        shockRight.Activate(this, _lassoHandler.ShockwaveDamage, _lassoHandler.ShockwaveLifetime);
+    }
+
+    // Spawns at the slam landing point — damages any bystander standing nearby when a grabbed target is slammed.
+    // The grabbed target itself already takes full SlamDamage directly; this only hits others.
+    private void SpawnSlamSplashHitbox(Vector2 landingPos)
+    {
+        var splash = HitboxScene.Instantiate<Hitbox>();
+        var splashShape = splash.GetNode<CollisionShape2D>("CollisionShape2D");
+        splashShape.Shape = MakeCapsule(
+            /* NEEDS EDITING — radius (how tall the splash zone is vertically) */ 35f,
+            /* NEEDS EDITING — height (how wide the splash zone is horizontally) */ 140f);
+        AddChild(splash);
+        splash.GlobalPosition = landingPos + new Vector2(
+            /* NEEDS EDITING — horizontal offset from landing point */ 0f,
+            /* NEEDS EDITING — vertical offset from landing point (0 = right at landing, negative = higher up) */ 60f);
+        splash.RotationDegrees = 0f; // capsule lies flat so it spreads left-right
+        splash.Activate(this, _lassoHandler.SlamSplashDamage, 0.12f);
     }
 }

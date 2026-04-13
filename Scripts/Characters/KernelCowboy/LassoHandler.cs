@@ -29,11 +29,14 @@ public partial class LassoHandler : Node
     /// <summary>Seconds to complete the full arc.</summary>
     [Export] public float ArcDuration = 0.6f;
 
-    /// <summary>Speed multiplier applied after the arc peak (arcT > 0.5). 1 = constant, 2 = twice as fast on the way down.</summary>
-    [Export] public float SlamSpeedMultiplier = 2.0f;
+    /// <summary>Speed multiplier applied after the arc peak (arcT > 0.5). 1 = constant, higher = faster descent. 3 is a good starting point with the ease-in curve.</summary>
+    [Export] public float SlamSpeedMultiplier = 3.0f;
 
-    /// <summary>Damage on slam landing.</summary>
+    /// <summary>Damage on slam landing (dealt directly to the grabbed target).</summary>
     [Export] public int SlamDamage = 20;
+
+    /// <summary>Damage dealt to bystanders caught in the slam splash hitbox.</summary>
+    [Export] public int SlamSplashDamage = 10;
 
     /// <summary>How far behind the attacker the lasso target lands.</summary>
     [Export] public float LandingOffset = 80f; // NEEDS EDITING: tune to character size/art
@@ -49,14 +52,11 @@ public partial class LassoHandler : Node
     /// <summary>Max downward distance before the lasso gives up and fast-falls.</summary>
     [Export] public float DownAirLassoRange = 300f;
 
-    /// <summary>Speed the attacker is pulled toward the lasso target (px/sec).</summary>
+    /// <summary>Speed the attacker is pulled toward the floor hook point (px/sec).</summary>
     [Export] public float DownAirPullSpeed = 900f;
 
-    /// <summary>Damage dealt on stomp arrival.</summary>
+    /// <summary>Damage dealt by the stomp hitbox on landing.</summary>
     [Export] public int StompDamage = 15;
-
-    /// <summary>Downward velocity applied when the lasso misses entirely.</summary>
-    [Export] public float FastFallSpeed = 900f;
 
     /// <summary>Collision radius of the down-air lasso tip.</summary>
     [Export] public float DownAirLassoRadius = 20f; // NEEDS EDITING: tune to lasso art
@@ -75,11 +75,17 @@ public partial class LassoHandler : Node
 
     // ── Recovery lasso exports ────────────────────────────────────────────────
 
-    /// <summary>Raycast length upward to find a hookable surface.</summary>
+    /// <summary>How far above the character the hook point is set when recovery is used.</summary>
     [Export] public float RecoveryLassoLength = 350f;
 
-    /// <summary>Upward velocity applied on recovery launch.</summary>
+    /// <summary>Speed the lasso head travels upward toward the hook point (px/sec).</summary>
+    [Export] public float RecoveryLassoSpeed = 800f;
+
+    /// <summary>Upward velocity applied to the character when the lasso hooks.</summary>
     [Export] public float RecoveryLaunchSpeed = 650f;
+
+    /// <summary>How close the character needs to get to the hook point before the rope releases (px).</summary>
+    [Export] public float RecoveryArrivalThreshold = 60f;
 
     // ── Visual exports ────────────────────────────────────────────────────────
 
@@ -90,10 +96,22 @@ public partial class LassoHandler : Node
     [Export] public Marker2D HandAnchor;
 
     /// <summary>
-    /// Sprite2D representing the lasso loop/hook tip.
+    /// Node2D representing the lasso loop/hook tip.
     /// Moves to match the lasso head position each frame.
     /// </summary>
     [Export] public Node2D LassoHead;
+
+    /// <summary>
+    /// The AnimatedSprite2D inside LassoHead that plays the hook animation.
+    /// Assign in the Inspector to the AnimatedSprite2D child of your LassoHead node.
+    /// </summary>
+    [Export] public AnimatedSprite2D LassoHeadSprite;
+
+    /// <summary>
+    /// Name of the animation to play on LassoHeadSprite when the lasso connects or hooks.
+    /// Must match the animation name in the SpriteFrames resource.
+    /// </summary>
+    [Export] public string LassoHitAnimation = "Hit"; // NEEDS EDITING: set to your animation name
 
     /// <summary>
     /// Line2D used to draw the rope. Needs exactly 3 points (set up in editor or created here).
@@ -104,22 +122,25 @@ public partial class LassoHandler : Node
     /// <summary>Max downward sag of the rope at its midpoint (px). Fades to 0 when taut.</summary>
     [Export] public float RopeSag = 25f;
 
-    /// <summary>Seconds for the recovery lasso head to fly to the hook point (visual only).</summary>
-    [Export] public float RecoveryFlyTime = 0.12f;
-
-    /// <summary>Seconds for the recovery lasso head to retract back (visual only).</summary>
-    [Export] public float RecoveryRetractTime = 0.08f;
-
     // ── Callbacks ─────────────────────────────────────────────────────────────
 
     /// <summary>Fired when the neutral slam lands.</summary>
     public Action OnSlamComplete;
+
+    /// <summary>Fired at the slam landing position. Spawn a splash hitbox here to damage bystanders.</summary>
+    public Action<Vector2> OnSlamSplash;
 
     /// <summary>Fired when the neutral lasso retracts without a hit.</summary>
     public Action OnLassoMissed;
 
     /// <summary>Fired the moment the neutral lasso snares a target (before the arc begins).</summary>
     public Action OnLassoConnected;
+
+    /// <summary>Fired the moment the lasso hooks the floor. Spawn the stomp hitbox here.</summary>
+    public Action<Vector2> OnFloorHooked;
+
+    /// <summary>Fired when the character body arrives at the floor. Spawn shockwave hitboxes here.</summary>
+    public Action<Vector2> OnStompLanded;
 
     /// <summary>Fired when the down-air stomp lands or the lasso misses.</summary>
     public Action OnDownAirComplete;
@@ -153,7 +174,12 @@ public partial class LassoHandler : Node
     private bool _downAirPulling;
     private float _downAirPullElapsed;
     private Vector2 _downAirTarget;
-    private CharacterBase _downAirContact;
+    private bool _shockwaveFired;
+
+    // Recovery
+    private bool _recoveryActive;   // lasso head is traveling upward
+    private bool _recoveryPulling;  // character has been launched, rope stays visible
+    private Vector2 _recoveryHookPoint;
 
     // Visual
     private Vector2 _headPos;      // world-space position of the lasso tip this frame
@@ -184,6 +210,8 @@ public partial class LassoHandler : Node
         TickNeutralArc(dt);
         TickDownAirLasso(dt);
         TickDownAirPull(dt);
+        TickRecoveryLasso(dt);
+        TickRecoveryPull();
         UpdateRopeVisual();
     }
 
@@ -200,13 +228,14 @@ public partial class LassoHandler : Node
         _lassoTraveled = 0f;
         _lassoActive = true;
 
-        _lassoArea = CreateArea(LassoRadius);
+        _lassoArea = CreateArea(LassoRadius, collisionMask: 2); // layer 2 = characters
         _lassoArea.BodyEntered += OnNeutralBodyEntered;
         _owner.AddChild(_lassoArea);
         _lassoArea.GlobalPosition = _owner.GlobalPosition;
 
         _headPos = AnchorPos();
         _ropeVisible = true;
+        ShowFirstFrame();
     }
 
     private void TickNeutralLasso(float dt)
@@ -243,7 +272,21 @@ public partial class LassoHandler : Node
         _arcT = Mathf.Min(_arcT + dt / ArcDuration * speed, 1f);
 
         float x = Mathf.Lerp(_arcStart.X, _arcEnd.X, _arcT);
-        float y = Mathf.Lerp(_arcStart.Y, _arcEnd.Y, _arcT) - ArcHeight * Mathf.Sin(_arcT * Mathf.Pi);
+
+        // Rise (0→0.5): smooth sine arc up to the peak.
+        // Fall (0.5→1): quadratic ease-in so the target accelerates and slams abruptly into the ground.
+        float arcOffset;
+        if (_arcT <= 0.5f)
+        {
+            arcOffset = Mathf.Sin(_arcT * Mathf.Pi) * ArcHeight;
+        }
+        else
+        {
+            float fallT = (_arcT - 0.5f) * 2f; // remap 0.5→1 into 0→1
+            arcOffset = (1f - fallT * fallT) * ArcHeight; // starts fast at peak, slams hard at end
+        }
+
+        float y = Mathf.Lerp(_arcStart.Y, _arcEnd.Y, _arcT) - arcOffset;
         _lassoTarget.GlobalPosition = new Vector2(x, y);
 
         // Rope follows the captured target during the arc.
@@ -269,6 +312,7 @@ public partial class LassoHandler : Node
         // Freeze the target so gravity and MoveAndSlide don't fight our arc positioning.
         _lassoTarget.SetPhysicsProcess(false);
 
+        PlayHitAnimation();
         OnLassoConnected?.Invoke();
     }
 
@@ -279,9 +323,14 @@ public partial class LassoHandler : Node
 
         if (_lassoTarget != null && IsInstanceValid(_lassoTarget))
         {
+            Vector2 landingPos = _lassoTarget.GlobalPosition;
+
             // Re-enable physics before dealing damage so hitstun/knockback work normally.
             _lassoTarget.SetPhysicsProcess(true);
             _lassoTarget.TakeDamage(SlamDamage);
+
+            // Splash hitbox at the landing point — damages any bystander standing nearby.
+            OnSlamSplash?.Invoke(landingPos);
         }
         _lassoTarget = null;
         OnSlamComplete?.Invoke();
@@ -300,9 +349,8 @@ public partial class LassoHandler : Node
         GD.Print("DownAir: launched");
         _downAirTraveled = 0f;
         _downAirPullElapsed = 0f;
+        _shockwaveFired = false;
         _downAirActive = true;
-        _downAirContact = null;
-
         _downAirArea = CreateArea(DownAirLassoRadius);
         _downAirArea.BodyEntered += OnDownAirBodyEntered;
         _owner.AddChild(_downAirArea);
@@ -310,6 +358,7 @@ public partial class LassoHandler : Node
 
         _headPos = AnchorPos();
         _ropeVisible = true;
+        ShowFirstFrame();
     }
 
     private void TickDownAirLasso(float dt)
@@ -324,12 +373,14 @@ public partial class LassoHandler : Node
 
         if (_downAirTraveled >= DownAirLassoRange)
         {
-            GD.Print("DownAir: missed (max range), fast-falling");
+            GD.Print("DownAir: max range — pulling to furthest point");
+            _downAirTarget = _downAirArea.GlobalPosition;
             FreeArea(ref _downAirArea);
             _downAirActive = false;
-            _ropeVisible = false;
-            _owner.Velocity = new Vector2(_owner.Velocity.X, FastFallSpeed);
-            OnDownAirComplete?.Invoke();
+            _downAirPulling = true;
+
+            PlayHitAnimation();
+            OnFloorHooked?.Invoke(_downAirTarget);
         }
     }
 
@@ -342,13 +393,14 @@ public partial class LassoHandler : Node
         Vector2 toTarget = _downAirTarget - _owner.GlobalPosition;
         float step = DownAirPullSpeed * dt;
 
-        // Rope head is fixed at the hook point while the owner flies to it.
+        // Rope head stays fixed at the hook point while the owner flies to it.
         _headPos = _downAirTarget;
 
-        bool arrived = toTarget.Length() <= step;
+        bool arrived  = toTarget.Length() <= step;
         bool timedOut = _downAirPullElapsed >= 1.5f;
+        bool landed   = _owner.IsOnFloor();
 
-        if (arrived || timedOut)
+        if (landed || arrived || timedOut)
         {
             if (arrived)
                 _owner.GlobalPosition = _downAirTarget;
@@ -357,12 +409,13 @@ public partial class LassoHandler : Node
             _downAirPullElapsed = 0f;
             _ropeVisible = false;
 
-            if (_downAirContact != null && IsInstanceValid(_downAirContact))
-                _downAirContact.TakeDamage(StompDamage);
+            // Shockwave and attack-end fire together the instant the character touches down.
+            if (!_shockwaveFired)
+            {
+                _shockwaveFired = true;
+                OnStompLanded?.Invoke(_owner.GlobalPosition);
+            }
 
-            SpawnShockwave(_owner.GlobalPosition);
-
-            _downAirContact = null;
             OnDownAirComplete?.Invoke();
         }
         else
@@ -378,70 +431,85 @@ public partial class LassoHandler : Node
         GD.Print($"DownAir: body entered — {body.Name} ({body.GetType().Name})");
         if (!_downAirActive || body == _owner) return;
 
-        // Only pull toward CharacterBase targets. Hitting the floor or walls fast-falls instead.
-        if (body is not CharacterBase contact)
-        {
-            FreeArea(ref _downAirArea);
-            _downAirActive = false;
-            _ropeVisible = false;
-            _owner.Velocity = new Vector2(_owner.Velocity.X, FastFallSpeed);
-            OnDownAirComplete?.Invoke();
-            return;
-        }
+        // Ignore CharacterBase bodies — we only hook the floor/terrain.
+        if (body is CharacterBase) return;
 
+        // Use the lasso tip's current position (at the floor surface), not the body center.
+        // body.GlobalPosition is the center of the floor tile which can be far underground.
+        Vector2 contactPoint = _downAirArea.GlobalPosition;
+        GD.Print($"DownAir: hooked floor — pulling to {contactPoint}");
         FreeArea(ref _downAirArea);
         _downAirActive = false;
 
-        // Land just above the target's center so we don't teleport into the floor.
-        _downAirTarget = contact.GlobalPosition + Vector2.Up * 40f; // NEEDS EDITING: tune to character heights
-        _downAirContact = contact;
+        _downAirTarget = contactPoint;
         _downAirPulling = true;
+
+        PlayHitAnimation();
+        OnFloorHooked?.Invoke(_downAirTarget);
     }
 
     // ── Recovery lasso (special up) ───────────────────────────────────────────
 
     /// <summary>
-    /// Always launches the owner upward at full speed — no miss case.
-    /// The rope plays a cosmetic tween to the top of the lasso range.
+    /// Shoots the lasso upward. The character stays in Attack state while the lasso
+    /// travels. When the head reaches the hook point: play hit animation, launch the
+    /// character upward, and end the Attack state so the player can steer.
+    /// The rope stays visible until the character arrives near the hook or starts falling.
     /// </summary>
     public void LaunchRecoveryLasso()
     {
-        Vector2 hookPoint = _owner.GlobalPosition + Vector2.Up * RecoveryLassoLength;
-        _owner.Velocity = new Vector2(_owner.Velocity.X, -RecoveryLaunchSpeed);
+        if (_recoveryActive || _recoveryPulling) return;
 
-        OnRecoveryComplete?.Invoke();
+        _recoveryHookPoint = _owner.GlobalPosition + Vector2.Up * RecoveryLassoLength;
+        _recoveryActive = true;
 
-        // Cosmetic tween: head flies to hook then retracts.
-        AnimateRecoveryRope(hookPoint);
-    }
-
-    private async void AnimateRecoveryRope(Vector2 hookPoint)
-    {
         _headPos = AnchorPos();
         _ropeVisible = true;
+        ShowFirstFrame();
+    }
 
-        // Phase 1: fly to hook.
-        float elapsed = 0f;
-        Vector2 start = AnchorPos();
-        while (elapsed < RecoveryFlyTime)
+    private void TickRecoveryLasso(float dt)
+    {
+        if (!_recoveryActive) return;
+
+        float move = RecoveryLassoSpeed * dt;
+        Vector2 toHook = _recoveryHookPoint - _headPos;
+
+        if (toHook.Length() <= move)
         {
-            await ToSignal(_owner.GetTree(), SceneTree.SignalName.PhysicsFrame);
-            elapsed += (float)_owner.GetPhysicsProcessDeltaTime();
-            _headPos = start.Lerp(hookPoint, Mathf.Min(elapsed / RecoveryFlyTime, 1f));
-        }
-        _headPos = hookPoint;
+            // Lasso reached the hook point.
+            _headPos = _recoveryHookPoint;
+            _recoveryActive = false;
+            _recoveryPulling = true;
 
-        // Phase 2: retract back to anchor.
-        elapsed = 0f;
-        Vector2 retractStart = hookPoint;
-        while (elapsed < RecoveryRetractTime)
+            PlayHitAnimation();
+
+            // Launch the character and end the Attack state so they can steer.
+            _owner.Velocity = new Vector2(_owner.Velocity.X, -RecoveryLaunchSpeed);
+            OnRecoveryComplete?.Invoke();
+        }
+        else
         {
-            await ToSignal(_owner.GetTree(), SceneTree.SignalName.PhysicsFrame);
-            elapsed += (float)_owner.GetPhysicsProcessDeltaTime();
-            _headPos = retractStart.Lerp(AnchorPos(), Mathf.Min(elapsed / RecoveryRetractTime, 1f));
+            _headPos += toHook.Normalized() * move;
         }
+    }
 
-        _ropeVisible = false;
+    private void TickRecoveryPull()
+    {
+        if (!_recoveryPulling) return;
+
+        // Keep rope head fixed at the hook point while the character flies up toward it.
+        _headPos = _recoveryHookPoint;
+
+        float distToHook = (_recoveryHookPoint - _owner.GlobalPosition).Length();
+        bool arrived    = distToHook <= RecoveryArrivalThreshold;
+        bool fallingBack = _owner.Velocity.Y > 0f; // gravity has reversed them
+
+        if (arrived || fallingBack)
+        {
+            _recoveryPulling = false;
+            _ropeVisible = false;
+        }
     }
 
     // ── Visual ────────────────────────────────────────────────────────────────
@@ -485,51 +553,40 @@ public partial class LassoHandler : Node
     private Vector2 AnchorPos() =>
         HandAnchor != null ? HandAnchor.GlobalPosition : _owner.GlobalPosition;
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    /// <summary>
+    /// Resets the lasso head sprite to frame 0 and pauses it.
+    /// Called when the lasso is first thrown so it shows the idle/travel frame while in flight.
+    /// </summary>
+    private void ShowFirstFrame()
+    {
+        if (LassoHeadSprite == null) return;
+        LassoHeadSprite.Stop();
+        LassoHeadSprite.Frame = 0;
+    }
 
     /// <summary>
-    /// Spawns two short-lived shockwave hitboxes going left and right from the landing point.
-    /// Each one checks for any overlapping CharacterBase after one physics frame and deals
-    /// ShockwaveDamage. This excludes the direct stomp contact who already took full damage.
+    /// Restarts the hit animation from frame 0 and plays it.
+    /// Godot leaves the sprite on the last frame after a one-shot animation finishes,
+    /// so Stop() + Frame reset is required before Play() to restart cleanly.
     /// </summary>
-    private void SpawnShockwave(Vector2 landingPoint)
+    private void PlayHitAnimation()
     {
-        SpawnShockwaveSide(landingPoint, -1f); // left
-        SpawnShockwaveSide(landingPoint,  1f); // right
+        if (LassoHeadSprite == null) return;
+        LassoHeadSprite.Stop();
+        LassoHeadSprite.Frame = 0;
+        LassoHeadSprite.Play(LassoHitAnimation);
     }
 
-    private async void SpawnShockwaveSide(Vector2 landingPoint, float side)
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    /// <param name="collisionMask">
+    /// Which physics layers this area detects bodies on.
+    /// Use 2 for characters (neutral lasso), 1 for world/floor (down-air lasso).
+    /// </param>
+    private Area2D CreateArea(float radius, uint collisionMask = 1)
     {
         var area = new Area2D();
-        var shape = new CollisionShape2D();
-        var rect = new RectangleShape2D();
-        rect.Size = new Vector2(ShockwaveWidth, ShockwaveHeight);
-        shape.Shape = rect;
-        area.AddChild(shape);
-
-        // Center each box so its inner edge starts at the landing point.
-        _owner.AddChild(area);
-        area.GlobalPosition = landingPoint + new Vector2(side * ShockwaveWidth * 0.5f, 0f);
-
-        // Wait one physics frame so Godot registers overlaps.
-        await ToSignal(_owner.GetTree(), SceneTree.SignalName.PhysicsFrame);
-
-        if (!IsInstanceValid(area)) return;
-
-        foreach (var body in area.GetOverlappingBodies())
-        {
-            if (body is CharacterBase target && target != _owner && target != _downAirContact)
-                target.TakeDamage(ShockwaveDamage);
-        }
-
-        await ToSignal(_owner.GetTree().CreateTimer(ShockwaveLifetime), SceneTreeTimer.SignalName.Timeout);
-        if (IsInstanceValid(area))
-            area.QueueFree();
-    }
-
-    private Area2D CreateArea(float radius)
-    {
-        var area = new Area2D();
+        area.CollisionMask = collisionMask;
         var shape = new CollisionShape2D();
         var circle = new CircleShape2D();
         circle.Radius = radius;

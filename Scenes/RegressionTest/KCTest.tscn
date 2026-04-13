@@ -38,23 +38,23 @@ region = Rect2(256, 0, 64, 64)
 [sub_resource type="SpriteFrames" id="SpriteFrames_h884p"]
 animations = [{
 "frames": [{
-"duration": 0.7,
+"duration": 0.3,
 "texture": SubResource("AtlasTexture_30ggt")
 }, {
-"duration": 0.7,
+"duration": 0.3,
 "texture": SubResource("AtlasTexture_ovf6g")
 }, {
-"duration": 0.7,
+"duration": 0.3,
 "texture": SubResource("AtlasTexture_ermdl")
 }, {
-"duration": 0.7,
+"duration": 0.3,
 "texture": SubResource("AtlasTexture_biyp3")
 }, {
-"duration": 0.7,
+"duration": 0.3,
 "texture": SubResource("AtlasTexture_28qft")
 }],
-"loop": true,
-"name": &"default",
+"loop": false,
+"name": &"Hit",
 "speed": 5.0
 }]
 
@@ -340,28 +340,28 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_dju40")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_d2heb")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_j6rg7")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_3wt4q")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_35kdr")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_b2n40")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_glus8")
 }, {
-"duration": 1.0,
+"duration": 0.1,
 "texture": SubResource("AtlasTexture_122e1")
 }, {
 "duration": 1.0,
@@ -566,27 +566,31 @@ default_color = Color(0.36862746, 0.7921569, 0.88235295, 1)
 position = Vector2(-57, 35)
 scale = Vector2(2.5, 2.46875)
 sprite_frames = SubResource("SpriteFrames_h884p")
-frame = 1
-frame_progress = 0.6307833
+animation = &"Hit"
+offset = Vector2(10, 10)
 
-[node name="LassoHandler" type="Node" parent="CharacterBody2D" unique_id=1379779180 node_paths=PackedStringArray("HandAnchor", "LassoHead", "LassoRope")]
+[node name="LassoHandler" type="Node" parent="CharacterBody2D" unique_id=1379779180 node_paths=PackedStringArray("HandAnchor", "LassoHead", "LassoHeadSprite", "LassoRope")]
 script = ExtResource("3_xysxx")
 LassoSpeed = 600.0
 ArcHeight = 200.0
 ArcDuration = 0.5
+SlamDamage = 10
+SlamSplashDamage = 2
 LandingOffset = 150.0
 LassoRadius = 80.0
 DownAirLassoSpeed = 800.0
 DownAirPullSpeed = 1000.0
 StompDamage = 6
-FastFallSpeed = 800.0
 DownAirLassoRadius = 5.0
 ShockwaveDamage = 3
-ShockwaveHeight = 100.0
-ShockwaveLifetime = 5.0
+ShockwaveWidth = 80.0
+ShockwaveHeight = 50.0
+ShockwaveLifetime = 0.2
 RecoveryLassoLength = 250.0
+RecoveryLaunchSpeed = 800.0
 HandAnchor = NodePath("../KernelCowboy/HandAnchor")
 LassoHead = NodePath("../LassoHead")
+LassoHeadSprite = NodePath("../LassoHead")
 LassoRope = NodePath("../LassoRope")
 RopeSag = 15.0
 
@@ -599,7 +603,7 @@ texture_filter = 1
 position = Vector2(-1, 1)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_7kmpb")
-animation = &"Special"
+animation = &"Down"
 
 [node name="HandAnchor" type="Marker2D" parent="CharacterBody2D/KernelCowboy" unique_id=1294144271]
 position = Vector2(-10, 1)
