@@ -62,6 +62,9 @@ public partial class Vampire : CharacterBase
 
 		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && _specialUpCooldownRemaining <= 0)
 		{
+			if (_specialUpCooldownRemaining > 0)
+				return;
+
 			if (CurrentState != CharacterState.HitStun &&
 				CurrentState != CharacterState.Dead &&
 				CurrentState != CharacterState.Dodge &&
