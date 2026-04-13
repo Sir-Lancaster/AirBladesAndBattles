@@ -5,7 +5,6 @@ public partial class SteampunkAi : AiBaseClass
 	private AnimatedSprite2D _sprite;
 	private Vector2 _spriteBasePosition;
 	private string _activeAnimation = "idle";
-	[Export] public CharacterBase Target;
 	[Export] public string CharacterLabel = "Steampunk";
 	[Export] public float BasicAttackRecovery = 0.40f;
 	[Export] public float SpecialAttackRecovery = 0.35f;
@@ -31,16 +30,36 @@ public partial class SteampunkAi : AiBaseClass
 		_sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_spriteBasePosition = _sprite.Position;
 		RegisterAttack(245f, 295f, 0f, 400f, AttackUp);               // above
-		RegisterAttack(0f, 360f, 0f, 40f, AttackUp);                   // any direction when very close
 		RegisterAttack(315f, 45f, 50f, 100f, AttackHorizontal);        // right
-		RegisterAttack(135f, 225f, 50f, 100f, AttackHorizontal);       // left
+		RegisterAttack(135f, 225f, 0f, 150f, AttackHorizontal);       // left
+		RegisterAttack(315f, 45f, 0f, 150f, SpecialUp, isSpecial: true);     // up, special right
+		RegisterAttack(135f, 225f, 50f, 100f, SpecialUp, isSpecial: true);    // up, special left
+		RegisterAttack(70f, 110f, 0f, 300f, AttackDown, () => !IsOnFloor()); // down air
 		RegisterAttack(315f, 45f, 200f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true);  // right, ranged
 		RegisterAttack(135f, 225f, 200f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true); // left, ranged
 		base._Ready();
 	}
 
+	/// <summary>
+	/// Uses the up-attack (wheel) as an aerial recovery move — it launches Steampunk
+	/// upward, giving extra height to recover from being knocked off a platform.
+	/// Only available once per air-state (tracked by _hasUsedAirUpAttack).
+	/// </summary>
+	protected override bool TryRecoveryMove()
+	{
+		if (_hasUsedAirUpAttack) return false;
+		AttackUp();
+		return true;
+	}
+
 	private void AttackHorizontal() => AiInput.AttackJustPressed = true;
 	private void SpecialHorizontal() => AiInput.SpecialJustPressed = true;
+
+	private void AttackDown()
+	{
+		AiInput.AttackJustPressed = true;
+		AiInput.MoveDirection = new Vector2(AiInput.MoveDirection.X, 1f);
+	}
 
 	private void AttackUp()
 	{
@@ -58,12 +77,7 @@ public partial class SteampunkAi : AiBaseClass
 	{
 		AiInput = default;
 
-		if (Target != null && !Target.IsDead)
-		{
-			Vector2 toTarget = Target.GlobalPosition - GlobalPosition;
-			if (!TrySelectAttack(toTarget) && !IsInAttackRange(toTarget))
-				MoveTowardTarget(toTarget);
-		}
+		RunAiBehavior();
 
 		if (!AiInput.SpecialHeld)
 			_specialUpBlocked = false;

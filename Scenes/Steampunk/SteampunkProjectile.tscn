@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c8mrfjesljako" path="res://Assets/Characters/steampunk/steampunkgirl_hammer.png" id="2_0ya1p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0ya1p"]
-size = Vector2(102, 59)
+size = Vector2(96, 50)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3cg2u"]
 atlas = ExtResource("2_0ya1p")
@@ -40,7 +40,7 @@ script = ExtResource("1_qhmtg")
 Lifetime = 999.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1380476171]
-position = Vector2(0, -0.5)
+position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_0ya1p")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1730420384]
