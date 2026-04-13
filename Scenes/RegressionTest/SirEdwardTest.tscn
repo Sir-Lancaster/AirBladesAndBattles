@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://cl6q17a8no8jw"]
 
-[ext_resource type="Texture2D" uid="uid://chn0ypk5rj5ac" path="res://Assets/Characters/SirEdward/Attacks/Edward-Down-Air.png" id="2_84esq"]
-[ext_resource type="Texture2D" uid="uid://cy3xn4u3m5c0e" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Horizontal.png" id="2_c3yo8"]
-[ext_resource type="Texture2D" uid="uid://dj6i5120mvxgb" path="res://Assets/Characters/SirEdward/Dodge/Edward-Dodge.png" id="2_f8nev"]
-[ext_resource type="Texture2D" uid="uid://hlygte486oib" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_xq5cm"]
-[ext_resource type="Texture2D" uid="uid://bc6nck37usrn3" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Up.png" id="3_7eopm"]
-[ext_resource type="Texture2D" uid="uid://b7mebme2ykpau" path="res://Assets/Characters/SirEdward/HitStun/Edward-HitStun.png" id="3_bavk4"]
+[ext_resource type="Texture2D" uid="uid://lmn0fcu1fxaw" path="res://Assets/Characters/SirEdward/Attacks/Edward-Down-Air.png" id="2_84esq"]
+[ext_resource type="Texture2D" uid="uid://blhprx8jd5epd" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Horizontal.png" id="2_c3yo8"]
+[ext_resource type="Texture2D" uid="uid://b33piytcaybe5" path="res://Assets/Characters/SirEdward/Dodge/Edward-Dodge.png" id="2_f8nev"]
+[ext_resource type="Texture2D" uid="uid://catwnwexipt86" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_xq5cm"]
+[ext_resource type="Texture2D" uid="uid://kvoc6f6v87e0" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Up.png" id="3_7eopm"]
+[ext_resource type="Texture2D" uid="uid://criw0p4oxo0bt" path="res://Assets/Characters/SirEdward/HitStun/Edward-HitStun.png" id="3_bavk4"]
 [ext_resource type="Script" uid="uid://c1yj7jssn7deq" path="res://Scripts/Characters/SirEdward/SirEdward.cs" id="3_f8nev"]
-[ext_resource type="Texture2D" uid="uid://brcq8pbsivw63" path="res://Assets/Characters/SirEdward/Run/Edward-run.png" id="3_xq5cm"]
-[ext_resource type="Texture2D" uid="uid://ce6m3oeplfsk2" path="res://Assets/Characters/SirEdward/Jump/Edward-jump.png" id="5_hhisg"]
-[ext_resource type="Texture2D" uid="uid://bbdl03u4fj7m6" path="res://Assets/Characters/SirEdward/Specials/Edward-special-up.png" id="7_6pbd7"]
-[ext_resource type="Texture2D" uid="uid://j54kc5sv0dut" path="res://Assets/Characters/SirEdward/Specials/Edward-special-neutral.png" id="8_bn3sn"]
+[ext_resource type="Texture2D" uid="uid://bkrtnmrm8sxe5" path="res://Assets/Characters/SirEdward/Run/Edward-run.png" id="3_xq5cm"]
+[ext_resource type="Texture2D" uid="uid://cg8a18j6gqcd" path="res://Assets/Characters/SirEdward/Jump/Edward-jump.png" id="5_hhisg"]
+[ext_resource type="Texture2D" uid="uid://bn0g32l81606q" path="res://Assets/Characters/SirEdward/Specials/Edward-special-up.png" id="7_6pbd7"]
+[ext_resource type="Texture2D" uid="uid://dw5h7oxjtkdlt" path="res://Assets/Characters/SirEdward/Specials/Edward-special-neutral.png" id="8_bn3sn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xq5cm"]
 size = Vector2(6.7555547, 22.400002)
@@ -508,7 +508,7 @@ animations = [{
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=915314396]
 position = Vector2(-314, 12)
-scale = Vector2(1.8, 1.8)
+scale = Vector2(2, 2)
 script = ExtResource("3_f8nev")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=2104888856]
