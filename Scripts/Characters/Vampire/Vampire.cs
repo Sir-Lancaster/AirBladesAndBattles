@@ -22,14 +22,26 @@ public partial class Vampire : CharacterBase
 		{ "dead", 0f }
 	};
 	[Export] public string CharacterLabel = "Vampire";
-	[Export] public float BasicAttackRecovery = 0.40f;
+	[Export] public float BasicAttackRecovery = 0.68f;
+    [Export] public float UpAttackRecovery = 0.5f;
 	[Export] public float SpecialAttackRecovery = 0.35f;
-	[Export] public float AttackHitboxDelay = 0.12f;
+    [Export] public float DownAttackRecovery = 0.45f;
+    [Export] public float NeutralSpecialRecovery = 1.5f;
+    [Export] public float UpSpecialDelay = 0.9167f;
+    [Export] public float UpSpecialDuration = 2.0f;
+    [Export] public float UpSpecialVelocity = 150f;
+    [Export] public float UpSpecialCooldown = 3.0f;
+	[Export] public float AttackHitboxDelay = 0.2046f;
+    [Export] public float UpAttackHitboxDelay = 0.2f;
+    [Export] public float DownAttackHitboxDelay = 0.1f;
+    [Export] public float NeutralSpecialHitboxDelay = 1.111f;
+	[Export] public float DownVelocityBoost = 400f;
 	private Hitbox _currentHitbox;
-	private Hitbox _specialUpHitboxLeft;
-	private Hitbox _specialUpHitboxRight;
 	private bool _holdingSpecialUp;
-	private float _specialUpHeldTime;
+	private float _specialUpChargeTime;
+	private bool _specialUpEffectActive;
+	private float _specialUpEffectDuration;
+	private float _specialUpCooldownRemaining;
 	private SteampunkProjectile _activeProjectile;
 	private static readonly PackedScene SpecialboxScene = GD.Load<PackedScene>("res://Scenes/Vampire/Specialbox.tscn");
     private static readonly PackedScene HitboxScene = GD.Load<PackedScene>("res://Scenes/Vampire/Hitbox.tscn");
@@ -50,12 +62,16 @@ public partial class Vampire : CharacterBase
 
 		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp)
 		{
+			if (_specialUpCooldownRemaining > 0)
+				return;
+
 			if (CurrentState != CharacterState.HitStun &&
 				CurrentState != CharacterState.Dead &&
 				CurrentState != CharacterState.Dodge &&
 				CurrentState != CharacterState.Attack)
 			{
 				_holdingSpecialUp = true;
+				_specialUpChargeTime = 0f;
 				SetState(CharacterState.Attack);
 				OnSpecialPerformed(SpecialDirection.Up, SpecialDamage);
 			}
@@ -63,32 +79,50 @@ public partial class Vampire : CharacterBase
 
 		if (_holdingSpecialUp && !Input.IsActionPressed("special"))
 		{
+			if (!_specialUpEffectActive)
+			{
+				bool isEarlyRelease = _specialUpChargeTime < UpSpecialDelay;
+				_specialUpEffectActive = true;
+				_specialUpEffectDuration = UpSpecialDuration;
+				_specialUpCooldownRemaining = UpSpecialCooldown;
+				SpawnSpecialHitbox(SpecialDirection.Up, SpecialDamage);
+				
+				if (isEarlyRelease && _sprite.IsPlaying())
+					_sprite.Frame = 12;
+			}
 			_holdingSpecialUp = false;
-			_specialUpHeldTime = 0f;
-			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
-				_specialUpHitboxLeft.QueueFree();
-			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
-				_specialUpHitboxRight.QueueFree();
-
-			_specialUpHitboxLeft = null;
-			_specialUpHitboxRight = null;
-
-			if (CurrentState == CharacterState.Attack)
-				SetState(CharacterState.Idle);
 		}
 
-		if (_holdingSpecialUp && CurrentState == CharacterState.Attack)
+		if (_specialUpChargeTime < UpSpecialDelay && Input.IsActionPressed("special") && _holdingSpecialUp)
 		{
-			Velocity = new Vector2(move.X * MoveSpeed * 0.4f, Velocity.Y);
-			_specialUpHeldTime += (float)delta;
-
-			int currentDamage = SpecialDamage + (int)(_specialUpHeldTime * 3f);
-
-			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
-				_specialUpHitboxLeft.UpdateDamage(currentDamage);
-			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
-				_specialUpHitboxRight.UpdateDamage(currentDamage);
+			_specialUpChargeTime += (float)delta;
+			if (_specialUpChargeTime >= UpSpecialDelay && !_specialUpEffectActive)
+			{
+				_specialUpEffectActive = true;
+				_specialUpEffectDuration = UpSpecialDuration;
+				_specialUpCooldownRemaining = UpSpecialCooldown;
+				SpawnSpecialHitbox(SpecialDirection.Up, SpecialDamage);
+			}
 		}
+
+		if (_specialUpEffectActive)
+		{
+			_specialUpEffectDuration -= (float)delta;
+			float chargeProgress = Mathf.Clamp(_specialUpChargeTime / UpSpecialDelay, 0f, 1f);
+			float scaledVelocity = UpSpecialVelocity * chargeProgress;
+			Velocity = new Vector2(Velocity.X, -scaledVelocity);
+			
+			if (_specialUpEffectDuration <= 0)
+			{
+				_specialUpEffectActive = false;
+				_specialUpChargeTime = 0f;
+				if (CurrentState == CharacterState.Attack)
+					SetState(CharacterState.Idle);
+			}
+		}
+
+		if (_specialUpCooldownRemaining > 0)
+			_specialUpCooldownRemaining -= (float)delta;
 
 		base._PhysicsProcess(delta);
 
@@ -156,8 +190,20 @@ public partial class Vampire : CharacterBase
 		}
 		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 		SetAnimation(GetAttackAnim(direction));
-		EndAttackAfter(BasicAttackRecovery);
-		SpawnAttackHitboxAfter(AttackHitboxDelay, direction, damage);
+		
+		if (direction == AttackDirection.Horizontal)
+		{
+			EndAttackAfter(BasicAttackRecovery);
+			SpawnAttackHitboxAfter(AttackHitboxDelay, direction, damage);
+		}
+		else if (direction == AttackDirection.Up)
+		{
+			EndAttackAfter(UpAttackRecovery);
+			SpawnAttackHitboxAfter(UpAttackHitboxDelay, direction, damage);
+		} else {
+            EndAttackAfter(DownAttackRecovery);
+            SpawnAttackHitboxAfter(DownAttackHitboxDelay, direction, damage);
+        }
 	}
 
 	private async void SpawnAttackHitboxAfter(float delay, AttackDirection direction, int damage)
@@ -165,6 +211,13 @@ public partial class Vampire : CharacterBase
 		await ToSignal(GetTree().CreateTimer(delay), "timeout");
 		if (!IsDead && CurrentState == CharacterState.Attack)
 			SpawnAttackHitbox(direction, damage);
+	}
+
+	private async void SpawnSpecialHitboxAfter(float delay, SpecialDirection direction, int damage)
+	{
+		await ToSignal(GetTree().CreateTimer(delay), "timeout");
+		if (!IsDead && CurrentState == CharacterState.Attack)
+			SpawnSpecialHitbox(direction, damage);
 	}
 
 	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
@@ -176,9 +229,21 @@ public partial class Vampire : CharacterBase
 		}
 		GD.Print($"{CharacterLabel} special: {direction}, damage: {damage}");
 		SetAnimation(GetSpecialAnim(direction));
-		if (direction != SpecialDirection.Up)
+		
+		if (direction == SpecialDirection.Neutral)
+		{
+			EndAttackAfter(NeutralSpecialRecovery);
+			SpawnSpecialHitboxAfter(NeutralSpecialHitboxDelay, direction, damage);
+		}
+		else if (direction == SpecialDirection.Up)
+		{
+			// Don't spawn hitbox yet - wait for charge to complete
+		}
+		else
+		{
 			EndAttackAfter(SpecialAttackRecovery);
-		SpawnSpecialHitbox(direction, damage);
+			SpawnSpecialHitbox(direction, damage);
+		}
 	}
 
 	private void SpawnAttackHitbox(AttackDirection? dir, int damage)
@@ -195,20 +260,15 @@ public partial class Vampire : CharacterBase
 		{
 			case AttackDirection.Horizontal:
 				float facing = _sprite.FlipH ? -1f : 1f;
-				hitbox.Position = new Vector2(facing > 0f ? 40f : -120f, 0f);
+				hitbox.Position = new Vector2(facing > 0f ? 40f : -120f, -20f);
 				break;
 			case AttackDirection.Up:
 				hitbox.Position = new Vector2(0f, -40f);
 				break;
 			case AttackDirection.DownAir:
-				hitbox.QueueFree(); // not used for this case
-				var downProjectile = ProjectileScene.Instantiate<SteampunkProjectile>();
-				GetParent().AddChild(downProjectile);
-				downProjectile.GlobalPosition = GlobalPosition + new Vector2(0f, 40f);
-				downProjectile.LaunchDown(this, damage);
-				_activeProjectile = downProjectile;
-				downProjectile.TreeExiting += () => _activeProjectile = null;
-				return;
+				hitbox.Position = new Vector2(0f, 40f);
+				Velocity = new Vector2(Velocity.X, DownVelocityBoost);
+				break;
 		}
 
 		_currentHitbox = hitbox;
@@ -219,34 +279,28 @@ public partial class Vampire : CharacterBase
 		if (_currentHitbox != null && IsInstanceValid(_currentHitbox))
 			_currentHitbox.QueueFree();
 
-		var hitbox = HitboxScene.Instantiate<Hitbox>();
+		PackedScene sceneToUse = dir switch
+		{
+			SpecialDirection.Up => UpSpecialboxScene,
+			SpecialDirection.Neutral => SpecialboxScene,
+			_ => HitboxScene
+		};
+
+		var hitbox = sceneToUse.Instantiate<Hitbox>();
 		AddChild(hitbox);
 
 		switch (dir)
 		{
-			case SpecialDirection.Up: //tornado, need to increase damage as the attack is held, and needs to be able to move left and right
-				{
-					hitbox.Activate(this, damage, -1f);
-					hitbox.Position = new Vector2(-120f, 0f);
-					hitbox.RotationDegrees = 0f;
-					_specialUpHitboxLeft = hitbox;
-
-					var hitboxRight = HitboxScene.Instantiate<Hitbox>();
-					AddChild(hitboxRight);
-					hitboxRight.Activate(this, damage, -1f);
-					hitboxRight.Position = new Vector2(40f, 0f);
-					_specialUpHitboxRight = hitboxRight;
-					break;
-				}
+			case SpecialDirection.Up:
+				hitbox.Activate(this, damage, UpSpecialDuration);
+				hitbox.Position = new Vector2(0f, 0f);
+				_currentHitbox = hitbox;
+				break;
 
 			case SpecialDirection.Neutral:
-				hitbox.QueueFree(); // not used for this case
-				var projectile = ProjectileScene.Instantiate<SteampunkProjectile>();
-				GetParent().AddChild(projectile);
-				projectile.GlobalPosition = GlobalPosition + new Vector2(_sprite.FlipH ? -40f : 40f, 0f);
-				projectile.Launch(this, damage, _sprite.FlipH);
-				_activeProjectile = projectile;
-				projectile.TreeExiting += () => _activeProjectile = null;
+				hitbox.Activate(this, damage, NeutralSpecialRecovery);
+				hitbox.Position = new Vector2(32f, 0f);
+				_currentHitbox = hitbox;
 				break;
 		}
 	}
