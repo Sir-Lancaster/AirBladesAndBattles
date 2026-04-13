@@ -44,10 +44,15 @@ public partial class SteampunkAi : AiBaseClass
 	/// Uses the up-attack (wheel) as an aerial recovery move — it launches Steampunk
 	/// upward, giving extra height to recover from being knocked off a platform.
 	/// Only available once per air-state (tracked by _hasUsedAirUpAttack).
+	///
+	/// The flag is set here rather than in OnAttackPerformed because PerformAttack
+	/// can silently reject the call (e.g. already in Attack state), which would leave
+	/// the flag false and cause this to fire on every subsequent frame.
 	/// </summary>
 	protected override bool TryRecoveryMove()
 	{
 		if (_hasUsedAirUpAttack) return false;
+		_hasUsedAirUpAttack = true; // commit immediately — don't wait for the attack to land
 		AttackUp();
 		return true;
 	}

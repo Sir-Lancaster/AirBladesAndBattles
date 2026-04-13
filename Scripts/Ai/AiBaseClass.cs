@@ -109,7 +109,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     /// How far down the edge ray looks for ground. Should be at least a full
     /// character height so a short step-down isn't mistaken for a cliff.
     /// </summary>
-    [Export] public float EdgeRayDepth = 80f;
+    [Export] public float EdgeRayDepth = 300f;
 
     /// <summary>
     /// Seconds the AI must have been continuously airborne before it considers
@@ -510,31 +510,44 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     // ======================================================================
 
     /// <summary>
-    /// Moves toward the target. Stops at edges rather than walking off.
-    /// Jumps only when the target is on a meaningfully higher platform.
+    /// Moves toward the target with basic platform awareness.
+    /// At an edge the AI decides whether to drop, jump, or wait based on where the target is:
+    ///   - Target is below    → walk off intentionally (drop down to their level).
+    ///   - Target is level/above across the gap → jump to bridge or reach them.
+    ///   - Jump on cooldown   → wait at the lip rather than falling blindly.
+    /// On open ground, only jumps when the target is on a meaningfully higher platform.
     /// </summary>
     protected void MoveTowardTarget(Vector2 toTarget)
     {
         float dirX = Mathf.Sign(toTarget.X);
 
-        // Don't walk off the edge — stop and optionally jump instead.
         if (IsOnFloor() && IsEdgeAhead(dirX))
         {
-            AiInput.MoveDirection = Vector2.Zero;
-            // If the target is above (they're on the platform we just reached the edge of),
-            // jump up to reach them.
-            if (toTarget.Y < -PlatformJumpThreshold && _jumpCooldownRemaining <= 0f)
+            if (toTarget.Y > 60f)
             {
+                // Target is below — walk forward and drop off the edge to reach them.
+                AiInput.MoveDirection = new Vector2(dirX, 0f);
+            }
+            else if (_jumpCooldownRemaining <= 0f)
+            {
+                // Target is at roughly our level or above, and there's a gap ahead.
+                // Jump forward to bridge it or land on the platform the target is on.
+                AiInput.MoveDirection = new Vector2(dirX, 0f);
                 AiInput.JumpJustPressed = true;
                 _jumpCooldownRemaining = JumpCooldown;
+            }
+            else
+            {
+                // Jump is still cooling down — wait at the edge.
+                AiInput.MoveDirection = Vector2.Zero;
             }
             return;
         }
 
         AiInput.MoveDirection = new Vector2(dirX, 0f);
 
-        // Jump only if the target is significantly above us (i.e., on a higher platform).
-        // This prevents constant bunny-hopping on the same level.
+        // On flat ground, only jump when the target is on a platform significantly above us.
+        // This prevents constant bunny-hopping when chasing on the same level.
         if (toTarget.Y < -PlatformJumpThreshold && IsOnFloor() && _jumpCooldownRemaining <= 0f)
         {
             AiInput.JumpJustPressed = true;

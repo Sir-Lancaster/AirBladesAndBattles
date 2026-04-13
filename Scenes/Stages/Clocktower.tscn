@@ -99,7 +99,7 @@ script = ExtResource("3_5lg6u")
 position = Vector2(1162, 377)
 
 [node name="Steampunk2" parent="." unique_id=1841756279 node_paths=PackedStringArray("Target") groups=["characters"] instance=ExtResource("4_sonsx")]
-position = Vector2(245, 353)
+position = Vector2(227, 347)
 Target = NodePath("../Steampunk")
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=960764150]
