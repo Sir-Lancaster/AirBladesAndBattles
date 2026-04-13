@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://hq871q66ehp1"]
 
-[ext_resource type="Script" uid="uid://c1yj7jssn7deq" path="res://Scripts/Characters/SirEdward/SirEdward.cs" id="1_hkid1"]
 [ext_resource type="Texture2D" uid="uid://catwnwexipt86" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_4souh"]
 [ext_resource type="Texture2D" uid="uid://lmn0fcu1fxaw" path="res://Assets/Characters/SirEdward/Attacks/Edward-Down-Air.png" id="2_8xl47"]
 [ext_resource type="Texture2D" uid="uid://blhprx8jd5epd" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Horizontal.png" id="3_7b2l4"]
@@ -502,20 +501,16 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Edward" type="Node2D" unique_id=339925622]
+[node name="Edward" type="CharacterBody2D" unique_id=565846511 groups=["characters"]]
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=110696671]
-position = Vector2(-314, 12)
-scale = Vector2(2, 2)
-script = ExtResource("1_hkid1")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=297257781]
-position = Vector2(-3.8888855, 4.222226)
-scale = Vector2(6.250001, 2.5)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=297257781]
+position = Vector2(-321.77777, 20.444452)
+scale = Vector2(12.500002, 5)
 shape = SubResource("RectangleShape2D_g6gd4")
 
-[node name="Edward" type="AnimatedSprite2D" parent="CharacterBody2D" unique_id=1986630078]
+[node name="Edward" type="AnimatedSprite2D" parent="." unique_id=1986630078]
 texture_filter = 1
-position = Vector2(-3, 0)
+position = Vector2(-320, 12)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_utqyo")
 animation = &"attack_downair"

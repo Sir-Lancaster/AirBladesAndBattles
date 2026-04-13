@@ -272,7 +272,7 @@ animations = [{
 "speed": 20.0
 }]
 
-[node name="Steampunk" type="CharacterBody2D" unique_id=1806914756]
+[node name="Steampunk" type="CharacterBody2D" unique_id=1806914756 groups=["characters"]]
 script = ExtResource("1_vw2n7")
 MoveSpeed = 300.0
 
