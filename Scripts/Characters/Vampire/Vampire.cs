@@ -60,11 +60,8 @@ public partial class Vampire : CharacterBase
 	{
 		Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
-		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp)
+		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && _specialUpCooldownRemaining <= 0)
 		{
-			if (_specialUpCooldownRemaining > 0)
-				return;
-
 			if (CurrentState != CharacterState.HitStun &&
 				CurrentState != CharacterState.Dead &&
 				CurrentState != CharacterState.Dodge &&
@@ -122,7 +119,7 @@ public partial class Vampire : CharacterBase
 		}
 
 		if (_specialUpCooldownRemaining > 0)
-			_specialUpCooldownRemaining -= (float)delta;
+			_specialUpCooldownRemaining = Mathf.Max(0f, _specialUpCooldownRemaining - (float)delta);
 
 		base._PhysicsProcess(delta);
 
@@ -254,8 +251,15 @@ public partial class Vampire : CharacterBase
 		PackedScene scene = dir == AttackDirection.Up ? UpboxScene : HitboxScene;
 		var hitbox = scene.Instantiate<Hitbox>();
 		AddChild(hitbox);
-		hitbox.Activate(this, damage, BasicAttackRecovery);
 
+		float recoveryDuration = dir switch
+		{
+			AttackDirection.Up => UpAttackRecovery,
+			AttackDirection.DownAir => DownAttackRecovery,
+			_ => BasicAttackRecovery
+		};
+
+		hitbox.Activate(this, damage, recoveryDuration);
 		switch (dir)
 		{
 			case AttackDirection.Horizontal:
