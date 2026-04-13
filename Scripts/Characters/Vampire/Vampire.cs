@@ -1,298 +1,253 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Vampire : CharacterBase
 {
-	/// <summary>
-    /// This is the animated sprite child node of the CharacterBody2D.
-    /// </summary>
-    private AnimatedSprite2D _edward;
+	private AnimatedSprite2D _sprite;
+	private Vector2 _spriteBasePosition;
+	private string _activeAnimation = "idle";
+	private static readonly Dictionary<string, float> AnimationOffsets = new()
+	{
+		{ "attack", 60f },
+		{ "attack_up", 0f },
+		{ "attack_air", 0f },
+		{ "special_up", 0f },
+		{ "special_neutral", 64f },
+		{ "dodge", -16f },
+		{ "run", 0f },
+		{ "idle", 0f },
+		{ "jump", 0f },
+		{ "hitstun", 0f },
+		{ "dead", 0f }
+	};
+	[Export] public string CharacterLabel = "Vampire";
+	[Export] public float BasicAttackRecovery = 0.40f;
+	[Export] public float SpecialAttackRecovery = 0.35f;
+	[Export] public float AttackHitboxDelay = 0.12f;
+	private Hitbox _currentHitbox;
+	private Hitbox _specialUpHitboxLeft;
+	private Hitbox _specialUpHitboxRight;
+	private bool _holdingSpecialUp;
+	private float _specialUpHeldTime;
+	private SteampunkProjectile _activeProjectile;
+	private static readonly PackedScene SpecialboxScene = GD.Load<PackedScene>("res://Scenes/Vampire/Specialbox.tscn");
+    private static readonly PackedScene HitboxScene = GD.Load<PackedScene>("res://Scenes/Vampire/Hitbox.tscn");
+    private static readonly PackedScene UpboxScene = GD.Load<PackedScene>("res://Scenes/Vampire/Upbox.tscn");
+    private static readonly PackedScene UpSpecialboxScene = GD.Load<PackedScene>("res://Scenes/Vampire/UpSpecialbox.tscn");
+    private static readonly PackedScene DownboxScene = GD.Load<PackedScene>("res://Scenes/Vampire/Downbox.tscn");
 
-    /// <summary>
-    /// Tracking the current attack or special directions.
-    /// </summary>
-    private AttackDirection _currentAttackDirection;
-    private SpecialDirection _currentSpecialDirection;
+	public override void _Ready()
+	{
+		_sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+		_spriteBasePosition = _sprite.Position;
+		base._Ready();
+	}
 
-    /// <summary>
-    /// A boolean powering a switch for special or normal attack animations.
-    /// </summary>
-    private bool _isSpecial;
+	public override void _PhysicsProcess(double delta)
+	{
+		Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
-    /// <summary>
-    /// Tracks whether a hitbox exists as a child node currently.
-    /// </summary>
-    private Area2D _currentHitbox;
+		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp)
+		{
+			if (CurrentState != CharacterState.HitStun &&
+				CurrentState != CharacterState.Dead &&
+				CurrentState != CharacterState.Dodge &&
+				CurrentState != CharacterState.Attack)
+			{
+				_holdingSpecialUp = true;
+				SetState(CharacterState.Attack);
+				OnSpecialPerformed(SpecialDirection.Up, SpecialDamage);
+			}
+		}
 
-    /// <summary>
-    ///  A counter tracking the number of times Edward has healed this life.
-    /// </summary>
-    private int _healCount = 0;
+		if (_holdingSpecialUp && !Input.IsActionPressed("special"))
+		{
+			_holdingSpecialUp = false;
+			_specialUpHeldTime = 0f;
+			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
+				_specialUpHitboxLeft.QueueFree();
+			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
+				_specialUpHitboxRight.QueueFree();
 
-    [Export] public string CharacterLabel = "SirEdward";
+			_specialUpHitboxLeft = null;
+			_specialUpHitboxRight = null;
 
-    /// <summary>
-    /// The time that passes after an attack has completed.
-    /// </summary>
-    [Export] public float AttackRecovery = 0.80f;
+			if (CurrentState == CharacterState.Attack)
+				SetState(CharacterState.Idle);
+		}
 
-    /// <summary>
-    /// The time that passes after a special attack has completed before you can use it again. 
-    /// </summary>
-    [Export] public float SpecialAttackRecovery = 1.35f;
+		if (_holdingSpecialUp && CurrentState == CharacterState.Attack)
+		{
+			Velocity = new Vector2(move.X * MoveSpeed * 0.4f, Velocity.Y);
+			_specialUpHeldTime += (float)delta;
 
-    /// <summary>
-    /// Get the hitbox scene so it can be spawned in when attacking.
-    /// </summary>
-    private static readonly PackedScene HitboxScene =
-        GD.Load<PackedScene>("res://Scenes/Utility/Hitbox.tscn");
+			int currentDamage = SpecialDamage + (int)(_specialUpHeldTime * 3f);
 
-    /// <summary>
-    /// Get the halberd scene so that it can be spawned in when doing the up special.
-    /// </summary>
-    private static readonly PackedScene HalberdScene =
-        GD.Load<PackedScene>("res://Scenes/Edward/Halberd.tscn");
+			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
+				_specialUpHitboxLeft.UpdateDamage(currentDamage);
+			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
+				_specialUpHitboxRight.UpdateDamage(currentDamage);
+		}
 
-    /// <summary>
-    /// Get's and sets the private variable to get the node for the character. 
-    /// Calls the base class' _Ready() method.
-    /// </summary>
-    public override void _Ready()
+		base._PhysicsProcess(delta);
+
+		if (Mathf.Abs(Velocity.X) > 0.01f)
+			UpdateFacing(Velocity.X < 0f);
+	}
+
+	private void UpdateFacing(bool facingLeft)
     {
-        _edward = GetNode<AnimatedSprite2D>("Edward");
-        base._Ready();
-    }
-
-    /// <summary>
-    /// Extends the base class' _PhysicsProcess() function, keeps the character facing the direction of their movement.
-    /// </summary>
-    /// <param name="delta"></param>
-    public override void _PhysicsProcess(double delta)
-    {
-        base._PhysicsProcess(delta);
-
-        // Keep facing direction when not moving.
-        if (Mathf.Abs(Velocity.X) > 0.01f)
-            _edward.FlipH = Velocity.X < 0f;
-    }
-
-    /// <summary>
-    /// Contains a switch that converts each state to the string name of the animation sets defined in the animationPlayer on Godot for Edward.
-    /// Uses _isSpecial boolean, current attack and special directions to determine which animation to play in the attack state.
-    /// Calls the animation to play on the AnimatedSprite2D.
-    /// </summary>
-    /// <param name="state">The Character state that needs to be animated.</param>
-    protected override void PlayAnimationForState(CharacterState state)
-    {
-        string anim = state switch
-        {
-            CharacterState.Idle => "idle",
-            CharacterState.Run => "run",
-            CharacterState.Jump => "jump",
-            CharacterState.Dodge => "dodge",
-            CharacterState.Attack => _isSpecial
-                ? $"special_{_currentSpecialDirection.ToString().ToLower()}"
-                : $"attack_{_currentAttackDirection.ToString().ToLower()}",
-            CharacterState.HitStun => "hitstun",
-            CharacterState.Dead => "dead",
-            _ => "idle"
-        };
-
-        _edward.Play(anim);
-        GD.Print($"{CharacterLabel} play animation for: {state}");
-    }
-
-    /// <summary>
-    /// Keeping it only for if it becomes useful later when updating the UI or playing sound effects.
-    /// </summary>
-    /// <param name="oldHp">The intiger of the HP before change.</param>
-    /// <param name="newHp">The intiger of the HP after the change.</param>
-    protected override void OnHealthChanged(int oldHp, int newHp)
-    {
-        GD.Print($"{CharacterLabel} HP: {oldHp} -> {newHp}");
-    }
-
-    /// <summary>
-    /// Plays the animation for being hit.
-    /// </summary>
-    /// <param name="amount"></param>
-    protected override void OnDamaged(int amount)
-    {
-        GD.Print($"{CharacterLabel} took damage: {amount}");
-        PlayAnimationForState(CharacterState.HitStun);
-    }
-
-    /// <summary>
-    /// When a character dies, call the animation for being hit.
-    /// </summary>
-    protected override void OnDied()
-    {
-        GD.Print($"{CharacterLabel} died");
-        PlayAnimationForState(CharacterState.Dead);
-    }
-
-    /// <summary>
-    /// Plays the animation for the attack that is being performed.
-    /// Spawns the hitbox for the attack.
-    /// </summary>
-    /// <param name="direction">Tracks the direction of the attack.</param>
-    /// <param name="damage">Tracks the damage to be dealt.</param>
-    protected override void OnAttackPerformed(AttackDirection direction, int damage)
-    {
-        _currentAttackDirection = direction;
-        _isSpecial = false;
-
-        GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
-        EndAttackAfter(AttackRecovery);
-        SpawnAttackHitbox(direction, damage);
-    }
-    
-    /// <summary>
-    /// Tracks the direction, sets the boolean to true, and uses the direction in a switch to handle behavior.
-    /// Neutral represents a lack of direction, and heals Edward half a hit. Can be used twice per life.
-    /// Up throws the halbered until it collides with something, then moves Edward to that point and resets velocity.
-    /// Forces the character to be timed out for the recovery duration.
-    /// </summary>
-    /// <param name="direction">The direction of the attack.</param>
-    /// <param name="damage">The damage the attack is capable of doing to an enemy.</param>
-    protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
-    {
-        _currentSpecialDirection = direction;
-        _isSpecial = true;
+        _sprite.FlipH = facingLeft;
+        float xOffset = facingLeft ? 8f : 0f;
         
-        switch (direction)
-        {
-            case SpecialDirection.Neutral:
-                // Healing.
-                int oldHp = CurrentHP;
-                _healCount += 1;
-                if (_healCount < 3)
-                {
-                    CurrentHP = Mathf.Min(MaxHP, CurrentHP + 2);
-                    OnHealthChanged(oldHp, CurrentHP);
-                    GD.Print($"{CharacterLabel} neutral special: heal 2");
-                }
-                
-                // TODO: Once sound effect has been found, play error sound. 
-                break;
-
-            case SpecialDirection.Up:
-                SpawnUpSpecialHalberd(damage);
-                GD.Print($"{CharacterLabel} up special: halberd throw");
-                break;
-        }
-
-        EndAttackAfter(SpecialAttackRecovery);
+        if (AnimationOffsets.TryGetValue(_activeAnimation, out float animOffset))
+            xOffset += facingLeft ? -animOffset : animOffset;
+        
+        _sprite.Position = _spriteBasePosition + new Vector2(xOffset, 0f);
     }
 
-    /// <summary>
-    /// Plays the animation for dodging.
-    /// </summary>
-    /// <param name="direction">The direction of the dodges movement.</param>
-    /// <param name="dodgeDuration">The length of the dodge.</param>
-    /// <param name="iFrameDuration">The amount of time that the character is invulnerable.</param>
-    protected override void OnDodgeStarted(DodgeDirection direction, float dodgeDuration, float iFrameDuration)
-    {
-        PlayAnimationForState(CharacterState.Dodge);
-        GD.Print($"{CharacterLabel} dodge start: {direction}, duration: {dodgeDuration}, iframes: {iFrameDuration}");
-    }
+	// SetAnimation is the single place that updates _activeAnimation, plays the clip,
+	// and refreshes the facing offset so the wider attack sprite shifts correctly.
+	private void SetAnimation(string name)
+	{
+		_activeAnimation = name;
+		_sprite.Play(name);
+		UpdateFacing(_sprite.FlipH);
+	}
 
-    /// <summary>
-    /// When dodge ends, play idle animation.
-    /// </summary>
-    /// <param name="dodgeCooldown"></param>
-    protected override void OnDodgeEnded(float dodgeCooldown)
-    {
-        PlayAnimationForState(CharacterState.Idle);
-    }
+	// Attack state animations are deferred to OnAttackPerformed/OnSpecialPerformed so we
+	// know the direction before choosing a clip. All other states map directly to name.
+	protected override void PlayAnimationForState(CharacterState state)
+	{
+		if (state == CharacterState.Attack) return;
+		SetAnimation(state.ToString().ToLowerInvariant());
+	}
 
-    /// <summary>
-    /// Creates a timer and keeps the character in the attack state until after the timer expires.
-    /// Resets teh tracking of the current hitbox.
-    /// </summary>
-    /// <param name="seconds">The attack cooldown timer length.</param> 
-    private async void EndAttackAfter(float seconds)
-    {
-        await ToSignal(GetTree().CreateTimer(seconds), "timeout");
-        _currentHitbox = null;
+	private static string GetAttackAnim(AttackDirection dir) => dir switch
+	{
+		AttackDirection.Horizontal => "attack",
+		AttackDirection.Up        => "attack_up",   // swap for "attack_up" when the asset is ready
+		AttackDirection.DownAir   => "attack_air",   // swap for "attack_air" when the asset is ready
+		_                         => "attack"
+	};
 
-        if (!IsDead && CurrentState == CharacterState.Attack)
-            SetState(CharacterState.Idle);
-    }
+	private static string GetSpecialAnim(SpecialDirection dir) => dir switch
+	{
+		SpecialDirection.Up      => "special_up",    // swap for "special_up" when the asset is ready
+		SpecialDirection.Neutral => "special_neutral",    // swap for "special_neutral" when the asset is ready
+		_                        => "special"
+	};
 
-    /// <summary>
-    /// Calls the hitbox scene and spawns in the hitbox in the direction of the attack.
-    /// uses a switch to handle the different directions.
-    /// </summary>
-    /// <param name="dir">A nullable direction where the default is horizontal in the facing direction of the character.</param>
-    /// <param name="damage">The amound of damage the attack will do.</param>
-    private void SpawnAttackHitbox(AttackDirection? dir, int damage)
-    {
-        var hitbox = HitboxScene.Instantiate<Hitbox>();
-        AddChild(hitbox); // local to Edward
-        hitbox.Activate(this, damage, AttackRecovery);
+	private async void EndAttackAfter(float seconds)
+	{
+		await ToSignal(GetTree().CreateTimer(seconds), "timeout");
+		_currentHitbox = null;
+		if (!IsDead && CurrentState == CharacterState.Attack)
+			SetState(CharacterState.Idle);
+	}
 
-        float facing = _edward.FlipH ? -1f : 1f;
+	protected override void OnAttackPerformed(AttackDirection direction, int damage)
+	{
+		if (direction == AttackDirection.DownAir && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
+		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
+		SetAnimation(GetAttackAnim(direction));
+		EndAttackAfter(BasicAttackRecovery);
+		SpawnAttackHitboxAfter(AttackHitboxDelay, direction, damage);
+	}
 
-        switch (dir)
-        {
-            case AttackDirection.Horizontal:
-                hitbox.Position = new Vector2(50f * facing, 0f); // in front
-                hitbox.RotationDegrees = 0f;
-                break;
+	private async void SpawnAttackHitboxAfter(float delay, AttackDirection direction, int damage)
+	{
+		await ToSignal(GetTree().CreateTimer(delay), "timeout");
+		if (!IsDead && CurrentState == CharacterState.Attack)
+			SpawnAttackHitbox(direction, damage);
+	}
 
-            case AttackDirection.Up:
-                hitbox.Position = new Vector2(0f, -50f); // above
-                hitbox.RotationDegrees = -90f; // adjust visually as needed
-                break;
+	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
+	{
+		if (direction == SpecialDirection.Neutral && _activeProjectile != null && IsInstanceValid(_activeProjectile))
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
+		GD.Print($"{CharacterLabel} special: {direction}, damage: {damage}");
+		SetAnimation(GetSpecialAnim(direction));
+		if (direction != SpecialDirection.Up)
+			EndAttackAfter(SpecialAttackRecovery);
+		SpawnSpecialHitbox(direction, damage);
+	}
 
-            case AttackDirection.DownAir:
-                hitbox.Position = new Vector2(0f, 50f); // below
-                hitbox.RotationDegrees = 90f;
-                break;
-        }
+	private void SpawnAttackHitbox(AttackDirection? dir, int damage)
+	{
+		if (_currentHitbox != null && IsInstanceValid(_currentHitbox))
+			_currentHitbox.QueueFree();
 
-        _currentHitbox = hitbox;
-    }
-    
-    /// <summary>
-    /// A helper to spawn in the halbered scene and launch the halberd up for the up special.
-    /// Tracks the despawn position globably to tween the character to it.
-    /// </summary>
-    /// <param name="damage">Tracks the damage the halberd can do.</param>
-    private void SpawnUpSpecialHalberd(int damage)
-    {
-        var halberd = HalberdScene.Instantiate<Halberd>();
+		PackedScene scene = dir == AttackDirection.Up ? UpboxScene : HitboxScene;
+		var hitbox = scene.Instantiate<Hitbox>();
+		AddChild(hitbox);
+		hitbox.Activate(this, damage, BasicAttackRecovery);
 
-        // Add to world so it flies independently.
-        GetParent().AddChild(halberd);
-        halberd.GlobalPosition = GlobalPosition + new Vector2(0f, -18f);
+		switch (dir)
+		{
+			case AttackDirection.Horizontal:
+				float facing = _sprite.FlipH ? -1f : 1f;
+				hitbox.Position = new Vector2(facing > 0f ? 40f : -120f, 0f);
+				break;
+			case AttackDirection.Up:
+				hitbox.Position = new Vector2(0f, -40f);
+				break;
+			case AttackDirection.DownAir:
+				hitbox.QueueFree(); // not used for this case
+				var downProjectile = ProjectileScene.Instantiate<SteampunkProjectile>();
+				GetParent().AddChild(downProjectile);
+				downProjectile.GlobalPosition = GlobalPosition + new Vector2(0f, 40f);
+				downProjectile.LaunchDown(this, damage);
+				_activeProjectile = downProjectile;
+				downProjectile.TreeExiting += () => _activeProjectile = null;
+				return;
+		}
 
-        float facing = _edward.FlipH ? -1f : 1f;
-        Vector2 throwDirection = new Vector2(facing, -1.2f).Normalized(); // ~20 deg up
+		_currentHitbox = hitbox;
+	}
 
-        halberd.Launch(this, throwDirection, damage);
+	private void SpawnSpecialHitbox(SpecialDirection? dir, int damage)
+	{
+		if (_currentHitbox != null && IsInstanceValid(_currentHitbox))
+			_currentHitbox.QueueFree();
 
-        // Connect despawn signal to teleport Edward.
-        halberd.Despawned += OnHalberdDespawned;
-    }
+		var hitbox = HitboxScene.Instantiate<Hitbox>();
+		AddChild(hitbox);
 
-    /// <summary>
-    /// When the halberd despawns, it moves Edward to the position of the despawn.
-    /// </summary>
-    /// <param name="despawnPosition">The global position where the halberd despawned.</param>
-    private async void OnHalberdDespawned(Vector2 despawnPosition)
-    {
-        // Smoothly move to despawn position over 0.2 seconds.
-        var tween = CreateTween();
-        tween.SetTrans(Tween.TransitionType.Quad);
-        tween.SetEase(Tween.EaseType.InOut);
-        tween.TweenProperty(this, "global_position", despawnPosition, 0.2f);
+		switch (dir)
+		{
+			case SpecialDirection.Up: //tornado, need to increase damage as the attack is held, and needs to be able to move left and right
+				{
+					hitbox.Activate(this, damage, -1f);
+					hitbox.Position = new Vector2(-120f, 0f);
+					hitbox.RotationDegrees = 0f;
+					_specialUpHitboxLeft = hitbox;
 
-        // Wait for tween to finish, then hover for 0.5 seconds.
-        await ToSignal(tween, "finished");
-        Velocity = new Vector2(Velocity.X, 0f);
+					var hitboxRight = HitboxScene.Instantiate<Hitbox>();
+					AddChild(hitboxRight);
+					hitboxRight.Activate(this, damage, -1f);
+					hitboxRight.Position = new Vector2(40f, 0f);
+					_specialUpHitboxRight = hitboxRight;
+					break;
+				}
 
-        GD.Print($"{CharacterLabel} teleport complete");
-    }
+			case SpecialDirection.Neutral:
+				hitbox.QueueFree(); // not used for this case
+				var projectile = ProjectileScene.Instantiate<SteampunkProjectile>();
+				GetParent().AddChild(projectile);
+				projectile.GlobalPosition = GlobalPosition + new Vector2(_sprite.FlipH ? -40f : 40f, 0f);
+				projectile.Launch(this, damage, _sprite.FlipH);
+				_activeProjectile = projectile;
+				projectile.TreeExiting += () => _activeProjectile = null;
+				break;
+		}
+	}
 }

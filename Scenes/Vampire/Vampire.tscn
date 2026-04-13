@@ -373,7 +373,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack",
-"speed": 12.0
+"speed": 22.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -395,7 +395,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack_up",
-"speed": 5.0
+"speed": 12.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -440,7 +440,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_qiqkl")
 }],
 "loop": true,
-"name": &"hurt",
+"name": &"hitstun",
 "speed": 12.0
 }, {
 "frames": [{
@@ -623,18 +623,19 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c6366"]
-radius = 8.0
-height = 52.0
+radius = 13.0
+height = 106.0
 
 [node name="Vampire" type="CharacterBody2D" unique_id=23730063]
 script = ExtResource("1_1w3m4")
 
-[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1437073513]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1437073513]
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_acrvm")
-animation = &"attack"
+animation = &"hitstun"
 autoplay = "idle"
-frame_progress = 0.096042775
+frame_progress = 0.83735454
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1286848948]
-position = Vector2(1, 5)
+position = Vector2(3, 11)
 shape = SubResource("CapsuleShape2D_c6366")

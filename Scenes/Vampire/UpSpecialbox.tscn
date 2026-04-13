@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dvj4tdhvwrvh0"]
+
+[ext_resource type="Script" uid="uid://ddtkv8t64njfo" path="res://Scripts/Characters/Utility/Hitbox.cs" id="1_wffh8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2ubw2"]
+radius = 102.48902
+
+[node name="Hitbox" type="Area2D" unique_id=775310356]
+script = ExtResource("1_wffh8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1545320923]
+shape = SubResource("CircleShape2D_2ubw2")
+debug_color = Color(1, 0.26666668, 0.07058824, 0.41960785)
