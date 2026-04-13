@@ -2,7 +2,7 @@ using Godot;
 
 public partial class KernelCowboy : CharacterBase
 {
-    private AnimatedSprite2D _KernelCowboy; // NEEDS EDITING: replace "KernelCowboy" node name below in _Ready()
+    private AnimatedSprite2D _KernelCowboy; //replace "KernelCowboy" node name below in _Ready()
     private AttackDirection _currentAttackDirection;
     private SpecialDirection _currentSpecialDirection;
     private bool _isSpecial;
@@ -12,18 +12,18 @@ public partial class KernelCowboy : CharacterBase
     private Hitbox _stompHitbox;
 
     [Export] public string CharacterLabel = "KernelCowboy";
-    [Export] public float AttackRecovery = 0.30f;       // NEEDS EDITING: tune to match attack animation length
-    [Export] public float SpecialAttackRecovery = 0.40f; // NEEDS EDITING: tune to match special animation length
+    [Export] public float AttackRecovery = 0.30f;       //tune to match attack animation length
+    [Export] public float SpecialAttackRecovery = 0.40f; //tune to match special animation length
 
     /// <summary>Frame of the Special animation to pause on while waiting for a lasso hit.</summary>
-    [Export] public int LassoPauseFrame = 3; // NEEDS EDITING: set to the frame where the throw is released
+    [Export] public int LassoPauseFrame = 3; //set to the frame where the throw is released
 
     private static readonly PackedScene HitboxScene =
         GD.Load<PackedScene>("res://Scenes/Utility/Hitbox.tscn");
 
     public override void _Ready()
     {
-        _KernelCowboy = GetNode<AnimatedSprite2D>("KernelCowboy"); // NEEDS EDITING: use the actual node name from your scene
+        _KernelCowboy = GetNode<AnimatedSprite2D>("KernelCowboy"); //use the actual node name from your scene
         GD.Print("Animations: ", string.Join(", ", _KernelCowboy.SpriteFrames.GetAnimationNames()));
 
         _lassoHandler = GetNode<LassoHandler>("LassoHandler");
@@ -90,9 +90,7 @@ public partial class KernelCowboy : CharacterBase
             CharacterState.Run      => "Run",        
             CharacterState.Jump     => "Jump",      
             CharacterState.Dodge    => "Dodge",
-            CharacterState.HitStun  => "Hurt",   // NEEDS EDITING
-            CharacterState.Dead     => "dead",       // NEEDS EDITING
-            _                       => "Idle"
+            CharacterState.HitStun  => "Hurt",               CharacterState.Dead     => "dead",                   _                       => "Idle"
         };
 
         _KernelCowboy.Play(anim);
@@ -162,13 +160,18 @@ public partial class KernelCowboy : CharacterBase
 
             case SpecialDirection.Up:
                 // Recovery lasso: hooks above and launches owner upward.
-                // EndAttackAfter is driven by OnRecoveryComplete callback, not here.
-                _lassoHandler.LaunchRecoveryLasso();
+                // If recovery is unavailable (already used mid-air), cancel immediately
+                // so the Attack state doesn't get stuck with no callback to end it.
+                if (!_lassoHandler.LaunchRecoveryLasso())
+                {
+                    EndAttackAfter(0f);
+                    return;
+                }
                 GD.Print($"{CharacterLabel} up special: recovery lasso launched");
                 return;
 
             //case SpecialDirection.Horizontal:
-                // NEEDS EDITING: implement KernelCowboy's horizontal special
+                //implement KernelCowboy's horizontal special
                 GD.Print($"{CharacterLabel} horizontal special: TODO");
                 break;
         }
@@ -228,31 +231,31 @@ public partial class KernelCowboy : CharacterBase
         {
             case AttackDirection.Horizontal:
                 shape.Shape = MakeCapsule(
-                    /* NEEDS EDITING — radius (half-width of the hitbox) */ 30f,
-                    /* NEEDS EDITING — height (reach in front of character) */ 100f);
+                    /*radius (half-width of the hitbox) */ 30f,
+                    /*height (reach in front of character) */ 100f);
                 hitbox.Position = new Vector2(
-                    /* NEEDS EDITING — how far in front of the character */ 70f * facing,
-                    /* NEEDS EDITING — vertical offset (+ = down, - = up) */ 40f);
+                    /*how far in front of the character */ 70f * facing,
+                    /*vertical offset (+ = down, - = up) */ 40f);
                 hitbox.RotationDegrees = 0f;
                 break;
 
             case AttackDirection.Up:
                 shape.Shape = MakeCapsule(
-                    /* NEEDS EDITING — radius */ 45f,
-                    /* NEEDS EDITING — height (reach above character) */ 100f);
+                    /*radius */ 45f,
+                    /*height (reach above character) */ 100f);
                 hitbox.Position = new Vector2(
-                    /* NEEDS EDITING — horizontal offset */ 0f,
-                    /* NEEDS EDITING — how far above the character (keep negative) */ -40f);
+                    /*horizontal offset */ 0f,
+                    /*how far above the character (keep negative) */ -40f);
                 hitbox.RotationDegrees = -90f;
                 break;
 
             case AttackDirection.DownAir:
                 shape.Shape = MakeCapsule(
-                    /* NEEDS EDITING — radius */ 45f,
-                    /* NEEDS EDITING — height */ 100f);
+                    /*radius */ 45f,
+                    /*height */ 100f);
                 hitbox.Position = new Vector2(
-                    /* NEEDS EDITING — horizontal offset */ 0f,
-                    /* NEEDS EDITING — how far below the character (keep positive) */ 40f);
+                    /*horizontal offset */ 0f,
+                    /*how far below the character (keep positive) */ 40f);
                 hitbox.RotationDegrees = 90f;
                 break;
         }
@@ -269,12 +272,12 @@ public partial class KernelCowboy : CharacterBase
         _stompHitbox = HitboxScene.Instantiate<Hitbox>();
         var stompShape = _stompHitbox.GetNode<CollisionShape2D>("CollisionShape2D");
         stompShape.Shape = MakeCapsule(
-            /* NEEDS EDITING — radius (how wide the stomp is) */ 45f,
-            /* NEEDS EDITING — height (how tall the stomp hitbox is) */ 100f);
+            /*radius (how wide the stomp is) */ 45f,
+            /*height (how tall the stomp hitbox is) */ 100f);
         AddChild(_stompHitbox);
         _stompHitbox.GlobalPosition = GlobalPosition + new Vector2(
-            /* NEEDS EDITING — horizontal offset from character center */ 0f,
-            /* NEEDS EDITING — how far below the collision body (keep positive) */ 40f);
+            /*horizontal offset from character center */ 0f,
+            /*how far below the collision body (keep positive) */ 40f);
         // Large lifetime so it never expires on its own — freed by OnStompLanded when character lands.
         _stompHitbox.Activate(this, _lassoHandler.StompDamage, 5f);
     }
@@ -285,24 +288,24 @@ public partial class KernelCowboy : CharacterBase
         var shockLeft = HitboxScene.Instantiate<Hitbox>();
         var shockLeftShape = shockLeft.GetNode<CollisionShape2D>("CollisionShape2D");
         shockLeftShape.Shape = MakeCapsule(
-            /* NEEDS EDITING — radius (height of shockwave zone) */ 13f,
-            /* NEEDS EDITING — height (how far left the shockwave reaches) */ 120f);
+            /*radius (height of shockwave zone) */ 13f,
+            /*height (how far left the shockwave reaches) */ 120f);
         AddChild(shockLeft);
         shockLeft.GlobalPosition = landingPos + new Vector2(
-            /* NEEDS EDITING — horizontal distance to the left (keep negative) */ -_lassoHandler.ShockwaveWidth * 1f,
-            /* NEEDS EDITING — vertical offset from landing point */ 50f);
+            /*horizontal distance to the left (keep negative) */ -_lassoHandler.ShockwaveWidth * 1f,
+            /*vertical offset from landing point */ 60f);
         shockLeft.RotationDegrees = -90f;
         shockLeft.Activate(this, _lassoHandler.ShockwaveDamage, _lassoHandler.ShockwaveLifetime);
 
         var shockRight = HitboxScene.Instantiate<Hitbox>();
         var shockRightShape = shockRight.GetNode<CollisionShape2D>("CollisionShape2D");
         shockRightShape.Shape = MakeCapsule(
-            /* NEEDS EDITING — radius */ 13f,
-            /* NEEDS EDITING — height */ 120f);
+            /*radius */ 13f,
+            /*height */ 120f);
         AddChild(shockRight);
         shockRight.GlobalPosition = landingPos + new Vector2(
-            /* NEEDS EDITING — horizontal distance to the right (keep positive) */ _lassoHandler.ShockwaveWidth * 1f,
-            /* NEEDS EDITING — vertical offset from landing point */ 50f);
+            /*horizontal distance to the right (keep positive) */ _lassoHandler.ShockwaveWidth * 1f,
+            /*vertical offset from landing point */ 60f);
         shockRight.RotationDegrees = 90f;
         shockRight.Activate(this, _lassoHandler.ShockwaveDamage, _lassoHandler.ShockwaveLifetime);
     }
@@ -314,12 +317,12 @@ public partial class KernelCowboy : CharacterBase
         var splash = HitboxScene.Instantiate<Hitbox>();
         var splashShape = splash.GetNode<CollisionShape2D>("CollisionShape2D");
         splashShape.Shape = MakeCapsule(
-            /* NEEDS EDITING — radius (how tall the splash zone is vertically) */ 35f,
-            /* NEEDS EDITING — height (how wide the splash zone is horizontally) */ 140f);
+            /*radius (how tall the splash zone is vertically) */ 35f,
+            /*height (how wide the splash zone is horizontally) */ 140f);
         AddChild(splash);
         splash.GlobalPosition = landingPos + new Vector2(
-            /* NEEDS EDITING — horizontal offset from landing point */ 0f,
-            /* NEEDS EDITING — vertical offset from landing point (0 = right at landing, negative = higher up) */ 60f);
+            /*horizontal offset from landing point */ 0f,
+            /*vertical offset from landing point (0 = right at landing, negative = higher up) */ 60f);
         splash.RotationDegrees = 0f; // capsule lies flat so it spreads left-right
         splash.Activate(this, _lassoHandler.SlamSplashDamage, 0.12f);
     }

@@ -39,10 +39,10 @@ public partial class LassoHandler : Node
     [Export] public int SlamSplashDamage = 10;
 
     /// <summary>How far behind the attacker the lasso target lands.</summary>
-    [Export] public float LandingOffset = 80f; // NEEDS EDITING: tune to character size/art
+    [Export] public float LandingOffset = 80f; //tune to character size/art
 
     /// <summary>Collision radius of the neutral lasso tip.</summary>
-    [Export] public float LassoRadius = 20f; // NEEDS EDITING: tune to lasso art
+    [Export] public float LassoRadius = 20f; //tune to lasso art
 
     // ── Down air exports ──────────────────────────────────────────────────────
 
@@ -59,16 +59,16 @@ public partial class LassoHandler : Node
     [Export] public int StompDamage = 15;
 
     /// <summary>Collision radius of the down-air lasso tip.</summary>
-    [Export] public float DownAirLassoRadius = 20f; // NEEDS EDITING: tune to lasso art
+    [Export] public float DownAirLassoRadius = 20f; //tune to lasso art
 
     /// <summary>Damage dealt to enemies caught in the shockwave (not directly stomped).</summary>
     [Export] public int ShockwaveDamage = 6;
 
     /// <summary>How far to each side the shockwave extends from the landing point (px).</summary>
-    [Export] public float ShockwaveWidth = 100f; // NEEDS EDITING: tune to feel
+    [Export] public float ShockwaveWidth = 100f; //tune to feel
 
     /// <summary>Height of the shockwave hitbox.</summary>
-    [Export] public float ShockwaveHeight = 30f; // NEEDS EDITING: tune to feel
+    [Export] public float ShockwaveHeight = 30f; //tune to feel
 
     /// <summary>How long the shockwave hitbox lives in seconds.</summary>
     [Export] public float ShockwaveLifetime = 0.12f;
@@ -111,7 +111,7 @@ public partial class LassoHandler : Node
     /// Name of the animation to play on LassoHeadSprite when the lasso connects or hooks.
     /// Must match the animation name in the SpriteFrames resource.
     /// </summary>
-    [Export] public string LassoHitAnimation = "Hit"; // NEEDS EDITING: set to your animation name
+    [Export] public string LassoHitAnimation = "Hit"; //set to your animation name
 
     /// <summary>
     /// Line2D used to draw the rope. Needs exactly 3 points (set up in editor or created here).
@@ -179,7 +179,12 @@ public partial class LassoHandler : Node
     // Recovery
     private bool _recoveryActive;   // lasso head is traveling upward
     private bool _recoveryPulling;  // character has been launched, rope stays visible
+    private bool _recoveryUsed;     // true after recovery fires; resets only on landing
+    private bool _prevOnFloor;      // floor state last frame, used to detect the landing transition
     private Vector2 _recoveryHookPoint;
+
+    /// <summary>True when the recovery lasso is available to use.</summary>
+    public bool IsRecoveryAvailable => !_recoveryUsed && !_recoveryActive && !_recoveryPulling;
 
     // Visual
     private Vector2 _headPos;      // world-space position of the lasso tip this frame
@@ -206,6 +211,14 @@ public partial class LassoHandler : Node
     public override void _PhysicsProcess(double delta)
     {
         float dt = (float)delta;
+
+        // Reset recovery charge on the exact frame the character lands (off-floor → on-floor transition).
+        // This fires once per landing instead of every frame on the floor, preventing spurious resets.
+        bool onFloor = _owner.IsOnFloor();
+        if (_recoveryUsed && !_prevOnFloor && onFloor)
+            _recoveryUsed = false;
+        _prevOnFloor = onFloor;
+
         TickNeutralLasso(dt);
         TickNeutralArc(dt);
         TickDownAirLasso(dt);
@@ -445,7 +458,10 @@ public partial class LassoHandler : Node
         _downAirPulling = true;
 
         PlayHitAnimation();
-        OnFloorHooked?.Invoke(_downAirTarget);
+
+        // Defer the callback so KernelCowboy's AddChild (spawning the stomp hitbox) doesn't
+        // fire inside a BodyEntered physics callback — Godot forbids that during query flushing.
+        Callable.From(() => OnFloorHooked?.Invoke(_downAirTarget)).CallDeferred();
     }
 
     // ── Recovery lasso (special up) ───────────────────────────────────────────
@@ -456,16 +472,19 @@ public partial class LassoHandler : Node
     /// character upward, and end the Attack state so the player can steer.
     /// The rope stays visible until the character arrives near the hook or starts falling.
     /// </summary>
-    public void LaunchRecoveryLasso()
+    /// <returns>True if the recovery launched successfully; false if it was blocked (already used, in progress).</returns>
+    public bool LaunchRecoveryLasso()
     {
-        if (_recoveryActive || _recoveryPulling) return;
+        if (_recoveryActive || _recoveryPulling || _recoveryUsed) return false;
 
+        _recoveryUsed = true;
         _recoveryHookPoint = _owner.GlobalPosition + Vector2.Up * RecoveryLassoLength;
         _recoveryActive = true;
 
         _headPos = AnchorPos();
         _ropeVisible = true;
         ShowFirstFrame();
+        return true;
     }
 
     private void TickRecoveryLasso(float dt)

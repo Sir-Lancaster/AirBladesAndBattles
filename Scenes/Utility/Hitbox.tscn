@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bs2tpyjdgv26w"]
 
-[ext_resource type="Script" uid="uid://c6rgtae3rwgb6" path="res://Scripts/Characters/Utility/Hitbox.cs" id="1_8dyo7"]
+[ext_resource type="Script" uid="uid://ffpm5ltpvc86" path="res://Scripts/Characters/Utility/Hitbox.cs" id="1_8dyo7"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_xwohg"]
 radius = 13.0
