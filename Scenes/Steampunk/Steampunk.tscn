@@ -1,14 +1,18 @@
 [gd_scene format=3 uid="uid://btfcbuwxkk2ur"]
 
 [ext_resource type="Script" uid="uid://84eagvhr1wor" path="res://Scripts/Characters/Steampunk/Steampunk.cs" id="1_vw2n7"]
-[ext_resource type="Texture2D" uid="uid://qq2sx3thx74t" path="res://Assets/Characters/steampunk/idle.png" id="2_1lbay"]
+[ext_resource type="Texture2D" uid="uid://23mgev0h2ton" path="res://Assets/Characters/steampunk/idle.png" id="2_1lbay"]
 [ext_resource type="Texture2D" uid="uid://b1n6adicq53rc" path="res://Assets/Characters/steampunk/steampunkgirl_atk1.png" id="2_36cvq"]
 [ext_resource type="Texture2D" uid="uid://dwogao0vwa72s" path="res://Assets/Characters/steampunk/steampunkgirl_run.png" id="3_1lbay"]
 [ext_resource type="Texture2D" uid="uid://cjugvwag84b13" path="res://Assets/Characters/steampunk/steampunkgirl_jump.png" id="3_ao7ax"]
+[ext_resource type="Texture2D" uid="uid://bcu51u5ad10t7" path="res://Assets/Characters/steampunk/steampunkgirl_dash.png" id="3_ttpb7"]
+[ext_resource type="Texture2D" uid="uid://cdbbb21ynnvij" path="res://Assets/Characters/steampunk/steampunkgirl_hurt.png" id="4_d8qst"]
+[ext_resource type="Texture2D" uid="uid://d0swp1rv5k43g" path="res://Assets/Characters/steampunk/steampunkgirl_tornado.png" id="5_torn"]
+[ext_resource type="Texture2D" uid="uid://b0h3go7i7tj71" path="res://Assets/Characters/steampunk/steampunkgirl_wheel.png" id="8_txpwu"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ao7ax"]
-radius = 21.0
-height = 92.0
+radius = 15.0
+height = 86.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uhd27"]
 atlas = ExtResource("2_36cvq")
@@ -22,6 +26,18 @@ region = Rect2(128, 0, 128, 64)
 atlas = ExtResource("2_36cvq")
 region = Rect2(256, 0, 128, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_l8e58"]
+atlas = ExtResource("3_ttpb7")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ap0hk"]
+atlas = ExtResource("3_ttpb7")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fpo6p"]
+atlas = ExtResource("3_ttpb7")
+region = Rect2(128, 0, 64, 64)
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_210kw"]
 atlas = ExtResource("3_ao7ax")
 region = Rect2(128, 0, 64, 64)
@@ -33,6 +49,10 @@ region = Rect2(0, 0, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_or3q2"]
 atlas = ExtResource("3_ao7ax")
 region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3myj6"]
+atlas = ExtResource("4_d8qst")
+region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_36cvq"]
 atlas = ExtResource("2_1lbay")
@@ -86,6 +106,34 @@ region = Rect2(256, 0, 64, 64)
 atlas = ExtResource("3_1lbay")
 region = Rect2(320, 0, 64, 64)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_mak54"]
+atlas = ExtResource("5_torn")
+region = Rect2(0, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_twiqs"]
+atlas = ExtResource("5_torn")
+region = Rect2(96, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hj003"]
+atlas = ExtResource("5_torn")
+region = Rect2(192, 0, 96, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3c13x"]
+atlas = ExtResource("8_txpwu")
+region = Rect2(0, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ff3qj"]
+atlas = ExtResource("8_txpwu")
+region = Rect2(96, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f8fi5"]
+atlas = ExtResource("8_txpwu")
+region = Rect2(192, 0, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oeo3w"]
+atlas = ExtResource("8_txpwu")
+region = Rect2(288, 0, 96, 96)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_ttpb7"]
 animations = [{
 "frames": [{
@@ -102,10 +150,19 @@ animations = [{
 "name": &"attack",
 "speed": 5.0
 }, {
-"frames": [],
-"loop": true,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l8e58")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ap0hk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fpo6p")
+}],
+"loop": false,
 "name": &"dodge",
-"speed": 5.0
+"speed": 7.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -119,6 +176,14 @@ animations = [{
 }],
 "loop": false,
 "name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3myj6")
+}],
+"loop": true,
+"name": &"hitstun",
 "speed": 5.0
 }, {
 "frames": [{
@@ -174,6 +239,37 @@ animations = [{
 "loop": true,
 "name": &"run",
 "speed": 9.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mak54")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_twiqs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hj003")
+}],
+"loop": true,
+"name": &"tornado",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3c13x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ff3qj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f8fi5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oeo3w")
+}],
+"loop": true,
+"name": &"wheel",
+"speed": 20.0
 }]
 
 [node name="Steampunk" type="CharacterBody2D" unique_id=1806914756]
@@ -181,12 +277,14 @@ script = ExtResource("1_vw2n7")
 MoveSpeed = 300.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1583789845]
-position = Vector2(-1, -3)
+position = Vector2(8, 0)
 shape = SubResource("CapsuleShape2D_ao7ax")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=429900338]
 texture_filter = 1
-position = Vector2(-9.999992, -3)
+position = Vector2(7.6293945e-06, -3)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_ttpb7")
-animation = &"idle"
+animation = &"dodge"
+frame = 2
+frame_progress = 1.0

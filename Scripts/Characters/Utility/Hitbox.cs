@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using Godot;
 
 public interface IDamageable
@@ -27,6 +26,9 @@ public partial class Hitbox : Area2D
 
     /// <summary>The node that created/owns this hitbox (usually the attacker).</summary>
     public Node OwnerNode { get; private set; }
+
+    /// <summary>Fired each time this hitbox successfully lands a hit.</summary>
+    public event System.Action HitLanded;
 
     // Tracks targets already hit by this hitbox when OneHitPerTarget is enabled.
     private readonly HashSet<ulong> _hitTargetIds = new();
@@ -136,6 +138,7 @@ public partial class Hitbox : Area2D
         if (!applied) return;
 
         _hitTargetIds.Add(targetId);
+        HitLanded?.Invoke();
 
         if (DestroyOnFirstHit) QueueFree();
     }

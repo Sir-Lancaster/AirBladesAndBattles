@@ -23,13 +23,12 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     public int SpecialDamage => BasicDamage * 2;
 
     /// <summary>
-    /// Dodge and hitstun timers.
+    /// Dodge and hit i-frame timers.
     /// </summary>
     [Export] public float DodgeTime = 0.30f;
     [Export] public float DodgeIFrameTime = 0.28f;
     [Export] public float DodgeCooldown = 0.8f;
-    [Export] public float HitStunTimer = 0.25f;
-    [Export] public float HitIFrameTime = 0.5f;
+    [Export] public float HitIFrameTime = 0.25f;
 
     /// <summary>
     /// Runtime character attributes.
@@ -65,8 +64,6 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         return true;
     }
 
-
-
     /// <summary>
     /// TakeDamage() chacks that the character isn't dead or it returns early.
     /// It records the old hp, then calculates and saves the new HP into currentHp. 
@@ -84,6 +81,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
 
         OnHealthChanged(oldHp, CurrentHP);
         OnDamaged(amount);
+        GD.Print($"[{Name}] took {amount} damage ({oldHp} -> {CurrentHP} HP)");
 
         if (CurrentHP == 0)
         {
@@ -93,10 +91,10 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
             return;
         }
 
+        Velocity = new Vector2(0f, Velocity.Y);
+        _hitStunRemaining = HitIFrameTime;
         IsInvincible = true;
         GetTree().CreateTimer(HitIFrameTime).Timeout += () => IsInvincible = false;
-
-        _hitStunRemaining = HitStunTimer;
         SetState(CharacterState.HitStun);
     }
 
@@ -139,7 +137,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     /// Routes a normal attack by direction and triggers attack hooks for character-specific behavior.
     /// </summary>
     /// <param name="direction">Requested normal attack direction.</param>
-public void PerformAttack(AttackDirection direction)
+    public void PerformAttack(AttackDirection direction)
     {
         // Block attacks during locked states.
         if (CurrentState == CharacterState.HitStun ||

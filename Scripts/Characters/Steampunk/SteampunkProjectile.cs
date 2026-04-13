@@ -19,9 +19,11 @@ public partial class SteampunkProjectile : Hitbox
     public override void _Ready()
     {
         base._Ready();
+        CollisionMask |= 1; // also detect other hitboxes/projectiles (Area2Ds on layer 1)
         DestroyOnFirstHit = true;
         BodyEntered += OnWallHit;
         AreaEntered += OnHitboxCollision;
+        GetNode<AnimatedSprite2D>("AnimatedSprite2D").Play("default");
     }
 
     // Destroy when hitting another hitbox (another projectile or an active attack area).
