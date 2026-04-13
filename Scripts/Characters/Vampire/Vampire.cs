@@ -15,7 +15,7 @@ public partial class Vampire : CharacterBase
 		{ "special_up", 0f },
 		{ "special_neutral", 64f },
 		{ "dodge", -16f },
-		{ "run", 0f },
+		{ "run", -32f },
 		{ "idle", 0f },
 		{ "jump", 0f },
 		{ "hitstun", 0f },
@@ -260,7 +260,7 @@ public partial class Vampire : CharacterBase
 		{
 			case AttackDirection.Horizontal:
 				float facing = _sprite.FlipH ? -1f : 1f;
-				hitbox.Position = new Vector2(facing > 0f ? 40f : -120f, -20f);
+				hitbox.Position = new Vector2(facing > 0f ? 60f : -60f, -20f);
 				break;
 			case AttackDirection.Up:
 				hitbox.Position = new Vector2(0f, -40f);
@@ -299,7 +299,8 @@ public partial class Vampire : CharacterBase
 
 			case SpecialDirection.Neutral:
 				hitbox.Activate(this, damage, NeutralSpecialRecovery);
-				hitbox.Position = new Vector2(32f, 0f);
+				float facing = _sprite.FlipH ? -1f : 1f;
+				hitbox.Position = new Vector2(facing > 0f ? 112f : -112f, -12f);
 				_currentHitbox = hitbox;
 				break;
 		}

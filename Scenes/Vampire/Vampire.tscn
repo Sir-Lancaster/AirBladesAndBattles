@@ -424,7 +424,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"dodge",
-"speed": 10.0
+"speed": 30.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -632,9 +632,8 @@ script = ExtResource("1_1w3m4")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1437073513]
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_acrvm")
-animation = &"special_neutral"
+animation = &"idle"
 autoplay = "idle"
-frame_progress = 0.2793637
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1286848948]
 position = Vector2(3, 11)
