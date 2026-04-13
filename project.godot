@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="AirBladesAndBattles"
-run/main_scene="uid://kpjus5to33ct"
+run/main_scene="uid://cs7qyghscvvuf"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
