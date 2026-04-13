@@ -34,6 +34,7 @@ position = Vector2(607, 662)
 
 [node name="Gear" parent="." unique_id=1061900053 instance=ExtResource("3_i5jib")]
 position = Vector2(683, 500)
+RotateClockwise = false
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
 material = SubResource("ShaderMaterial_ss6kr")
@@ -56,8 +57,9 @@ position = Vector2(938, 556)
 [node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("1_7b7cw")]
 position = Vector2(1162, 377)
 
-[node name="Steampunk2" parent="." unique_id=1841756279 instance=ExtResource("4_sonsx")]
+[node name="Steampunk2" parent="." unique_id=1841756279 node_paths=PackedStringArray("Target") instance=ExtResource("4_sonsx")]
 position = Vector2(467.79895, 498.2488)
+Target = NodePath("../Steampunk")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=311221569]
 position = Vector2(0, 130)

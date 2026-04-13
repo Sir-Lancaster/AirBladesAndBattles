@@ -8,17 +8,21 @@ public partial class Steampunk : CharacterBase
 	[Export] public string CharacterLabel = "Steampunk";
 	[Export] public float BasicAttackRecovery = 0.40f;
 	[Export] public float SpecialAttackRecovery = 0.35f;
-	[Export] public float AttackHitboxDelay = 0.12f; 
+	[Export] public float AttackHitboxDelay = 0.12f;
 	[Export] public float AttackAnimOffset = 80f;
 	[Export] public float UpAttackLaunchSpeed = 800f;
 	private Hitbox _currentHitbox;
 	private Hitbox _specialUpHitboxLeft;
 	private Hitbox _specialUpHitboxRight;
 	private bool _holdingSpecialUp;
+	private bool _specialUpBlocked;
 	private float _specialUpHeldTime;
+	private bool _hasUsedAirUpAttack;
+	private bool _wasOnFloor = true;
 	private SteampunkProjectile _activeProjectile;
 	private static readonly PackedScene HitboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Hitbox.tscn");
 	private static readonly PackedScene UpboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Upbox.tscn");
+	private static readonly PackedScene Hitbox2Scene = GD.Load<PackedScene>("res://Scenes/Steampunk/Hitbox2.tscn");
 	private static readonly PackedScene ProjectileScene = GD.Load<PackedScene>("res://Scenes/Steampunk/SteampunkProjectile.tscn");
 
 	public override void _Ready()
@@ -32,7 +36,10 @@ public partial class Steampunk : CharacterBase
 	{
 		Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
-		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp)
+		if (!Input.IsActionPressed("special"))
+			_specialUpBlocked = false;
+
+		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && !_specialUpBlocked)
 		{
 			if (CurrentState != CharacterState.HitStun &&
 				CurrentState != CharacterState.Dead &&
@@ -75,6 +82,11 @@ public partial class Steampunk : CharacterBase
 		}
 
 		base._PhysicsProcess(delta);
+
+		bool onFloor = IsOnFloor();
+		if (onFloor && !_wasOnFloor)
+			_hasUsedAirUpAttack = false;
+		_wasOnFloor = onFloor;
 
 		if (Mathf.Abs(Velocity.X) > 0.01f)
 			UpdateFacing(Velocity.X < 0f);
@@ -121,6 +133,21 @@ public partial class Steampunk : CharacterBase
 		_                        => "attack"
 	};
 
+	private void StopSpecialUp()
+	{
+		_holdingSpecialUp = false;
+		_specialUpBlocked = true;
+		_specialUpHeldTime = 0f;
+		if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
+			_specialUpHitboxLeft.QueueFree();
+		if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
+			_specialUpHitboxRight.QueueFree();
+		_specialUpHitboxLeft = null;
+		_specialUpHitboxRight = null;
+		if (CurrentState == CharacterState.Attack)
+			SetState(CharacterState.Idle);
+	}
+
 	private async void EndAttackAfter(float seconds)
 	{
 		await ToSignal(GetTree().CreateTimer(seconds), "timeout");
@@ -136,12 +163,11 @@ public partial class Steampunk : CharacterBase
 			SetState(CharacterState.Idle);
 			return;
 		}
-		if (direction == AttackDirection.Up && !IsOnFloor())
+		if (direction == AttackDirection.Up)
 		{
-			SetState(CharacterState.Idle);
-			return;
+			if (!IsOnFloor() && _hasUsedAirUpAttack) { SetState(CharacterState.Idle); return; }
+			_hasUsedAirUpAttack = true;
 		}
-		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 		SetAnimation(GetAttackAnim(direction));
 		if (direction == AttackDirection.Up)
 		{
@@ -168,7 +194,6 @@ public partial class Steampunk : CharacterBase
 			SetState(CharacterState.Idle);
 			return;
 		}
-		GD.Print($"{CharacterLabel} special: {direction}, damage: {damage}");
 		SetAnimation(GetSpecialAnim(direction));
 		if (direction != SpecialDirection.Up)
 			EndAttackAfter(SpecialAttackRecovery);
@@ -220,15 +245,20 @@ public partial class Steampunk : CharacterBase
 		{
 			case SpecialDirection.Up: //tornado, need to increase damage as the attack is held, and needs to be able to move left and right
 				{
-					hitbox.Activate(this, damage, -1f);
-					hitbox.Position = new Vector2(-60f, 0f);
-					hitbox.RotationDegrees = 0f;
-					_specialUpHitboxLeft = hitbox;
+					hitbox.QueueFree();
+					var hitboxLeft = Hitbox2Scene.Instantiate<Hitbox>();
+					AddChild(hitboxLeft);
+					hitboxLeft.Activate(this, damage, -1f);
+					hitboxLeft.Position = new Vector2(-60f, 0f);
+					hitboxLeft.RotationDegrees = 0f;
+					hitboxLeft.HitLanded += StopSpecialUp;
+					_specialUpHitboxLeft = hitboxLeft;
 
-					var hitboxRight = HitboxScene.Instantiate<Hitbox>();
+					var hitboxRight = Hitbox2Scene.Instantiate<Hitbox>();
 					AddChild(hitboxRight);
 					hitboxRight.Activate(this, damage, -1f);
 					hitboxRight.Position = new Vector2(20f, 0f);
+					hitboxRight.HitLanded += StopSpecialUp;
 					_specialUpHitboxRight = hitboxRight;
 					break;
 				}

@@ -20,7 +20,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     [Export] public float DodgeTime = 0.30f;
     [Export] public float DodgeIFrameTime = 0.28f;
     [Export] public float DodgeCooldown = 0.8f;
-    [Export] public float HitStunTimer = 0.25f;
+    [Export] public float HitIFrameTime = 0.5f;
 
     [Export] public float AiAttackCooldown = 1.0f;
     [Export] public float AiSpecialCooldown = 5.0f;
@@ -55,6 +55,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
         OnHealthChanged(oldHp, CurrentHP);
         OnDamaged(amount);
+        GD.Print($"[{Name}] took {amount} damage ({oldHp} -> {CurrentHP} HP)");
 
         if (CurrentHP == 0)
         {
@@ -64,7 +65,10 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
             return;
         }
 
-        _hitStunRemaining = HitStunTimer;
+        Velocity = new Vector2(0f, Velocity.Y);
+        _hitStunRemaining = HitIFrameTime;
+        IsInvincible = true;
+        GetTree().CreateTimer(HitIFrameTime).Timeout += () => IsInvincible = false;
         SetState(CharacterState.HitStun);
     }
 

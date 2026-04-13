@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bofee8eki4qlw"]
+
+[ext_resource type="Script" uid="uid://gjrfbt2fa8xu" path="res://Scripts/Characters/Utility/Hitbox.cs" id="1_htba8"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hilu3"]
+radius = 43.0
+height = 86.0
+
+[node name="Hitbox" type="Area2D" unique_id=1612254155]
+script = ExtResource("1_htba8")
+Lifetime = -1.0
+OneHitPerTarget = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1107623143]
+position = Vector2(33, 0)
+shape = SubResource("CapsuleShape2D_hilu3")
