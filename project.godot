@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 window/size/mode=2
 
+[autoload]
+
+NetworkManager="*res://Scripts/Multiplayer/NetworkManager.cs"
+
 [dotnet]
 
 project/assembly_name="AirBladesAndBattles"
