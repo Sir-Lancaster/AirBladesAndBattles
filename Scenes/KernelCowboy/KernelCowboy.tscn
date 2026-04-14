@@ -540,6 +540,20 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ypg6q"]
+properties/0/path = NodePath(".:CurrentState")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:CurrentHP")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+properties/2/path = NodePath(".:velocity")
+properties/2/spawn = false
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:position")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
 [node name="KernelCowboy" type="CharacterBody2D" unique_id=156738427 groups=["characters"]]
 script = ExtResource("1_2fosr")
 LassoPauseFrame = 1
@@ -603,3 +617,6 @@ offset = Vector2(-1, 0)
 
 [node name="HandAnchor" type="Marker2D" parent="KernelCowboy" unique_id=1294144271]
 position = Vector2(-10, 1)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=470046876]
+replication_config = SubResource("SceneReplicationConfig_ypg6q")

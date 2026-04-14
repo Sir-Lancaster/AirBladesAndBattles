@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dk13b8nao4v4o"]
 
 [ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="1_7b7cw"]
-[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_iukx0"]
-[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_5lg6u"]
+[ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="1_iukx0"]
+[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_5lg6u"]
 [ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="3_i5jib"]
 [ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="4_sonsx"]
 
@@ -19,6 +19,20 @@ shader_parameter/pixel_size = 5.0
 size = Vector2(0.52812576, 1069)
 
 [node name="Clocktower" type="Node2D" unique_id=1738674402]
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=1154924217]
+
+[node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=1475519633]
+position = Vector2(285, 331)
+
+[node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1353731479]
+position = Vector2(1264, 360)
+
+[node name="Spawn3" type="Marker2D" parent="SpawnPoints" unique_id=1706966464]
+position = Vector2(288, 696)
+
+[node name="Spawn4" type="Marker2D" parent="SpawnPoints" unique_id=2116061116]
+position = Vector2(1264, 688)
 
 [node name="Platform1" type="StaticBody2D" parent="." unique_id=1225677018]
 
@@ -95,7 +109,7 @@ position = Vector2(938, 556)
 zoom = Vector2(2, 2)
 script = ExtResource("3_5lg6u")
 
-[node name="Steampunk" parent="." unique_id=1806914756 groups=["characters"] instance=ExtResource("1_7b7cw")]
+[node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("1_7b7cw")]
 position = Vector2(1162, 377)
 
 [node name="Steampunk2" parent="." unique_id=1841756279 node_paths=PackedStringArray("Target") groups=["characters"] instance=ExtResource("4_sonsx")]

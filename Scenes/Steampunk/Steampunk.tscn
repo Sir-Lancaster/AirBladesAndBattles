@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://btfcbuwxkk2ur"]
 
-[ext_resource type="Script" uid="uid://84eagvhr1wor" path="res://Scripts/Characters/Steampunk/Steampunk.cs" id="1_vw2n7"]
+[ext_resource type="Script" uid="uid://nvl3xysetdte" path="res://Scripts/Characters/Steampunk/Steampunk.cs" id="1_vw2n7"]
 [ext_resource type="Texture2D" uid="uid://23mgev0h2ton" path="res://Assets/Characters/steampunk/idle.png" id="2_1lbay"]
 [ext_resource type="Texture2D" uid="uid://b1n6adicq53rc" path="res://Assets/Characters/steampunk/steampunkgirl_atk1.png" id="2_36cvq"]
 [ext_resource type="Texture2D" uid="uid://dwogao0vwa72s" path="res://Assets/Characters/steampunk/steampunkgirl_run.png" id="3_1lbay"]
@@ -272,6 +272,20 @@ animations = [{
 "speed": 20.0
 }]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ttpb7"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:velocity")
+properties/1/spawn = false
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:CurrentHP")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:CurrentState")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+
 [node name="Steampunk" type="CharacterBody2D" unique_id=1806914756 groups=["characters"]]
 script = ExtResource("1_vw2n7")
 MoveSpeed = 300.0
@@ -288,3 +302,6 @@ sprite_frames = SubResource("SpriteFrames_ttpb7")
 animation = &"dodge"
 frame = 2
 frame_progress = 1.0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1329202078]
+replication_config = SubResource("SceneReplicationConfig_ttpb7")
