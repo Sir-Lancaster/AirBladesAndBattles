@@ -11,6 +11,7 @@ public partial class SteampunkAi : AiBaseClass
 	[Export] public float AttackHitboxDelay = 0.12f;
 	[Export] public float AttackAnimOffset = 80f;
 	[Export] public float UpAttackLaunchSpeed = 800f;
+	[Export] public float SpecialUpMaxHoldTime = 1.2f;
 	private Hitbox _currentHitbox;
 	private Hitbox _specialUpHitboxLeft;
 	private Hitbox _specialUpHitboxRight;
@@ -32,11 +33,11 @@ public partial class SteampunkAi : AiBaseClass
 		RegisterAttack(245f, 295f, 0f, 400f, AttackUp);               // above
 		RegisterAttack(315f, 45f, 50f, 100f, AttackHorizontal);        // right
 		RegisterAttack(135f, 225f, 0f, 150f, AttackHorizontal);       // left
-		RegisterAttack(315f, 45f, 0f, 150f, SpecialUp, isSpecial: true);     // up, special right
-		RegisterAttack(135f, 225f, 50f, 100f, SpecialUp, isSpecial: true);    // up, special left
+		RegisterAttack(315f, 45f, 50f, 300f, SpecialUp, isSpecial: true);     // up, special right
+		RegisterAttack(135f, 225f, 50f, 300f, SpecialUp, isSpecial: true);    // up, special left
 		RegisterAttack(70f, 110f, 0f, 300f, AttackDown, () => !IsOnFloor()); // down air
-		RegisterAttack(315f, 45f, 200f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true);  // right, ranged
-		RegisterAttack(135f, 225f, 200f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true); // left, ranged
+		RegisterAttack(315f, 45f, 400f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true);  // right, ranged
+		RegisterAttack(135f, 225f, 400f, 1000f, SpecialHorizontal, () => !IsInstanceValid(_activeProjectile), isSpecial: true); // left, ranged
 		base._Ready();
 	}
 
@@ -49,6 +50,8 @@ public partial class SteampunkAi : AiBaseClass
 	/// can silently reject the call (e.g. already in Attack state), which would leave
 	/// the flag false and cause this to fire on every subsequent frame.
 	/// </summary>
+	protected override void AggressiveFallbackAttack() => AttackUp();
+
 	protected override bool TryRecoveryMove()
 	{
 		if (_hasUsedAirUpAttack) return false;
@@ -81,6 +84,16 @@ public partial class SteampunkAi : AiBaseClass
 	public override void _PhysicsProcess(double delta)
 	{
 		AiInput = default;
+
+		// Re-assert SpecialHeld while the tornado is active so AiInput = default
+		// doesn't cancel it on the very next frame. Release after the max hold time.
+		if (_holdingSpecialUp)
+		{
+			if (_specialUpHeldTime >= SpecialUpMaxHoldTime)
+				StopSpecialUp();
+			else
+				AiInput.SpecialHeld = true;
+		}
 
 		RunAiBehavior();
 
@@ -136,8 +149,8 @@ public partial class SteampunkAi : AiBaseClass
 			_hasUsedAirUpAttack = false;
 		_wasOnFloor = onFloor;
 
-		if (Mathf.Abs(Velocity.X) > 0.01f)
-			UpdateFacing(Velocity.X < 0f);
+		if (_target != null)
+			UpdateFacing(_target.GlobalPosition.X < GlobalPosition.X);
 	}
 
 	private void UpdateFacing(bool facingLeft)

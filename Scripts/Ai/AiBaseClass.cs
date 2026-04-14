@@ -12,12 +12,10 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     public enum AttackDirection { Horizontal, Up, DownAir }
     public enum SpecialDirection { Neutral, Up, horizontal }
     public enum DodgeDirection { Neutral, Horizontal }
+    public enum AiDifficulty { Easy, Medium, Hard }
 
-    /// <summary>
-    /// Controls attack frequency, retreat duration, and hesitation rate.
-    /// Switched automatically based on HP and random timed rolls.
-    /// </summary>
-    public enum AggressivenessMode { Cautious, Neutral, Aggressive, Berserk }
+    /// <summary>Normal: standard chase-and-attack. Aggressive: avoid repeating the last attack; fallback to up-attack.</summary>
+    public enum BehaviorMode { Normal, Aggressive }
 
     // ======================================================================
     // Exports — core stats
@@ -38,95 +36,64 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
     [Export] public float AiAttackCooldown = 1.0f;
     [Export] public float AiSpecialCooldown = 5.0f;
+    [Export] public AiDifficulty Difficulty = AiDifficulty.Hard;
 
-    // ======================================================================
-    // Exports — target
-    // ======================================================================
+    /// <summary>Attacks fired before randomly switching BehaviorMode.</summary>
+    [Export] public int HitsPerModeChange = 3;
 
-    /// <summary>The character this AI will chase and attack.</summary>
-    [Export] public CharacterBase Target;
-
-    // ======================================================================
-    // Exports — aggressiveness
-    // ======================================================================
-
-    /// <summary>Aggressiveness mode at spawn.</summary>
-    [Export] public AggressivenessMode StartingMode = AggressivenessMode.Neutral;
-
-    /// <summary>Seconds between random mode re-rolls.</summary>
-    [Export] public float AggroModeChangeInterval = 8f;
-
-    /// <summary>HP fraction below which the AI locks into Berserk regardless of roll.</summary>
-    [Export] public float BerserkHpThreshold = 0.25f;
-
-    // ======================================================================
-    // Exports — retreat
-    // ======================================================================
-
-    /// <summary>
-    /// Base duration (seconds) the AI backs away after landing an attack.
-    /// Scaled by aggressiveness: Berserk barely retreats, Cautious retreats longest.
-    /// </summary>
+    /// <summary>Seconds the AI backs away after landing an attack.</summary>
     [Export] public float RetreatDuration = 0.5f;
 
-    // ======================================================================
-    // Exports — hesitation
-    // ======================================================================
-
-    /// <summary>Minimum seconds between random hesitation pauses.</summary>
     [Export] public float HesitationMinInterval = 3f;
-
-    /// <summary>Maximum seconds between random hesitation pauses.</summary>
     [Export] public float HesitationMaxInterval = 8f;
-
-    /// <summary>Base duration of a hesitation pause in seconds (randomized ±25%).</summary>
+    /// <summary>Base hesitation pause duration (randomized ±25%).</summary>
     [Export] public float HesitationDuration = 0.2f;
 
-    // ======================================================================
-    // Exports — jump control
-    // ======================================================================
-
-    /// <summary>
-    /// Target must be at least this many pixels above the AI before it
-    /// considers jumping to a higher platform. Prevents constant bunny-hopping.
-    /// </summary>
+    /// <summary>Pixels the target must be above the AI before it jumps to a higher platform.</summary>
     [Export] public float PlatformJumpThreshold = 100f;
-
-    /// <summary>Minimum seconds between deliberate jump attempts.</summary>
+    /// <summary>Minimum seconds between deliberate jumps.</summary>
     [Export] public float JumpCooldown = 0.8f;
 
-    // ======================================================================
-    // Exports — platform / edge awareness
-    // ======================================================================
-
-    /// <summary>
-    /// How far ahead (pixels, in the movement direction) the edge-detection ray
-    /// is cast. Increase if the AI still walks off edges at high speed.
-    /// </summary>
+    /// <summary>Pixels ahead the edge-detection ray is cast.</summary>
     [Export] public float EdgeRayLookAhead = 36f;
+    /// <summary>Pixels down the edge ray looks for ground.</summary>
+    [Export] public float EdgeRayDepth = 500f;
 
-    /// <summary>
-    /// How far down the edge ray looks for ground. Should be at least a full
-    /// character height so a short step-down isn't mistaken for a cliff.
-    /// </summary>
-    [Export] public float EdgeRayDepth = 300f;
-
-    /// <summary>
-    /// Seconds the AI must have been continuously airborne before it considers
-    /// itself "in trouble" and triggers a recovery move. A normal full jump arc
-    /// should land well before this threshold.
-    /// </summary>
-    [Export] public float RecoveryAirborneThreshold = 0.9f;
-
-    // ======================================================================
-    // Exports — threat detection
-    // ======================================================================
-
-    /// <summary>
-    /// Radius of the danger-zone Area2D that triggers reactive dodge/jump.
-    /// Tune this to match the reach of enemy attacks.
-    /// </summary>
+    /// <summary>Radius of the danger-zone Area2D that triggers reactive dodge/jump.</summary>
     [Export] public float ThreatDetectionRadius = 150f;
+    /// <summary>Preferred spacing from the target in pixels.</summary>
+    [Export] public float PreferredCombatRange = 100f;
+    /// <summary>During airborne recovery, prefer the target's platform if it's within this horizontal distance.</summary>
+    [Export] public float RecoveryPreferTargetRange = 400f;
+
+    // ======================================================================
+    // Target tracking
+    // ======================================================================
+
+    protected Node2D _target;
+    private bool IsTargetDead => _target == null || IsNodeDead(_target);
+
+    private static bool IsNodeDead(Node2D node)
+    {
+        if (node is CharacterBase cb) return cb.IsDead;
+        if (node is AiBaseClass ai)   return ai.IsDead;
+        return true;
+    }
+
+    private void UpdateTarget()
+    {
+        Node2D nearest = null;
+        float nearestDist = float.MaxValue;
+        foreach (Node node in GetTree().GetNodesInGroup("characters"))
+        {
+            if (node == this) continue;
+            if (node is not Node2D n) continue;
+            if (IsNodeDead(n)) continue;
+            float dist = GlobalPosition.DistanceTo(n.GlobalPosition);
+            if (dist < nearestDist) { nearestDist = dist; nearest = n; }
+        }
+        _target = nearest;
+    }
 
     // ======================================================================
     // Public state
@@ -136,18 +103,13 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     public int CurrentHP { get; protected set; }
     public CharacterState CurrentState { get; protected set; }
     public bool IsInvincible { get; private set; }
+    public BehaviorMode CurrentBehaviorMode { get; private set; }
 
-    /// <summary>Current aggressiveness mode — updated automatically each tick.</summary>
-    public AggressivenessMode CurrentMode { get; private set; }
-
-    /// <summary>True while the AI is in the post-attack backing-away phase.</summary>
     protected bool IsRetreating => _retreatTimer > 0f;
-
-    /// <summary>True during a random hesitation pause (AI does nothing).</summary>
     protected bool IsHesitating => _hesitationActiveFor > 0f;
 
     // ======================================================================
-    // Private — combat timers
+    // Private fields
     // ======================================================================
 
     private float _hitStunRemaining;
@@ -156,21 +118,18 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     private float _dodgeVelocityX;
     private float _aiAttackCooldownRemaining;
     private float _aiSpecialCooldownRemaining;
-    private int _jumpsRemaining;
+    private int   _jumpsRemaining;
 
-    // ======================================================================
-    // Private — AI-brain timers & state
-    // ======================================================================
+    private int   _hitsSinceLastModeChange;
+    private AttackOption? _lastUsedAttack;
+    private float _retreatTimer;
+    private float _nextHesitationIn;
+    private float _hesitationActiveFor;
+    private float _jumpCooldownRemaining;
+    private float _jumpGracePeriod;
 
-    private float _aggroModeTimer;       // counts down to the next aggressiveness re-roll
-    private float _retreatTimer;         // counts down the post-attack retreat phase
-    private float _nextHesitationIn;     // counts down to the next hesitation pause
-    private float _hesitationActiveFor;  // counts down the current hesitation pause
-    private float _jumpCooldownRemaining; // prevents spamming jumps
-    private float _airborneTime;          // how long we've been off the floor this air-state
-
-    private Area2D _dangerZone;   // child Area2D that detects incoming hitboxes
-    private RayCast2D _edgeRay;   // downward ray cast ahead in the movement direction
+    private Area2D    _dangerZone;
+    private RayCast2D _edgeRay;
 
     private readonly System.Random _rng = new();
 
@@ -178,7 +137,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     // IDamageable
     // ======================================================================
 
-    /// <summary>Rejects self-hits and hits on dead/invincible characters.</summary>
     public bool TryReceiveHit(Node attacker, Hitbox _hitbox, int damage)
     {
         if (attacker == this) return false;
@@ -252,7 +210,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
             CurrentState == CharacterState.Attack)
             return;
 
-        // Down-air only makes sense while airborne.
         AttackDirection resolvedDirection = direction;
         if (resolvedDirection == AttackDirection.DownAir && IsOnFloor())
             resolvedDirection = AttackDirection.Horizontal;
@@ -290,21 +247,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     protected virtual void OnStateChanged(CharacterState currentState, CharacterState newState) { }
     protected virtual void PlayAnimationForState(CharacterState state) { }
     protected virtual void OnHealthChanged(int oldHp, int newHp) { }
-
-    /// <summary>
-    /// Called when this character takes damage. Base implementation spikes aggressiveness.
-    /// If you override this, call base.OnDamaged(amount) to keep the aggro spike.
-    /// </summary>
-    protected virtual void OnDamaged(int amount)
-    {
-        // Getting hit makes the AI angrier — unless it's already in a frenzy.
-        if (CurrentMode != AggressivenessMode.Berserk)
-            CurrentMode = AggressivenessMode.Aggressive;
-
-        // Reset the mode timer so the aggro spike lasts before the next re-roll.
-        _aggroModeTimer = AggroModeChangeInterval;
-    }
-
+    protected virtual void OnDamaged(int amount) { }
     protected virtual void OnDied() { }
     protected virtual void OnAttackPerformed(AttackDirection direction, int damage) { }
     protected virtual void OnSpecialPerformed(SpecialDirection direction, int damage) { }
@@ -332,21 +275,24 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
     public override void _Ready()
     {
+        AiAttackCooldown = Difficulty switch
+        {
+            AiDifficulty.Easy   => 3.0f,
+            AiDifficulty.Medium => 2.0f,
+            _                   => 1.0f,
+        };
+
         CurrentHP = MaxHP;
         IsDead = false;
         _jumpsRemaining = MaxJumps;
         CurrentState = CharacterState.Run; // SetState requires a different current state to fire on first call.
         SetState(CharacterState.Idle);
 
-        // Layer 2 = characters; mask 1 = world only.
         CollisionLayer = 2;
         CollisionMask = 1;
 
-        // Aggressiveness — start in the configured mode and schedule the first re-roll.
-        CurrentMode = StartingMode;
-        _aggroModeTimer = AggroModeChangeInterval;
+        CurrentBehaviorMode = BehaviorMode.Normal;
 
-        // Hesitation — stagger the first pause so all AIs don't freeze at the same moment.
         _nextHesitationIn = HesitationMinInterval
             + (float)_rng.NextDouble() * (HesitationMaxInterval - HesitationMinInterval);
 
@@ -383,10 +329,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
         if (_aiSpecialCooldownRemaining > 0) _aiSpecialCooldownRemaining -= (float)delta;
         if (_jumpCooldownRemaining > 0)      _jumpCooldownRemaining -= (float)delta;
         if (_retreatTimer > 0)               _retreatTimer -= (float)delta;
-
-        // Track how long we've been continuously airborne.
-        if (IsOnFloor()) _airborneTime = 0f;
-        else             _airborneTime += (float)delta;
+        if (_jumpGracePeriod > 0)            _jumpGracePeriod -= (float)delta;
 
         if (CurrentState == CharacterState.HitStun && _hitStunRemaining > 0)
         {
@@ -395,9 +338,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
                 SetState(CharacterState.Idle);
         }
 
-        TickAggressiveness((float)delta);
         TickHesitation((float)delta);
-
         MoveAndSlide();
     }
 
@@ -447,7 +388,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
             }
         }
 
-        if (AiInput.JumpJustPressed && _jumpsRemaining > 0 && CurrentState != CharacterState.Attack)
+        if (AiInput.JumpJustPressed && _jumpsRemaining > 0 && CurrentState != CharacterState.Attack && CurrentState != CharacterState.Dodge)
         {
             _jumpsRemaining--;
             Velocity = new Vector2(Velocity.X, JumpVelocity);
@@ -456,35 +397,28 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     }
 
     // ======================================================================
-    // Main AI behavior — call this from subclass _PhysicsProcess
+    // Main AI behavior — call from subclass _PhysicsProcess
     // ======================================================================
 
-    /// <summary>
-    /// Unified AI decision loop. Call this each frame from the subclass _PhysicsProcess
-    /// in place of manually calling TrySelectAttack / MoveTowardTarget.
-    ///
-    /// Decision priority each frame:
-    ///   1. Recovery     → airborne too long, use double-jump or recovery move
-    ///   2. Hesitating   → do nothing (random idle pause)
-    ///   3. Retreating   → back away (post-attack cooldown phase)
-    ///   4. Attack fires → start retreat timer
-    ///   5. Not in range → chase target
-    ///   6. In range but on cooldown → stand still (confident waiting)
-    /// </summary>
     protected void RunAiBehavior()
     {
-        if (Target == null || Target.IsDead) return;
-
-        // Recovery takes highest priority — if we've been airborne too long
-        // something went wrong and we need to try to get back to the stage.
+        UpdateTarget();
+        if (_target == null) return;
+        if (CurrentState == CharacterState.Dodge) return;
         if (HandleAirborneRecovery()) return;
-
-        // Random idle pause — simulates reaction delay and makes rhythm unpredictable.
         if (IsHesitating) return;
 
-        Vector2 toTarget = Target.GlobalPosition - GlobalPosition;
+        switch (CurrentBehaviorMode)
+        {
+            case BehaviorMode.Normal:     RunNormalBehavior();     break;
+            case BehaviorMode.Aggressive: RunAggressiveBehavior(); break;
+        }
+    }
 
-        // Post-attack retreat — back off to create attack breathing room.
+    private void RunNormalBehavior()
+    {
+        Vector2 toTarget = _target.GlobalPosition - GlobalPosition;
+
         if (IsRetreating)
         {
             MoveAwayFromTarget(toTarget);
@@ -492,53 +426,87 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
         }
 
         if (TrySelectAttack(toTarget))
-        {
-            // Attack fired — start the retreat phase scaled by aggressiveness.
-            _retreatTimer = RetreatDuration * GetRetreatMultiplier();
-        }
+            _retreatTimer = RetreatDuration;
         else if (!IsInAttackRange(toTarget))
-        {
-            // Nothing can fire and we're out of range — close the gap.
             MoveTowardTarget(toTarget);
-        }
-        // If in range but on cooldown: stand still. This reads as deliberate
-        // patience rather than confused inaction.
     }
+
+    private void RunAggressiveBehavior()
+    {
+        Vector2 toTarget = _target.GlobalPosition - GlobalPosition;
+        if (!TrySelectAttackAggressive(toTarget))
+            AggressiveFallbackAttack();
+    }
+
+    /// <summary>
+    /// Picks any in-range attack except the last one used.
+    /// Returns false if no alternative is available.
+    /// </summary>
+    private bool TrySelectAttackAggressive(Vector2 toTarget)
+    {
+        if (CurrentState == CharacterState.Attack ||
+            CurrentState == CharacterState.HitStun ||
+            CurrentState == CharacterState.Dead)
+            return false;
+        if (_aiAttackCooldownRemaining > 0) return false;
+
+        var (angle, dist) = ToAngleDist(toTarget);
+        _matchingAttacks.Clear();
+        foreach (var opt in _attackOptions)
+        {
+            if (opt.IsSpecial && _aiSpecialCooldownRemaining > 0) continue;
+            if (_lastUsedAttack.HasValue && opt.Execute == _lastUsedAttack.Value.Execute) continue;
+            if (AngleInRange(angle, opt.MinAngle, opt.MaxAngle) && dist >= opt.MinDist && dist <= opt.MaxDist
+                && (opt.IsAvailable == null || opt.IsAvailable()))
+                _matchingAttacks.Add(opt);
+        }
+
+        if (_matchingAttacks.Count == 0) return false;
+
+        OnAttackExecuted(_matchingAttacks[_rng.Next(_matchingAttacks.Count)]);
+        return true;
+    }
+
+    /// <summary>Override to provide the fallback used in Aggressive mode when no alternative attack is in range.</summary>
+    protected virtual void AggressiveFallbackAttack() { }
 
     // ======================================================================
     // Movement helpers
     // ======================================================================
 
     /// <summary>
-    /// Moves toward the target with basic platform awareness.
-    /// At an edge the AI decides whether to drop, jump, or wait based on where the target is:
-    ///   - Target is below    → walk off intentionally (drop down to their level).
-    ///   - Target is level/above across the gap → jump to bridge or reach them.
-    ///   - Jump on cooldown   → wait at the lip rather than falling blindly.
-    /// On open ground, only jumps when the target is on a meaningfully higher platform.
+    /// Moves toward toTarget with platform/edge awareness.
+    /// Drops off edges when target is below, jumps gaps when target is level/above.
+    /// Jumps when target is on a significantly higher platform.
     /// </summary>
     protected void MoveTowardTarget(Vector2 toTarget)
     {
+        if (toTarget.Length() <= PreferredCombatRange)
+        {
+            AiInput.MoveDirection = Vector2.Zero;
+            return;
+        }
+
         float dirX = Mathf.Sign(toTarget.X);
 
         if (IsOnFloor() && IsEdgeAhead(dirX))
         {
             if (toTarget.Y > 60f)
             {
-                // Target is below — walk forward and drop off the edge to reach them.
+                // Target is below — drop off the edge.
+                AiInput.JumpJustPressed = true;
                 AiInput.MoveDirection = new Vector2(dirX, 0f);
             }
             else if (_jumpCooldownRemaining <= 0f)
             {
-                // Target is at roughly our level or above, and there's a gap ahead.
-                // Jump forward to bridge it or land on the platform the target is on.
+                // Gap ahead — jump forward to bridge it.
                 AiInput.MoveDirection = new Vector2(dirX, 0f);
                 AiInput.JumpJustPressed = true;
-                _jumpCooldownRemaining = JumpCooldown;
+                _jumpCooldownRemaining = 0.05f;
+                _jumpGracePeriod = Mathf.Abs(JumpVelocity) / Gravity;
             }
             else
             {
-                // Jump is still cooling down — wait at the edge.
                 AiInput.MoveDirection = Vector2.Zero;
             }
             return;
@@ -546,27 +514,26 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
         AiInput.MoveDirection = new Vector2(dirX, 0f);
 
-        // On flat ground, only jump when the target is on a platform significantly above us.
-        // This prevents constant bunny-hopping when chasing on the same level.
         if (toTarget.Y < -PlatformJumpThreshold && IsOnFloor() && _jumpCooldownRemaining <= 0f)
         {
             AiInput.JumpJustPressed = true;
             _jumpCooldownRemaining = JumpCooldown;
+            _jumpGracePeriod = 2f * Mathf.Abs(JumpVelocity) / Gravity;
         }
     }
 
-    /// <summary>
-    /// Moves directly away from the target (used during retreat phase).
-    /// Stops at edges rather than retreating off the stage.
-    /// </summary>
     protected void MoveAwayFromTarget(Vector2 toTarget)
     {
         float dirX = -Mathf.Sign(toTarget.X);
 
-        // Don't retreat off an edge — it's better to stand your ground than fall.
         if (IsOnFloor() && IsEdgeAhead(dirX))
         {
-            AiInput.MoveDirection = Vector2.Zero;
+            AiInput.MoveDirection = new Vector2(dirX, 0f);
+            if (_jumpCooldownRemaining <= 0f)
+            {
+                AiInput.JumpJustPressed = true;
+                _jumpCooldownRemaining = 0.15f;
+            }
             return;
         }
 
@@ -577,147 +544,140 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     // Platform / edge awareness
     // ======================================================================
 
-    /// <summary>
-    /// Creates a downward RayCast2D child used for edge detection.
-    /// The ray is repositioned each frame based on movement direction.
-    /// </summary>
     private void SetupEdgeDetection()
     {
         _edgeRay = new RayCast2D
         {
-            Name          = "EdgeRay",
-            Enabled       = true,
-            CollisionMask = 1,                              // world / platform layer
-            TargetPosition = new Vector2(0f, EdgeRayDepth) // aims straight down
+            Name           = "EdgeRay",
+            Enabled        = true,
+            CollisionMask  = 1,
+            TargetPosition = new Vector2(0f, EdgeRayDepth)
         };
         AddChild(_edgeRay);
     }
 
-    /// <summary>
-    /// Returns true if there is no floor within EdgeRayDepth pixels ahead of the AI
-    /// in the given horizontal direction — i.e., an edge or drop is imminent.
-    /// </summary>
+    /// <summary>Returns true if no floor exists within EdgeRayDepth pixels ahead in directionX.</summary>
     private bool IsEdgeAhead(float directionX)
     {
         if (directionX == 0f || _edgeRay == null) return false;
-
-        // Shift the ray's origin to EdgeRayLookAhead pixels ahead in the movement direction.
         _edgeRay.Position = new Vector2(directionX * EdgeRayLookAhead, 0f);
         _edgeRay.ForceRaycastUpdate();
         return !_edgeRay.IsColliding();
     }
 
     /// <summary>
-    /// Fires when the AI has been airborne longer than RecoveryAirborneThreshold,
-    /// meaning it has likely been knocked off a platform.
-    ///
-    /// Priority: character-specific recovery move (e.g. Steampunk up-attack) →
-    ///           double-jump toward the target.
-    ///
-    /// Returns true if a recovery action was taken (caller should skip normal AI).
+    /// Handles off-stage recovery. Returns true if a recovery action was taken.
+    /// Priority: double-jump toward nearest platform → character-specific recovery move.
     /// </summary>
     private bool HandleAirborneRecovery()
     {
-        // Only trigger after being airborne longer than a normal jump arc.
-        if (_airborneTime < RecoveryAirborneThreshold) return false;
+        if (IsAbovePlatform() || _jumpGracePeriod > 0f) return false;
 
-        // Steer toward the target so we land on or near the stage.
-        if (Target != null && !Target.IsDead)
-            AiInput.MoveDirection = new Vector2(Mathf.Sign(Target.GlobalPosition.X - GlobalPosition.X), 0f);
-
-        // Try the subclass-specific recovery move first (returns false if unavailable).
-        if (TryRecoveryMove()) return true;
-
-        // Generic fallback: burn a remaining jump to gain height.
-        if (_jumpCooldownRemaining <= 0f)
+        AiInput.MoveDirection = new Vector2(FindNearestPlatformDirection(), 0f);
+        if (_jumpsRemaining > 0)
         {
-            AiInput.JumpJustPressed = true;
-            _jumpCooldownRemaining = JumpCooldown;
+            if (_jumpCooldownRemaining <= 0f)
+            {
+                AiInput.JumpJustPressed = true;
+                _jumpCooldownRemaining = 0.05f;
+            }
+            return true;
         }
+        TryRecoveryMove();
         return true;
     }
 
+    private bool IsAbovePlatform()
+    {
+        _edgeRay.Position = Vector2.Zero;
+        _edgeRay.ForceRaycastUpdate();
+        return _edgeRay.IsColliding();
+    }
+
     /// <summary>
-    /// Override in a subclass to provide a character-specific aerial recovery move
-    /// (e.g. an up-attack that also launches the character upward).
-    /// Return true if the move was successfully initiated, false if unavailable.
+    /// Returns the X direction toward the best recovery platform.
+    /// Prefers the target's platform if it's within RecoveryPreferTargetRange; otherwise uses the nearest.
     /// </summary>
+    private float FindNearestPlatformDirection()
+    {
+        float preferredDir = !IsTargetDead
+            ? Mathf.Sign(_target.GlobalPosition.X - GlobalPosition.X)
+            : 1f;
+
+        float targetSideDist   = float.MaxValue;
+        float oppositeSideDist = float.MaxValue;
+
+        for (float offset = 50f; offset <= 600f; offset += 50f)
+        {
+            if (targetSideDist == float.MaxValue)
+            {
+                _edgeRay.Position = new Vector2(preferredDir * offset, 0f);
+                _edgeRay.ForceRaycastUpdate();
+                if (_edgeRay.IsColliding()) targetSideDist = offset;
+            }
+
+            if (oppositeSideDist == float.MaxValue)
+            {
+                _edgeRay.Position = new Vector2(-preferredDir * offset, 0f);
+                _edgeRay.ForceRaycastUpdate();
+                if (_edgeRay.IsColliding()) oppositeSideDist = offset;
+            }
+
+            if (targetSideDist != float.MaxValue && oppositeSideDist != float.MaxValue)
+                break;
+        }
+
+        if (targetSideDist <= RecoveryPreferTargetRange) return preferredDir;
+        if (oppositeSideDist < targetSideDist) return -preferredDir;
+        return preferredDir;
+    }
+
+    /// <summary>Override to provide a character-specific aerial recovery move. Return true if initiated.</summary>
     protected virtual bool TryRecoveryMove() => false;
 
     // ======================================================================
     // Threat detection
     // ======================================================================
 
-    /// <summary>
-    /// Programmatically creates an Area2D child that detects incoming hitboxes.
-    /// When one enters, OnThreatDetected() fires so the AI can react.
-    /// </summary>
     private void SetupDangerZone()
     {
-        // Broad mask so we catch hitboxes on whatever layer the project uses.
-        // Narrow this if you get false positives (e.g. 0b0001 if hitboxes are on layer 1).
         _dangerZone = new Area2D { Name = "DangerZone", CollisionMask = 0b1111 };
-
-        var shape = new CollisionShape2D
+        _dangerZone.AddChild(new CollisionShape2D
         {
             Shape = new CircleShape2D { Radius = ThreatDetectionRadius }
-        };
-        _dangerZone.AddChild(shape);
+        });
         AddChild(_dangerZone);
-
         _dangerZone.AreaEntered += OnDangerZoneAreaEntered;
     }
 
     private void OnDangerZoneAreaEntered(Area2D area)
     {
-        // Only care about Hitbox areas that belong to someone else.
         if (area is not Hitbox hitbox) return;
         if (hitbox.OwnerNode == this || hitbox.OwnerNode == null) return;
-
-        // Heuristic: if the hitbox's parent is a fighter (IDamageable) it's a melee
-        // attack attached to a body. If the parent is NOT a fighter, it's free-flying
-        // (a projectile or thrown object).
         bool isProjectile = hitbox.GetParent() is not IDamageable;
-
         OnThreatDetected(hitbox, isProjectile);
     }
 
     /// <summary>
-    /// Called when an enemy hitbox or projectile enters the danger zone.
-    ///
-    /// Default behavior:
-    ///   - Projectile within attack range → attack it (despawns it on contact).
-    ///   - Otherwise → dodge roll, with a jump as fallback if dodge is on cooldown.
-    ///
-    /// Override in subclasses for character-specific reactions.
+    /// Called when an enemy hitbox/projectile enters the danger zone.
+    /// Default: attack incoming projectiles in range; dodge or jump away from melee.
     /// </summary>
     protected virtual void OnThreatDetected(Hitbox threat, bool isProjectile)
     {
         if (IsInvincible || CurrentState == CharacterState.Dead) return;
+        if (!IsAbovePlatform() && _jumpGracePeriod <= 0f) return;
 
         Vector2 toThreat = threat.GlobalPosition - GlobalPosition;
 
         if (isProjectile && IsInAttackRange(toThreat))
-        {
-            // Bat the projectile away — works because SteampunkProjectile destroys
-            // itself on any Hitbox collision (OnHitboxCollision in SteampunkProjectile).
             AiInput.AttackJustPressed = true;
-        }
         else
-        {
             TryDodgeOrJump(toThreat);
-        }
     }
 
-    /// <summary>
-    /// Attempts a dodge roll away from the threat.
-    /// Falls back to a jump if the dodge is still on cooldown.
-    /// </summary>
     private void TryDodgeOrJump(Vector2 toThreat)
     {
-        // Point the move direction away from the threat so the horizontal roll
-        // carries us in the right direction.
-        AiInput.MoveDirection = new Vector2(-Mathf.Sign(toThreat.X), 0f);
+        AiInput.MoveDirection = new Vector2(Mathf.Sign(toThreat.X), 0f);
 
         DodgeDirection dodgeDir = Mathf.Abs(toThreat.X) > 30f
             ? DodgeDirection.Horizontal
@@ -725,7 +685,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
         bool dodged = TryStartDodge(dodgeDir);
 
-        // Jump is last resort — used when dodge is still on cooldown.
         if (!dodged && _jumpCooldownRemaining <= 0f)
         {
             AiInput.JumpJustPressed = true;
@@ -734,79 +693,23 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     }
 
     // ======================================================================
-    // Aggressiveness
+    // Behavior mode
     // ======================================================================
 
-    private void TickAggressiveness(float delta)
+    private void OnAttackExecuted(AttackOption selected)
     {
-        _aggroModeTimer -= delta;
-        if (_aggroModeTimer <= 0f)
+        selected.Execute();
+        _lastUsedAttack = selected;
+        _aiAttackCooldownRemaining = AiAttackCooldown;
+        if (selected.IsSpecial)
+            _aiSpecialCooldownRemaining = AiSpecialCooldown;
+
+        if (++_hitsSinceLastModeChange >= HitsPerModeChange)
         {
-            RerollAggressivenessMode();
-            _aggroModeTimer = AggroModeChangeInterval;
+            _hitsSinceLastModeChange = 0;
+            CurrentBehaviorMode = (BehaviorMode)_rng.Next(2);
         }
     }
-
-    /// <summary>
-    /// Picks a new aggressiveness mode weighted by current HP:
-    ///   Below BerserkHpThreshold → always Berserk.
-    ///   Above 75% HP             → lean Cautious/Neutral.
-    ///   25–75% HP                → lean Neutral/Aggressive.
-    /// </summary>
-    private void RerollAggressivenessMode()
-    {
-        float hpPct = (float)CurrentHP / MaxHP;
-
-        if (hpPct < BerserkHpThreshold)
-        {
-            CurrentMode = AggressivenessMode.Berserk;
-            return;
-        }
-
-        double roll = _rng.NextDouble();
-        CurrentMode = hpPct > 0.75f
-            ? (roll < 0.6 ? AggressivenessMode.Cautious   : AggressivenessMode.Neutral)
-            : (roll < 0.5 ? AggressivenessMode.Neutral     : AggressivenessMode.Aggressive);
-    }
-
-    /// <summary>
-    /// Attack cooldown multiplier applied after each attack.
-    /// Lower = attacks more often.
-    /// </summary>
-    private float GetCooldownMultiplier() => CurrentMode switch
-    {
-        AggressivenessMode.Cautious   => 1.6f,
-        AggressivenessMode.Neutral    => 1.0f,
-        AggressivenessMode.Aggressive => 0.7f,
-        AggressivenessMode.Berserk    => 0.4f,
-        _                              => 1.0f
-    };
-
-    /// <summary>
-    /// Retreat duration multiplier after each attack.
-    /// Lower = barely backs away before engaging again.
-    /// </summary>
-    private float GetRetreatMultiplier() => CurrentMode switch
-    {
-        AggressivenessMode.Cautious   => 1.5f,
-        AggressivenessMode.Neutral    => 1.0f,
-        AggressivenessMode.Aggressive => 0.6f,
-        AggressivenessMode.Berserk    => 0.15f,
-        _                              => 1.0f
-    };
-
-    /// <summary>
-    /// Hesitation interval multiplier.
-    /// Higher = longer gaps between pauses (hesitates less often).
-    /// </summary>
-    private float GetHesitationIntervalMultiplier() => CurrentMode switch
-    {
-        AggressivenessMode.Cautious   => 0.7f,  // pauses more frequently
-        AggressivenessMode.Neutral    => 1.0f,
-        AggressivenessMode.Aggressive => 1.5f,  // pauses less frequently
-        AggressivenessMode.Berserk    => 4.0f,  // barely ever pauses
-        _                              => 1.0f
-    };
 
     // ======================================================================
     // Hesitation
@@ -814,24 +717,18 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
     private void TickHesitation(float delta)
     {
-        // Count down the active pause.
         if (_hesitationActiveFor > 0f)
         {
             _hesitationActiveFor -= delta;
             return;
         }
 
-        // Count down to the next pause.
         _nextHesitationIn -= delta;
         if (_nextHesitationIn <= 0f)
         {
-            // Randomize ±25% so it doesn't feel mechanical.
             _hesitationActiveFor = HesitationDuration * (float)(_rng.NextDouble() * 0.5 + 0.75);
-
-            // Schedule the next pause, scaled by aggressiveness.
-            float interval = HesitationMinInterval
+            _nextHesitationIn = HesitationMinInterval
                 + (float)_rng.NextDouble() * (HesitationMaxInterval - HesitationMinInterval);
-            _nextHesitationIn = interval * GetHesitationIntervalMultiplier();
         }
     }
 
@@ -841,7 +738,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
     protected struct AttackOption
     {
-        public float MinAngle, MaxAngle; // degrees, 0-360 (0=right, 90=down, 180=left, 270=up)
+        public float MinAngle, MaxAngle; // degrees: 0=right, 90=down, 180=left, 270=up
         public float MinDist, MaxDist;
         public Action Execute;
         public Func<bool> IsAvailable; // null = always available
@@ -852,27 +749,23 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     private readonly List<AttackOption> _matchingAttacks = [];
 
     /// <summary>
-    /// Registers an attack option. The AI executes it when the target is within the angle/distance
-    /// range and isAvailable (if set) returns true. isSpecial = true applies AiSpecialCooldown after use.
-    /// Angles: 0=right, 90=down, 180=left, 270=up. Wrapping ranges supported (e.g. 315–45 = rightward arc).
+    /// Registers an attack. The AI fires it when the target falls within the angle/distance window.
+    /// Angles: 0=right, 90=down, 180=left, 270=up. Wrapping ranges supported (e.g. 315–45).
     /// </summary>
     protected void RegisterAttack(float minAngle, float maxAngle, float minDist, float maxDist,
         Action execute, Func<bool> isAvailable = null, bool isSpecial = false)
     {
         _attackOptions.Add(new AttackOption
         {
-            MinAngle = minAngle, MaxAngle = maxAngle,
-            MinDist  = minDist,  MaxDist  = maxDist,
+            MinAngle    = minAngle,    MaxAngle    = maxAngle,
+            MinDist     = minDist,     MaxDist     = maxDist,
             Execute     = execute,
             IsAvailable = isAvailable,
             IsSpecial   = isSpecial
         });
     }
 
-    /// <summary>
-    /// Picks and executes a matching attack. Returns false if none match.
-    /// Applies the aggressiveness cooldown multiplier to the post-attack cooldown.
-    /// </summary>
+    /// <summary>Picks and executes a matching attack. Returns false if none match or cooldown is active.</summary>
     protected bool TrySelectAttack(Vector2 toTarget)
     {
         if (CurrentState == CharacterState.Attack ||
@@ -883,7 +776,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
         if (_aiAttackCooldownRemaining > 0) return false;
 
         var (angle, dist) = ToAngleDist(toTarget);
-
         _matchingAttacks.Clear();
         foreach (var opt in _attackOptions)
         {
@@ -895,20 +787,11 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
         if (_matchingAttacks.Count == 0) return false;
 
-        var selected = _matchingAttacks[_rng.Next(_matchingAttacks.Count)];
-        selected.Execute();
-
-        // Aggressiveness mode scales how quickly the AI can attack again.
-        _aiAttackCooldownRemaining = AiAttackCooldown * GetCooldownMultiplier();
-        if (selected.IsSpecial)
-            _aiSpecialCooldownRemaining = AiSpecialCooldown;
+        OnAttackExecuted(_matchingAttacks[_rng.Next(_matchingAttacks.Count)]);
         return true;
     }
 
-    /// <summary>
-    /// Returns true if the target is within any currently available attack's range.
-    /// Use this to decide whether to wait vs chase.
-    /// </summary>
+    /// <summary>Returns true if any registered attack can reach toTarget right now.</summary>
     protected bool IsInAttackRange(Vector2 toTarget)
     {
         var (angle, dist) = ToAngleDist(toTarget);
@@ -936,6 +819,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     private static bool AngleInRange(float angle, float min, float max)
     {
         if (min <= max) return angle >= min && angle <= max;
-        return angle >= min || angle <= max; // wraps around 360
+        return angle >= min || angle <= max;
     }
 }

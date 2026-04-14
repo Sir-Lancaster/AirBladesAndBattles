@@ -1,16 +1,17 @@
-[gd_scene format=3 uid="uid://dk13b8nao4v4o"]
+[gd_scene format=3 uid="uid://kefvt72a1ftk"]
 
-[ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="1_7b7cw"]
-[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_iukx0"]
-[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_5lg6u"]
-[ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="3_i5jib"]
-[ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="4_sonsx"]
+[ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="1_bjqe5"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="2_6icdk"]
+[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_4265q"]
+[ext_resource type="PackedScene" uid="uid://bsl2awvp7ono0" path="res://Scenes/Vampire/Vampire.tscn" id="5_bjqe5"]
+[ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="5_kg5vq"]
+[ext_resource type="PackedScene" uid="uid://cs7qyghscvvuf" path="res://Scenes/KernelCowboy/KernelCowboy.tscn" id="6_6icdk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5lg6u"]
-size = Vector2(351, 30)
+size = Vector2(1947.5, 30)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ss6kr"]
-shader = ExtResource("1_iukx0")
+shader = ExtResource("2_6icdk")
 shader_parameter/pixel_size = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iukx0"]
@@ -19,6 +20,16 @@ shader_parameter/pixel_size = 5.0
 size = Vector2(0.52812576, 1069)
 
 [node name="Clocktower" type="Node2D" unique_id=1738674402]
+
+[node name="Platform1" type="StaticBody2D" parent="." unique_id=1225677018]
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform1" unique_id=1555043319]
+position = Vector2(788, 166)
+polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1" unique_id=2093310671]
+position = Vector2(755, 428)
+shape = SubResource("RectangleShape2D_5lg6u")
 
 [node name="Platform2" type="StaticBody2D" parent="." unique_id=1088427752]
 position = Vector2(43, -39)
@@ -42,6 +53,17 @@ polygon = PackedVector2Array(295, 257, 511.95996, 257, 651, 257, 627, 287, 323, 
 position = Vector2(746, 602)
 shape = SubResource("RectangleShape2D_5lg6u")
 
+[node name="Platform4" type="StaticBody2D" parent="." unique_id=1564981826]
+position = Vector2(43, 18)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform4" unique_id=45182501]
+position = Vector2(-232, 142)
+polygon = PackedVector2Array(295, 257, 511.95996, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4" unique_id=642167586]
+position = Vector2(242, 413)
+shape = SubResource("RectangleShape2D_5lg6u")
+
 [node name="Platform5" type="StaticBody2D" parent="." unique_id=259165589]
 position = Vector2(43, -11)
 
@@ -53,18 +75,20 @@ polygon = PackedVector2Array(295, 257, 511.95996, 257, 651, 257, 627, 287, 323, 
 position = Vector2(248, 788)
 shape = SubResource("RectangleShape2D_5lg6u")
 
-[node name="Gear2" parent="." unique_id=545824321 instance=ExtResource("3_i5jib")]
+[node name="Gear2" parent="." unique_id=545824321 instance=ExtResource("1_bjqe5")]
 position = Vector2(607, 662)
 
-[node name="Gear" parent="." unique_id=1061900053 instance=ExtResource("3_i5jib")]
+[node name="Gear" parent="." unique_id=1061900053 instance=ExtResource("1_bjqe5")]
 position = Vector2(683, 500)
 RotateClockwise = false
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
 material = SubResource("ShaderMaterial_ss6kr")
 layout_direction = 1
-offset_right = 100.0
-offset_bottom = 100.0
+offset_left = 139.99998
+offset_top = 608.99994
+offset_right = 239.99998
+offset_bottom = 708.99994
 scale = Vector2(20, 20)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1847418280]
@@ -72,16 +96,10 @@ material = SubResource("ShaderMaterial_iukx0")
 use_parent_material = true
 position = Vector2(938, 556)
 zoom = Vector2(2, 2)
-script = ExtResource("3_5lg6u")
+script = ExtResource("3_4265q")
 
-[node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("1_7b7cw")]
-position = Vector2(1237, 651)
-
-[node name="Steampunk2" parent="." unique_id=1841756279 groups=["characters"] instance=ExtResource("4_sonsx")]
-position = Vector2(194, 625)
-
-[node name="Steampunk3" parent="." unique_id=379887090 groups=["characters"] instance=ExtResource("4_sonsx")]
-position = Vector2(363, 620)
+[node name="Steampunk2" parent="." unique_id=1841756279 groups=["characters"] instance=ExtResource("5_kg5vq")]
+position = Vector2(227, 347)
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=960764150]
 position = Vector2(0, 130)
@@ -98,3 +116,9 @@ position = Vector2(0, 130)
 position = Vector2(-21.999878, 79)
 scale = Vector2(80, 1)
 shape = SubResource("RectangleShape2D_i5jib")
+
+[node name="Vampire" parent="." unique_id=23730063 groups=["characters"] instance=ExtResource("5_bjqe5")]
+position = Vector2(1174, 336)
+
+[node name="KernelCowboy" parent="." unique_id=156738427 instance=ExtResource("6_6icdk")]
+position = Vector2(646, 293)
