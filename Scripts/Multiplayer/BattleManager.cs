@@ -1,0 +1,160 @@
+using Godot;
+using System.Collections.Generic;
+
+/// <summary>
+/// Attached to BattleScene.tscn. Runs only on the server/host.
+///
+/// On scene load the server dynamically instances the stage selected in
+/// NetworkManager.SelectedStage, then spawns one character per connected peer.
+/// The MultiplayerSpawner sibling replicates spawned characters to all clients.
+///
+/// Spawn positions are read from a "SpawnPoints" node inside each stage scene.
+/// Stage makers: add a Node2D named "SpawnPoints" with Marker2D children named
+/// "Spawn1", "Spawn2", "Spawn3", "Spawn4" at the desired player start positions.
+///
+/// Scene setup required in the editor:
+///   BattleScene (Node2D)  — this script
+///     MultiplayerSpawner  — spawnable_scenes: all 4 character .tscn paths
+///                           + SteampunkProjectile.tscn + Halberd.tscn
+///                           spawn_path = NodePath(".")
+///     (stage is added at runtime by _Ready)
+/// </summary>
+public partial class BattleManager : Node2D
+{
+    // -------------------------------------------------------------------------
+    // Character scene paths
+    // -------------------------------------------------------------------------
+    private static readonly Dictionary<string, string> CharacterScenePaths = new()
+    {
+        { "KernelCowboy", "res://Scenes/KernelCowboy/KernelCowboy.tscn" },
+        { "SirEdward",    "res://Scenes/Edward/Edward.tscn"              },
+        { "Steampunk",    "res://Scenes/Steampunk/Steampunk.tscn"        },
+        { "Vampire",      "res://Scenes/Vampire/Vampire.tscn"            },
+    };
+
+    // Cached after the stage is loaded.
+    private Vector2[] _spawnPoints = [];
+
+    // -------------------------------------------------------------------------
+    // Lifecycle
+    // -------------------------------------------------------------------------
+    public override void _Ready()
+    {
+        LoadStage();
+
+        // Only the host spawns characters; MultiplayerSpawner replicates them.
+        if (!Multiplayer.IsServer()) return;
+
+        int index = 0;
+        foreach (long peerId in NetworkManager.Instance.ConnectedPeers)
+        {
+            SpawnCharacter(peerId, index % _spawnPoints.Length);
+            index++;
+        }
+
+        // Remove characters when a peer disconnects mid-match.
+        NetworkManager.Instance.PeerLeft += OnPeerLeft;
+    }
+
+    // -------------------------------------------------------------------------
+    // Stage loading
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Instances the stage scene chosen in NetworkManager.SelectedStage and reads
+    /// its "SpawnPoints" child node to populate _spawnPoints.
+    ///
+    /// Stage convention: each stage scene must have a Node2D named "SpawnPoints"
+    /// with Marker2D children named "Spawn1" through "Spawn4".
+    /// </summary>
+    private void LoadStage()
+    {
+        string stagePath = NetworkManager.Instance.SelectedStage;
+        var stageScene = GD.Load<PackedScene>(stagePath);
+        if (stageScene == null)
+        {
+            GD.PushError($"[BattleManager] Could not load stage: {stagePath}");
+            return;
+        }
+
+        Node stage = stageScene.Instantiate();
+        AddChild(stage);
+
+        // Read spawn positions from the stage's SpawnPoints node.
+        Node spawnRoot = stage.GetNodeOrNull("SpawnPoints");
+        if (spawnRoot == null)
+        {
+            GD.PushWarning($"[BattleManager] Stage '{stagePath}' has no 'SpawnPoints' node. " +
+                           "Add a Node2D named 'SpawnPoints' with Marker2D children Spawn1-Spawn4.");
+            return;
+        }
+
+        var points = new List<Vector2>();
+        for (int i = 1; i <= 4; i++)
+        {
+            var marker = spawnRoot.GetNodeOrNull<Marker2D>($"Spawn{i}");
+            if (marker != null)
+                points.Add(marker.GlobalPosition);
+        }
+
+        if (points.Count == 0)
+            GD.PushWarning($"[BattleManager] SpawnPoints node in '{stagePath}' has no Marker2D children.");
+
+        _spawnPoints = [..points];
+    }
+
+    // -------------------------------------------------------------------------
+    // Spawning
+    // -------------------------------------------------------------------------
+    private void SpawnCharacter(long peerId, int spawnIndex)
+    {
+        string charName = NetworkManager.Instance.PeerCharacters.TryGetValue(peerId, out string c)
+            ? c : "KernelCowboy";
+
+        if (!CharacterScenePaths.TryGetValue(charName, out string path))
+        {
+            GD.PushError($"[BattleManager] Unknown character name: '{charName}' for peer {peerId}");
+            return;
+        }
+
+        var scene = GD.Load<PackedScene>(path);
+        if (scene == null)
+        {
+            GD.PushError($"[BattleManager] Could not load scene at: {path}");
+            return;
+        }
+
+        var node = scene.Instantiate<CharacterBase>();
+
+        // Name must be the peer ID string — CharacterBase._EnterTree parses it
+        // to call SetMultiplayerAuthority(), which determines who controls this character.
+        node.Name = peerId.ToString();
+
+        if (_spawnPoints.Length > 0)
+            node.GlobalPosition = _spawnPoints[spawnIndex];
+
+        // "characters" group is read by Camera2d.cs to keep all players in frame.
+        node.AddToGroup("characters");
+
+        // CallDeferred so the node is added at the start of the next frame,
+        // which is required for MultiplayerSpawner to replicate it correctly.
+        CallDeferred(Node.MethodName.AddChild, node);
+
+        GD.Print($"[BattleManager] Spawning {charName} for peer {peerId} at {node.GlobalPosition}");
+    }
+
+    // -------------------------------------------------------------------------
+    // Peer disconnect during match
+    // -------------------------------------------------------------------------
+    private void OnPeerLeft(long id)
+    {
+        if (!Multiplayer.IsServer()) return;
+
+        Node character = GetNodeOrNull(id.ToString());
+        if (character != null)
+        {
+            character.QueueFree();
+            GD.Print($"[BattleManager] Removed character for disconnected peer {id}");
+        }
+    }
+}

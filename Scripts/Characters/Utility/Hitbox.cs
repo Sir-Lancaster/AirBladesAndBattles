@@ -134,12 +134,24 @@ public partial class Hitbox : Area2D
             return;
         }
 
-        bool applied = damageable.TryReceiveHit(OwnerNode, this, Damage);
-        if (!applied) return;
+        if (Multiplayer.MultiplayerPeer != null && target is CharacterBase targetChar)
+        {
+            // In multiplayer, send the hit to the peer that has authority over the victim.
+            // Record optimistically so this hitbox won't fire again on the same target.
+            _hitTargetIds.Add(targetId);
+            HitLanded?.Invoke();
+            targetChar.RpcId(targetChar.GetMultiplayerAuthority(), nameof(CharacterBase.ReceiveHitRpc), Damage);
+            if (DestroyOnFirstHit) QueueFree();
+        }
+        else
+        {
+            // Singleplayer — call directly as before.
+            bool applied = damageable.TryReceiveHit(OwnerNode, this, Damage);
+            if (!applied) return;
 
-        _hitTargetIds.Add(targetId);
-        HitLanded?.Invoke();
-
-        if (DestroyOnFirstHit) QueueFree();
+            _hitTargetIds.Add(targetId);
+            HitLanded?.Invoke();
+            if (DestroyOnFirstHit) QueueFree();
+        }
     }
 }
