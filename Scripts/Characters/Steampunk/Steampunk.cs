@@ -34,53 +34,54 @@ public partial class Steampunk : CharacterBase
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (!IsMultiplayerAuthority()) return;
-
-		Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-
-		if (!Input.IsActionPressed("special"))
-			_specialUpBlocked = false;
-
-		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && !_specialUpBlocked)
+		if (IsMultiplayerAuthority())
 		{
-			if (CurrentState != CharacterState.HitStun &&
-				CurrentState != CharacterState.Dead &&
-				CurrentState != CharacterState.Dodge &&
-				CurrentState != CharacterState.Attack)
+			Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
+
+			if (!Input.IsActionPressed("special"))
+				_specialUpBlocked = false;
+
+			if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && !_specialUpBlocked)
 			{
-				_holdingSpecialUp = true;
-				SetState(CharacterState.Attack);
-				OnSpecialPerformed(SpecialDirection.Up, SpecialDamage);
+				if (CurrentState != CharacterState.HitStun &&
+					CurrentState != CharacterState.Dead &&
+					CurrentState != CharacterState.Dodge &&
+					CurrentState != CharacterState.Attack)
+				{
+					_holdingSpecialUp = true;
+					SetState(CharacterState.Attack);
+					OnSpecialPerformed(SpecialDirection.Up, SpecialDamage);
+				}
 			}
-		}
 
-		if (_holdingSpecialUp && !Input.IsActionPressed("special"))
-		{
-			_holdingSpecialUp = false;
-			_specialUpHeldTime = 0f;
-			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
-				_specialUpHitboxLeft.QueueFree();
-			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
-				_specialUpHitboxRight.QueueFree();
+			if (_holdingSpecialUp && !Input.IsActionPressed("special"))
+			{
+				_holdingSpecialUp = false;
+				_specialUpHeldTime = 0f;
+				if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
+					_specialUpHitboxLeft.QueueFree();
+				if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
+					_specialUpHitboxRight.QueueFree();
 
-			_specialUpHitboxLeft = null;
-			_specialUpHitboxRight = null;
+				_specialUpHitboxLeft = null;
+				_specialUpHitboxRight = null;
 
-			if (CurrentState == CharacterState.Attack)
-				SetState(CharacterState.Idle);
-		}
+				if (CurrentState == CharacterState.Attack)
+					SetState(CharacterState.Idle);
+			}
 
-		if (_holdingSpecialUp && CurrentState == CharacterState.Attack)
-		{
-			Velocity = new Vector2(move.X * MoveSpeed * 0.4f, Velocity.Y);
-			_specialUpHeldTime += (float)delta;
+			if (_holdingSpecialUp && CurrentState == CharacterState.Attack)
+			{
+				Velocity = new Vector2(move.X * MoveSpeed * 0.4f, Velocity.Y);
+				_specialUpHeldTime += (float)delta;
 
-			int currentDamage = SpecialDamage + (int)(_specialUpHeldTime * 3f);
+				int currentDamage = SpecialDamage + (int)(_specialUpHeldTime * 3f);
 
-			if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
-				_specialUpHitboxLeft.UpdateDamage(currentDamage);
-			if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
-				_specialUpHitboxRight.UpdateDamage(currentDamage);
+				if (_specialUpHitboxLeft != null && IsInstanceValid(_specialUpHitboxLeft))
+					_specialUpHitboxLeft.UpdateDamage(currentDamage);
+				if (_specialUpHitboxRight != null && IsInstanceValid(_specialUpHitboxRight))
+					_specialUpHitboxRight.UpdateDamage(currentDamage);
+			}
 		}
 
 		base._PhysicsProcess(delta);
