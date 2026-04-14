@@ -162,7 +162,7 @@ public partial class LassoHandler : Node
     private Area2D _lassoArea;
     private float _lassoTraveled;
     private Vector2 _lassoDirection;
-    private CharacterBase _lassoTarget;
+    private CharacterBody2D _lassoTarget;
     private float _arcT;
     private Vector2 _arcStart;
     private Vector2 _arcEnd;
@@ -311,7 +311,7 @@ public partial class LassoHandler : Node
 
     private void OnNeutralBodyEntered(Node2D body)
     {
-        if (body is not CharacterBase target || target == _owner) return;
+        if (body is not CharacterBody2D target || target is not IDamageable || target == _owner) return;
 
         FreeArea(ref _lassoArea);
         _lassoActive = false;
@@ -340,7 +340,8 @@ public partial class LassoHandler : Node
 
             // Re-enable physics before dealing damage so hitstun/knockback work normally.
             _lassoTarget.SetPhysicsProcess(true);
-            _lassoTarget.TakeDamage(SlamDamage);
+            if (_lassoTarget is CharacterBase cb) cb.TakeDamage(SlamDamage);
+            else if (_lassoTarget is AiBaseClass ai) ai.TakeDamage(SlamDamage);
 
             // Splash hitbox at the landing point — damages any bystander standing nearby.
             OnSlamSplash?.Invoke(landingPos);

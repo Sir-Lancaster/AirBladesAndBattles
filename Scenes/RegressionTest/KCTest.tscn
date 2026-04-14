@@ -509,6 +509,8 @@ position = Vector2(871, 273)
 [node name="Dummy" type="CharacterBody2D" parent="." unique_id=1580853169]
 position = Vector2(766, 293)
 script = ExtResource("14_xysxx")
+HitStunTimer = null
+HitIFrameTime = 0.5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Dummy" unique_id=1995159500]
 position = Vector2(9, 15)
