@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://hq871q66ehp1"]
 
+[ext_resource type="Script" uid="uid://cma8p48b075ei" path="res://Scripts/Characters/SirEdward/SirEdward.cs" id="1_8xl47"]
 [ext_resource type="Texture2D" uid="uid://catwnwexipt86" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_4souh"]
 [ext_resource type="Texture2D" uid="uid://lmn0fcu1fxaw" path="res://Assets/Characters/SirEdward/Attacks/Edward-Down-Air.png" id="2_8xl47"]
 [ext_resource type="Texture2D" uid="uid://blhprx8jd5epd" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Horizontal.png" id="3_7b2l4"]
@@ -518,6 +519,7 @@ properties/3/replication_mode = 2
 
 [node name="Edward" type="CharacterBody2D" unique_id=565846511 groups=["characters"]]
 scale = Vector2(2, 2)
+script = ExtResource("1_8xl47")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=297257781]
 shape = SubResource("CapsuleShape2D_rxdvh")
