@@ -169,11 +169,6 @@ public partial class KernelCowboy : CharacterBase
                 }
                 GD.Print($"{CharacterLabel} up special: recovery lasso launched");
                 return;
-
-            //case SpecialDirection.Horizontal:
-                //implement KernelCowboy's horizontal special
-                GD.Print($"{CharacterLabel} horizontal special: TODO");
-                break;
         }
 
         EndAttackAfter(SpecialAttackRecovery);

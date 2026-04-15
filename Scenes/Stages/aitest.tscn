@@ -3,7 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="1_l4s8t"]
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="2_hlsg8"]
 [ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_3uexr"]
-[ext_resource type="PackedScene" uid="uid://cw8tfl5dgdg7f" path="res://Scenes/KernelCowboy/AiKernelCowboy.tscn" id="5_l4s8t"]
+[ext_resource type="PackedScene" uid="uid://cw8tfl5dgdg7f" path="res://Scenes/KernelCowboy/AiKernelCowboy.tscn" id="5_hlsg8"]
+[ext_resource type="PackedScene" uid="uid://hq871q66ehp1" path="res://Scenes/Edward/EvilEdward.tscn" id="5_l4s8t"]
 [ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="5_p7x77"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5lg6u"]
@@ -74,10 +75,6 @@ position = Vector2(938, 556)
 zoom = Vector2(2, 2)
 script = ExtResource("3_3uexr")
 
-[node name="KernelCowboy" parent="." unique_id=156738427 instance=ExtResource("5_l4s8t")]
-position = Vector2(285, 666)
-AttackRecovery = 0.4
-
 [node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=960764150]
 position = Vector2(0, 130)
 
@@ -94,5 +91,11 @@ position = Vector2(-21.999878, 79)
 scale = Vector2(80, 1)
 shape = SubResource("RectangleShape2D_i5jib")
 
+[node name="KernelCowboy" parent="." unique_id=156738427 instance=ExtResource("5_hlsg8")]
+position = Vector2(784, 465)
+
 [node name="SteampunkAi" parent="." unique_id=1806914756 groups=["characters"] instance=ExtResource("5_p7x77")]
-position = Vector2(1257, 650)
+position = Vector2(1180, 596)
+
+[node name="Edward" parent="." unique_id=565846511 instance=ExtResource("5_l4s8t")]
+position = Vector2(241, 662)

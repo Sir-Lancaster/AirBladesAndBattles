@@ -486,7 +486,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     {
         if (toTarget.Length() <= PreferredCombatRange)
         {
-            AiInput.MoveDirection = Vector2.Zero;
+            MoveAwayFromTarget(toTarget);
             return;
         }
 
@@ -531,12 +531,8 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
         if (IsOnFloor() && IsEdgeAhead(dirX))
         {
-            AiInput.MoveDirection = new Vector2(dirX, 0f);
-            if (_jumpCooldownRemaining <= 0f)
-            {
-                AiInput.JumpJustPressed = true;
-                _jumpCooldownRemaining = 0.15f;
-            }
+            // Edge blocks retreat — cross to the other side of the target instead.
+            AiInput.MoveDirection = new Vector2(Mathf.Sign(toTarget.X), 0f);
             return;
         }
 

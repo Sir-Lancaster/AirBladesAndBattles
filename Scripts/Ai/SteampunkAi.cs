@@ -31,7 +31,7 @@ public partial class SteampunkAi : AiBaseClass
 		_sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_spriteBasePosition = _sprite.Position;
 		RegisterAttack(245f, 295f, 0f, 400f, AttackUp);               // above
-		RegisterAttack(315f, 45f, 50f, 100f, AttackHorizontal);        // right
+		RegisterAttack(315f, 45f, 0f, 150f, AttackHorizontal);          // right
 		RegisterAttack(135f, 225f, 0f, 150f, AttackHorizontal);       // left
 		RegisterAttack(315f, 45f, 50f, 300f, SpecialUp, isSpecial: true);     // up, special right
 		RegisterAttack(135f, 225f, 50f, 300f, SpecialUp, isSpecial: true);    // up, special left
