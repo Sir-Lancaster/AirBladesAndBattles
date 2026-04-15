@@ -11,10 +11,10 @@ public partial class JoinAndHost : Control
 		GetNode<Button>("JoinButton").Pressed += _on_join_button_pressed;
 
 		NetworkManager.Instance.ConnectedToServer += () => GD.Print("Connected to server!");
-		NetworkManager.Instance.ConnectionFailed += () => GD.Prin("Connection failed.");
+		NetworkManager.Instance.ConnectionFailed += () => GD.Print("Connection failed.");
 	}
 
-	private void _on_host_button_pressed(string ip)
+	private void _on_host_button_pressed()
 	{
 		NetworkManager.Instance.StartHost();
 		// TODO: Make a scene to popup the IP and a continue button to go choose a stage and character as normal.
