@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://31y0n8ityo06"]
 
 [ext_resource type="Texture2D" uid="uid://by01u7ctxpxa1" path="res://Assets/Icons/Halberd_Crossed.png" id="1_dpowv"]
+[ext_resource type="Script" uid="uid://di70eh4bwvpan" path="res://Scripts/Multiplayer/Join.cs" id="1_yui1h"]
 
 [node name="Join" type="Control" unique_id=1896761032]
 layout_mode = 3
 anchors_preset = 0
+script = ExtResource("1_yui1h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1059253763]
 
