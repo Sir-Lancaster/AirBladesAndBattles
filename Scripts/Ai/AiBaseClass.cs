@@ -434,8 +434,11 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     private void RunAggressiveBehavior()
     {
         Vector2 toTarget = _target.GlobalPosition - GlobalPosition;
-        if (!TrySelectAttackAggressive(toTarget))
+        if (!TrySelectAttackAggressive(toTarget) && _aiAttackCooldownRemaining <= 0)
+        {
             AggressiveFallbackAttack();
+            _aiAttackCooldownRemaining = AiAttackCooldown;
+        }
     }
 
     /// <summary>
@@ -641,7 +644,7 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
 
     private void SetupDangerZone()
     {
-        _dangerZone = new Area2D { Name = "DangerZone", CollisionMask = 0b1111 };
+        _dangerZone = new Area2D { Name = "DangerZone", CollisionLayer = 0, CollisionMask = 0b1111 };
         _dangerZone.AddChild(new CollisionShape2D
         {
             Shape = new CircleShape2D { Radius = ThreatDetectionRadius }
