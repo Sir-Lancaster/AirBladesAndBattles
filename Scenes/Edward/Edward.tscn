@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://hq871q66ehp1"]
 
+[ext_resource type="Script" uid="uid://c1yj7jssn7deq" path="res://Scripts/Characters/SirEdward/SirEdward.cs" id="1_8xl47"]
 [ext_resource type="Texture2D" uid="uid://catwnwexipt86" path="res://Assets/Characters/SirEdward/Idle/Edward-Idle.png" id="2_4souh"]
 [ext_resource type="Texture2D" uid="uid://lmn0fcu1fxaw" path="res://Assets/Characters/SirEdward/Attacks/Edward-Down-Air.png" id="2_8xl47"]
 [ext_resource type="Texture2D" uid="uid://blhprx8jd5epd" path="res://Assets/Characters/SirEdward/Attacks/Edward-Attack-Horizontal.png" id="3_7b2l4"]
@@ -11,8 +12,9 @@
 [ext_resource type="Texture2D" uid="uid://dw5h7oxjtkdlt" path="res://Assets/Characters/SirEdward/Specials/Edward-special-neutral.png" id="10_i6rr5"]
 [ext_resource type="Texture2D" uid="uid://bn0g32l81606q" path="res://Assets/Characters/SirEdward/Specials/Edward-special-up.png" id="11_ihubm"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_g6gd4"]
-size = Vector2(6.7555547, 22.400002)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rxdvh"]
+radius = 9.5
+height = 57.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mk70t"]
 atlas = ExtResource("2_8xl47")
@@ -502,15 +504,14 @@ animations = [{
 }]
 
 [node name="Edward" type="CharacterBody2D" unique_id=565846511 groups=["characters"]]
+scale = Vector2(2, 2)
+script = ExtResource("1_8xl47")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=297257781]
-position = Vector2(-321.77777, 20.444452)
-scale = Vector2(12.500002, 5)
-shape = SubResource("RectangleShape2D_g6gd4")
+position = Vector2(0, 2)
+shape = SubResource("CapsuleShape2D_rxdvh")
 
 [node name="Edward" type="AnimatedSprite2D" parent="." unique_id=1986630078]
 texture_filter = 1
-position = Vector2(-320, 12)
-scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_utqyo")
-animation = &"attack_downair"
+animation = &"idle"
