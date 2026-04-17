@@ -26,7 +26,7 @@ public partial class Vampire : CharacterBase
     [Export] public float UpAttackRecovery = 0.5f;
 	[Export] public float SpecialAttackRecovery = 0.35f;
     [Export] public float DownAttackRecovery = 0.45f;
-    [Export] public float NeutralSpecialRecovery = 1.5f;
+    [Export] public float NeutralSpecialRecovery = 0.75f;
     [Export] public float UpSpecialDelay = 0.9167f;
     [Export] public float UpSpecialDuration = 2.0f;
     [Export] public float UpSpecialVelocity = 150f;
@@ -34,7 +34,7 @@ public partial class Vampire : CharacterBase
 	[Export] public float AttackHitboxDelay = 0.2046f;
     [Export] public float UpAttackHitboxDelay = 0.2f;
     [Export] public float DownAttackHitboxDelay = 0.1f;
-    [Export] public float NeutralSpecialHitboxDelay = 1.111f;
+    [Export] public float NeutralSpecialHitboxDelay = 0.556f;
 	[Export] public float DownVelocityBoost = 400f;
 	private Hitbox _currentHitbox;
 	private bool _holdingSpecialUp;
