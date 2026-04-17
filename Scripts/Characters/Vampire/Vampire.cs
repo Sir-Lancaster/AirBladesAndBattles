@@ -82,7 +82,7 @@ public partial class Vampire : CharacterBase
 			{
 				bool isEarlyRelease = _specialUpChargeTime < UpSpecialDelay;
 				_specialUpEffectActive = true;
-			_specialUpEffectDuration = UpSpecialRecovery;
+				_specialUpEffectDuration = UpSpecialRecovery;
 				_specialUpCooldownRemaining = UpSpecialCooldown;
 				SpawnSpecialHitbox(SpecialDirection.Up, SpecialDamage);
 				
