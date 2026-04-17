@@ -2,22 +2,14 @@ using Godot;
 using System.Collections.Generic;
 
 /// <summary>
-/// Script for the Character Select scene.
-/// Attach to the root Control node of CharacterSelect.tscn.
-/// Drag each node into its matching export slot in the Inspector.
+/// Single-player character select. Attach to the root Control of CharacterSelect.tscn.
 ///
-/// SCENE SETUP — you need to add one extra widget to your scene that isn't in the
-/// current layout. Add a Control node (call it AiCountContainer) containing:
-///   - Label  (AiCountLabel)
-///   - Button (AiCountDownButton)  ← arrow down
-///   - Button (AiCountUpButton)    ← arrow up
-/// This mirrors your stocks widget. Drag AiCountContainer into the _aiCountContainer
-/// export slot. It auto-hides in Multiplayer mode where AI count comes from the lobby.
+/// SCENE SETUP — add a Control (AiCountContainer) with Label + up/down Buttons, mirroring
+/// the stocks widget. Drag it into the _aiCountContainer export slot.
 ///
 /// FLOW:
-///   Config phase  — player sets AI count (single player) and stocks, then hits "Begin Selection"
-///   Picking phase — cycles through each slot showing "Now Picking: Player 1", "Now Picking: AI 1", etc.
-///                   player picks a character and hits "Confirm" / "Start Match" on the last slot
+///   Config phase  — player sets AI count and stocks, hits "Begin Selection"
+///   Picking phase — cycles through each slot: "Now Picking: Player 1", "Now Picking: AI 1", etc.
 /// </summary>
 public partial class CharacterSelect : Control
 {
@@ -95,14 +87,7 @@ public partial class CharacterSelect : Control
         _backButton.Pressed     += OnBackPressed;
         _continueButton.Pressed += OnContinuePressed;
 
-        bool isSinglePlayer = GameManager.Instance.CurrentMode == GameManager.GameMode.SinglePlayer;
-
-        // In single player, slot 0 is the one human. In multiplayer, the lobby pre-fills human slots.
-        _humanCount = isSinglePlayer ? 1 : GameManager.Instance.CurrentMatch.Slots.Length;
-
-        // AI count widget is only relevant in single player.
-        if (_aiCountContainer != null)
-            _aiCountContainer.Visible = isSinglePlayer;
+        _humanCount = 1; // single player always has exactly one human
 
         EnterConfigPhase();
     }

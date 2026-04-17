@@ -45,10 +45,12 @@ public partial class GameManager : Node
     // Scene paths — replace each placeholder with your actual .tscn path
     // -------------------------------------------------------------------------
 
-    private const string MainMenuScene        = "res://Scenes/Pages/Menu/MainMenu.tscn";       
-    private const string StageSelectScene     = "res://Scenes/Pages/StageSelect/StageSelect.tscn";     
-    private const string CharacterSelectScene = "res://Scenes/Pages/Menu/CharacterSelect.tscn"; // TODO: update path
-    private const string GameScene            = "res://Scenes/Pages/Game.tscn";            // TODO: update path
+    private const string MainMenuScene                   = "res://Scenes/Pages/Menu/MainMenu.tscn";
+    private const string StageSelectScene               = "res://Scenes/Pages/StageSelect/StageSelect.tscn";
+    private const string CharacterSelectScene           = "res://Scenes/Pages/CharacterSelect/CharacterSelect.tscn";
+    private const string MultiplayerCharacterSelectScene = "res://Scenes/Pages/Menu/MultiplayerCharacterSelect.tscn";
+    private const string GameScene                      = "res://Scenes/Pages/Game.tscn";            // TODO: verify path
+    private const string MultiplayerBattleScene         = "res://Scenes/Multiplayer/BattleScene.tscn"; // TODO: verify path
 
     // -------------------------------------------------------------------------
     // State
@@ -108,15 +110,25 @@ public partial class GameManager : Node
 
     public void GoToMainMenu()
     {
-        CurrentMatch = new MatchConfig(); // wipe config so the next lobby starts fresh
-        CurrentMode = GameMode.SinglePlayer; // reset to default
+        CurrentMatch = new MatchConfig();
+        CurrentMode  = GameMode.SinglePlayer;
         GetTree().ChangeSceneToFile(MainMenuScene);
     }
 
-    public void GoToStageSelect()     => GetTree().ChangeSceneToFile(StageSelectScene);
-    public void GoToCharacterSelect() => GetTree().ChangeSceneToFile(CharacterSelectScene);
-    public void StartMatch()          => GetTree().ChangeSceneToFile(GameScene);
-    public void QuitGame()            => GetTree().Quit();
+    public void GoToStageSelect() => GetTree().ChangeSceneToFile(StageSelectScene);
+
+    /// <summary>Routes to the correct character select scene based on the current game mode.</summary>
+    public void GoToCharacterSelect()
+    {
+        string scene = CurrentMode == GameMode.Multiplayer
+            ? MultiplayerCharacterSelectScene
+            : CharacterSelectScene;
+        GetTree().ChangeSceneToFile(scene);
+    }
+
+    public void StartMatch()            => GetTree().ChangeSceneToFile(GameScene);
+    public void StartMultiplayerMatch() => GetTree().ChangeSceneToFile(MultiplayerBattleScene);
+    public void QuitGame()              => GetTree().Quit();
 
     // -------------------------------------------------------------------------
     // Match result — called by StageManager
