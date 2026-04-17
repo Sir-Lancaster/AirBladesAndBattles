@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://d22ys6jtu7m6t"]
+
+[ext_resource type="Script" uid="uid://crbu0hgsceus3" path="res://Scripts/Pages/StageSelect.cs" id="1_htqdj"]
+[ext_resource type="Texture2D" uid="uid://cwj6fbkekjlrs" path="res://icon.svg" id="2_4l67h"]
+
+[node name="StageSelect" type="Control" unique_id=1540081624 node_paths=PackedStringArray("_stage1Button", "_stage2Button", "_stage3Button", "_stage4Button", "_backButton", "_continueButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_htqdj")
+_stage1Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/ClockTowerBtn")
+_stage2Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/KCBtn")
+_stage3Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/SirEdwardBtn")
+_stage4Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/VanpireBtn")
+_backButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/BackBtn")
+_continueButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/ContinueBtn")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1789256607]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1380232356]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=1074449055]
+layout_mode = 2
+theme_override_constants/separation = 150
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1699543512]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "Stage Selection"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=873188231]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="ClockTowerBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=2021801483]
+layout_mode = 2
+text = "Clock Tower"
+icon = ExtResource("2_4l67h")
+
+[node name="KCBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1166176764]
+layout_mode = 2
+text = "Desert"
+icon = ExtResource("2_4l67h")
+
+[node name="SirEdwardBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=445154238]
+layout_mode = 2
+text = "Castle"
+icon = ExtResource("2_4l67h")
+
+[node name="VanpireBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1973231377]
+layout_mode = 2
+text = "Other Castle?"
+icon = ExtResource("2_4l67h")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=878764787]
+layout_mode = 2
+theme_override_constants/separation = 800
+alignment = 1
+
+[node name="BackBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1842980054]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Back "
+
+[node name="ContinueBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=2043850402]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Continue "
