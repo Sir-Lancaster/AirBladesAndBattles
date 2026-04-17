@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" uid="uid://ddtkv8t64njfo" path="res://Scripts/Characters/Utility/Hitbox.cs" id="1_iv1re"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_iv1re"]
-radius = 28.01785
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lwxn7"]
+radius = 20.0
+height = 82.0
 
 [node name="Hitbox" type="Area2D" unique_id=775310356]
 script = ExtResource("1_iv1re")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1545320923]
-shape = SubResource("CircleShape2D_iv1re")
+shape = SubResource("CapsuleShape2D_lwxn7")
 debug_color = Color(1, 0.26666668, 0.07058824, 0.41960785)
