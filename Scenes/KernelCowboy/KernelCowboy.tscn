@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ctf3g8ckon053" path="res://Assets/Characters/KernelCowboy/KCHorizontal.png" id="2_2fosr"]
 [ext_resource type="Texture2D" uid="uid://1nu8i3bj6xka" path="res://Assets/Characters/KernelCowboy/lassoclose.png" id="2_v6plb"]
 [ext_resource type="Texture2D" uid="uid://huf8gkvrgxut" path="res://Assets/Characters/KernelCowboy/KCHurt.png" id="3_egudy"]
-[ext_resource type="Script" uid="uid://0smet61r0uwj" path="res://Scripts/Characters/KernelCowboy/LassoHandler.cs" id="3_xysxx"]
+[ext_resource type="Script" uid="uid://c6k1duhl8w4d" path="res://Scripts/Characters/KernelCowboy/LassoHandler.cs" id="3_xysxx"]
 [ext_resource type="Texture2D" uid="uid://dgq3sgvsfgm3d" path="res://Assets/Characters/KernelCowboy/KCDodge.png" id="4_7yy75"]
 [ext_resource type="Texture2D" uid="uid://q7wc8v61w3pt" path="res://Assets/Characters/KernelCowboy/KCIdle.png" id="4_a4ul0"]
 [ext_resource type="Texture2D" uid="uid://df2gsqo75jruk" path="res://Assets/Characters/KernelCowboy/KCRun.png" id="5_6st2j"]

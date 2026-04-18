@@ -60,6 +60,8 @@ public partial class Vampire : CharacterBase
 
 	public override void _PhysicsProcess(double delta)
 	{
+		if (IsMultiplayerAuthority())
+		{
 		Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
 		if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && _specialUpCooldownRemaining <= 0)
@@ -122,6 +124,7 @@ public partial class Vampire : CharacterBase
 
 		if (_specialUpCooldownRemaining > 0)
 			_specialUpCooldownRemaining = Mathf.Max(0f, _specialUpCooldownRemaining - (float)delta);
+		}
 
 		base._PhysicsProcess(delta);
 

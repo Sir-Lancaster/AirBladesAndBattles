@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://btfcbuwxkk2ur"]
 
-[ext_resource type="Script" uid="uid://84eagvhr1wor" path="res://Scripts/Characters/Steampunk/Steampunk.cs" id="1_vw2n7"]
+[ext_resource type="Script" uid="uid://bl2rbeote02gm" path="res://Scripts/Characters/Steampunk/Steampunk.cs" id="1_vw2n7"]
 [ext_resource type="Texture2D" uid="uid://23mgev0h2ton" path="res://Assets/Characters/steampunk/idle.png" id="2_1lbay"]
 [ext_resource type="Texture2D" uid="uid://b1n6adicq53rc" path="res://Assets/Characters/steampunk/steampunkgirl_atk1.png" id="2_36cvq"]
 [ext_resource type="Texture2D" uid="uid://dwogao0vwa72s" path="res://Assets/Characters/steampunk/steampunkgirl_run.png" id="3_1lbay"]

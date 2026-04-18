@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://drjfdbhsxq77d"]
+
+[ext_resource type="Script" uid="uid://4l50glrrmf5m" path="res://Scripts/Stages/StageManager.cs" id="1_0i360"]
+[ext_resource type="Texture2D" uid="uid://coyve02ynppah" path="res://Assets/Characters/KernelCowboy/KCFace.png" id="2_rra87"]
+[ext_resource type="Texture2D" uid="uid://d3f3g4803afjp" path="res://Assets/Characters/SirEdward/Headshot.png" id="3_p6b51"]
+[ext_resource type="Texture2D" uid="uid://bg0ngcrps2mr8" path="res://Assets/Characters/steampunk/portrait_steampunk.png" id="4_ieqa8"]
+[ext_resource type="Texture2D" uid="uid://c5yih53bdif0c" path="res://Assets/Characters/Vampire/VampireHeadSprite.png" id="5_nyo5q"]
+[ext_resource type="PackedScene" uid="uid://bm26xivwe1tmw" path="res://Scenes/Stages/Utility/GameHUD.tscn" id="6_a0m3m"]
+
+[node name="Game" type="Node2D" unique_id=1253827890 node_paths=PackedStringArray("_gameHUD", "_countdownOverlay", "_countdownLabel")]
+script = ExtResource("1_0i360")
+_gameHUD = NodePath("GameHud")
+_countdownOverlay = NodePath("CanvasLayer")
+_countdownLabel = NodePath("CanvasLayer/VBoxContainer/HBoxContainer/Label")
+_kernelCowboyPortrait = ExtResource("2_rra87")
+_sirEdwardPortrait = ExtResource("3_p6b51")
+_steampunkPortrait = ExtResource("4_ieqa8")
+_vampirePortrait = ExtResource("5_nyo5q")
+
+[node name="GameHud" parent="." unique_id=1780127748 instance=ExtResource("6_a0m3m")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=323569476]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1758776604]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=162755090]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer" unique_id=2015307059]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68237275, 2.7675183e-06, 4.813075e-07, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 50
+theme_override_constants/shadow_outline_size = 80
+theme_override_font_sizes/font_size = 60
+text = "3"

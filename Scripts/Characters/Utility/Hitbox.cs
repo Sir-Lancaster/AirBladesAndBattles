@@ -134,12 +134,32 @@ public partial class Hitbox : Area2D
             return;
         }
 
-        bool applied = damageable.TryReceiveHit(OwnerNode, this, Damage);
-        if (!applied) return;
+        bool isNetworked = GameManager.Instance?.CurrentMode == GameManager.GameMode.Multiplayer;
 
-        _hitTargetIds.Add(targetId);
-        HitLanded?.Invoke();
+        if (isNetworked && target is CharacterBase targetChar)
+        {
+            // Multiplayer — route the hit to whichever peer owns the victim.
+            _hitTargetIds.Add(targetId);
+            HitLanded?.Invoke();
 
-        if (DestroyOnFirstHit) QueueFree();
+            long victimAuthority = targetChar.GetMultiplayerAuthority();
+            if (victimAuthority == Multiplayer.GetUniqueId())
+                // We own the victim — apply damage directly without an RPC.
+                targetChar.ReceiveHitRpc(Damage);
+            else
+                targetChar.RpcId(victimAuthority, nameof(CharacterBase.ReceiveHitRpc), Damage);
+
+            if (DestroyOnFirstHit) QueueFree();
+        }
+        else
+        {
+            // Single player — call directly, no RPC needed.
+            bool applied = damageable.TryReceiveHit(OwnerNode, this, Damage);
+            if (!applied) return;
+
+            _hitTargetIds.Add(targetId);
+            HitLanded?.Invoke();
+            if (DestroyOnFirstHit) QueueFree();
+        }
     }
 }

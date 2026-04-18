@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bsl2awvp7ono0"]
 
-[ext_resource type="Script" path="res://Scripts/Characters/Vampire/Vampire.cs" id="1_1w3m4"]
+[ext_resource type="Script" uid="uid://cyd36mp0r5ftp" path="res://Scripts/Characters/Vampire/Vampire.cs" id="1_1w3m4"]
 [ext_resource type="Texture2D" uid="uid://cpj2q2g3uqexs" path="res://Assets/Characters/Vampire/VampireNAttackSprite-Sheet.png" id="2_ddrr7"]
 [ext_resource type="Texture2D" uid="uid://obrn57thoa40" path="res://Assets/Characters/Vampire/VampireDAttackSprite-Sheet.png" id="3_6am3x"]
 [ext_resource type="Texture2D" uid="uid://kfl56pee5fua" path="res://Assets/Characters/Vampire/VampireUAttackSprite-Sheet.png" id="4_pnxg5"]

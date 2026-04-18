@@ -34,8 +34,8 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     /// Runtime character attributes.
     /// </summary>
     public bool IsDead { get; protected set; }
-    public int CurrentHP { get; protected set; }
-    public CharacterState CurrentState { get; protected set; }
+    [Export] public int CurrentHP { get; set; }
+    [Export] public CharacterState CurrentState { get; set; }
     public bool IsInvincible { get; private set; }
     private float _hitStunRemaining;
     private float _dodgeRemaining;
@@ -43,6 +43,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     private float _dodgeVelocityX;
 
     private int _jumpsRemaining;
+    private CharacterState _lastReplicatedState;
 
     // Base methods, owned by the core class.
 
@@ -231,12 +232,32 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         CollisionMask = 1;
     }
 
+    public override void _EnterTree()
+    {
+        // BattleManager sets Name = peerId.ToString() before AddChild.
+        // int.TryParse guard keeps singleplayer working (names like "KernelCowboy" won't parse).
+        if (int.TryParse(Name, out int peerId))
+            SetMultiplayerAuthority(peerId);
+    }
+
     /// <summary>
     /// While a character is in hitstun state, the timer decreases.
     /// </summary>
     /// <param name="delta">delta represents time.</param>
     public override void _PhysicsProcess(double delta)
     {
+        if (!IsMultiplayerAuthority())
+        {
+            // Drive animations from replicated CurrentState on remote clients.
+            if (CurrentState != _lastReplicatedState)
+            {
+                PlayAnimationForState(CurrentState);
+                _lastReplicatedState = CurrentState;
+            }
+            MoveAndSlide(); // apply replicated velocity
+            return;         // skip all input and local physics
+        }
+
         if (IsDead) return;
 
         if (!IsOnFloor())
@@ -272,10 +293,26 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         }
 
         MoveAndSlide();
+
+        // Broadcast state to all non-authority peers every physics frame.
+        if (Multiplayer.MultiplayerPeer != null)
+            Rpc(nameof(SyncState), GlobalPosition, Velocity, (int)CurrentState, CurrentHP);
+    }
+
+    // UnreliableOrdered: only the freshest packet matters, old ones are dropped.
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+    private void SyncState(Vector2 pos, Vector2 vel, int state, int hp)
+    {
+        GlobalPosition = pos;
+        Velocity       = vel;
+        CurrentState   = (CharacterState)state;
+        CurrentHP      = hp;
     }
 
     private void HandleCombatInput()
     {
+        if (!IsMultiplayerAuthority()) return;
         if (CurrentState == CharacterState.HitStun || CurrentState == CharacterState.Dead)
             return;
 
@@ -308,6 +345,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
 
     private void HandleMovementInput()
     {
+        if (!IsMultiplayerAuthority()) return;
         if (CurrentState == CharacterState.HitStun || CurrentState == CharacterState.Dead)
             return;
 
@@ -333,5 +371,15 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
                 Velocity = new Vector2(Velocity.X, JumpVelocity);
                 SetState(CharacterState.Jump);
         }
+    }
+
+    // Called on this character's authority peer by a remote attacker's Hitbox.
+    // Reliable transfer ensures damage is never silently dropped.
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    public void ReceiveHitRpc(int damage)
+    {
+        if (!IsMultiplayerAuthority()) return;
+        TakeDamage(damage);
     }
 }
