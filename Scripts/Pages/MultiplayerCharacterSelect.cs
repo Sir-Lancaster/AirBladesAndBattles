@@ -212,6 +212,22 @@ public partial class MultiplayerCharacterSelect : Control
 
             _slotNodes[peerId] = slot;
         }
+
+        // Center slots and scale spacing so fewer players spread out more.
+        if (_slotsContainer is HBoxContainer hbox)
+        {
+            hbox.Alignment = BoxContainer.AlignmentMode.Center;
+            int separation = _peerOrder.Count switch
+            {
+                1 => 0,
+                2 => 120,
+                3 => 60,
+                _ => 30
+            };
+            hbox.AddThemeConstantOverride("separation", separation);
+        }
+
+        GD.Print($"[MultiplayerCharacterSelect] Built {_peerOrder.Count} player slot(s).");
     }
 
     private string FriendlyName(string enumName) => enumName switch

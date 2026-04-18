@@ -18,6 +18,7 @@ public partial class PlayerSlot : Control
     public void Init(int playerNumber, bool isLocal)
     {
         _playerLabel.Text = isLocal ? $"Player {playerNumber} (You)" : $"Player {playerNumber}";
+        GD.Print($"[PlayerSlot] Added slot for Player {playerNumber}{(isLocal ? " (local)" : "")}");
     }
 
     /// <summary>Show the waiting state — no portrait, "Waiting..." in white.</summary>
