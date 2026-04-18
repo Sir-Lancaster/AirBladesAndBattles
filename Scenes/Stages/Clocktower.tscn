@@ -21,10 +21,10 @@ size = Vector2(0.52812576, 1069)
 [node name="SpawnPoints" type="Node2D" parent="." unique_id=1154924217]
 
 [node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=1475519633]
-position = Vector2(285, 331)
+position = Vector2(285, 323)
 
 [node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1353731479]
-position = Vector2(1264, 360)
+position = Vector2(392, 296)
 
 [node name="Spawn3" type="Marker2D" parent="SpawnPoints" unique_id=1706966464]
 position = Vector2(288, 696)
