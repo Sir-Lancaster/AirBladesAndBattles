@@ -182,38 +182,17 @@ public partial class BattleManager : Node2D
     // Sync re-attachment
     // -------------------------------------------------------------------------
 
-    // Called on BOTH host and client after a character enters the scene tree and
-    // MultiplayerSpawner has already sent (or received) the spawn packet.
-    // We rebuild the MultiplayerSynchronizer here so its path registration is
-    // delivered to peers that already have the character node.
+    // Fires on both host and client when a character enters the scene tree.
+    // Strips any embedded MultiplayerSynchronizer — CharacterBase.SyncState RPC
+    // handles state propagation and avoids the cross-channel race condition.
     private void OnCharacterSpawned(Node node)
     {
         if (node is not CharacterBase character) return;
-        if (character.GetNodeOrNull<MultiplayerSynchronizer>("MultiplayerSynchronizer") != null) return;
-
-        var config = new SceneReplicationConfig();
-
-        config.AddProperty(new NodePath(".:position"));
-        config.PropertySetSpawn(new NodePath(".:position"), true);
-        config.PropertySetReplicationMode(new NodePath(".:position"), SceneReplicationConfig.ReplicationMode.Always);
-
-        config.AddProperty(new NodePath(".:velocity"));
-        config.PropertySetSpawn(new NodePath(".:velocity"), false);
-        config.PropertySetReplicationMode(new NodePath(".:velocity"), SceneReplicationConfig.ReplicationMode.Always);
-
-        config.AddProperty(new NodePath(".:CurrentState"));
-        config.PropertySetSpawn(new NodePath(".:CurrentState"), true);
-        config.PropertySetReplicationMode(new NodePath(".:CurrentState"), SceneReplicationConfig.ReplicationMode.OnChange);
-
-        config.AddProperty(new NodePath(".:CurrentHP"));
-        config.PropertySetSpawn(new NodePath(".:CurrentHP"), true);
-        config.PropertySetReplicationMode(new NodePath(".:CurrentHP"), SceneReplicationConfig.ReplicationMode.OnChange);
-
-        var sync = new MultiplayerSynchronizer();
-        sync.Name = "MultiplayerSynchronizer";
-        sync.ReplicationConfig = config;
-        character.AddChild(sync);
-        GD.Print($"[BattleManager] Attached MultiplayerSynchronizer to {character.Name}");
+        var sync = character.GetNodeOrNull<MultiplayerSynchronizer>("MultiplayerSynchronizer");
+        if (sync == null) return;
+        character.RemoveChild(sync);
+        sync.Free();
+        GD.Print($"[BattleManager] Removed embedded sync from {character.Name} — using RPC sync.");
     }
 
     // -------------------------------------------------------------------------
