@@ -196,6 +196,7 @@ public partial class NetworkManager : Node
     public void StartStageSelect()
     {
         if (!IsHost) return;
+        GD.Print($"[NetworkManager] StartStageSelect — sending to {_connectedPeers.Count} peer(s): {string.Join(", ", _connectedPeers)}");
         Rpc(MethodName.LoadStageSelectScene);
     }
 
@@ -203,6 +204,7 @@ public partial class NetworkManager : Node
     public void StartCharacterSelect()
     {
         if (!IsHost) return;
+        GD.Print($"[NetworkManager] StartCharacterSelect — sending to {_connectedPeers.Count} peer(s)");
         Rpc(MethodName.LoadCharacterSelectScene);
     }
 
@@ -213,21 +215,24 @@ public partial class NetworkManager : Node
         Rpc(MethodName.LoadBattleScene);
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void LoadStageSelectScene()
     {
+        GD.Print($"[NetworkManager] LoadStageSelectScene — my peer ID: {Multiplayer.GetUniqueId()}");
         GetTree().ChangeSceneToFile("res://Scenes/Pages/StageSelect/StageSelect.tscn");
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void LoadCharacterSelectScene()
     {
+        GD.Print($"[NetworkManager] LoadCharacterSelectScene — my peer ID: {Multiplayer.GetUniqueId()}");
         GetTree().ChangeSceneToFile("res://Scenes/Pages/CharacterSelect/MultiplayerCharacterSelect.tscn");
     }
 
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void LoadBattleScene()
     {
+        GD.Print($"[NetworkManager] LoadBattleScene — my peer ID: {Multiplayer.GetUniqueId()}");
         GetTree().ChangeSceneToFile("res://Scenes/Multiplayer/BattleScene.tscn");
     }
 }

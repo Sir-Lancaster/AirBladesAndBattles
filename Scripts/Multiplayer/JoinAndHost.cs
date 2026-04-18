@@ -19,7 +19,11 @@ public partial class JoinAndHost : Control
 			DialogText = $"Your IP address:\n{GetLocalIp()}\n\nShare this with players who want to join.\n\nClick OK when everyone has connected."
 		};
 		AddChild(dialog);
-		dialog.Confirmed += () => NetworkManager.Instance.StartStageSelect();
+		dialog.Confirmed += () =>
+		{
+			GD.Print($"[JoinAndHost] Host confirmed start. Connected peers: {NetworkManager.Instance.ConnectedPeers.Count}");
+			NetworkManager.Instance.StartStageSelect();
+		};
 		dialog.PopupCentered();
 	}
 
