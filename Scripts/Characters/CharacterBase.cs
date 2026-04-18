@@ -34,8 +34,8 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     /// Runtime character attributes.
     /// </summary>
     public bool IsDead { get; protected set; }
-    public int CurrentHP { get; set; }
-    public CharacterState CurrentState { get; set; }
+    [Export] public int CurrentHP { get; set; }
+    [Export] public CharacterState CurrentState { get; set; }
     public bool IsInvincible { get; private set; }
     private float _hitStunRemaining;
     private float _dodgeRemaining;
