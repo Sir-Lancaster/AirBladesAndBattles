@@ -13,12 +13,15 @@ public partial class GameHUD : CanvasLayer
 
     [Export] private PackedScene _playerHUDBoxScene;
 
-    private HBoxContainer _playerBoxContainer;
+    /// <summary>Positive values push the HUD boxes down, negative moves them up.</summary>
+    [Export] private float _verticalOffset = 0f;
+
+    private Control _playerBoxContainer;
     private Array<PlayerHUDBox> _hudBoxes = new();
 
     public override void _Ready()
     {
-        _playerBoxContainer = GetNode<HBoxContainer>("Control/PlayerBoxContainer");
+        _playerBoxContainer = GetNode<Control>("Control/PlayerBoxContainer");
     }
 
     // Call this once at match start with all active players.
@@ -40,6 +43,8 @@ public partial class GameHUD : CanvasLayer
 
             _hudBoxes.Add(box);
         }
+
+        CallDeferred(nameof(PositionHUDBoxes));
     }
 
     // Call these during gameplay when values change.
@@ -53,5 +58,25 @@ public partial class GameHUD : CanvasLayer
     {
         if (playerIndex < 0 || playerIndex >= _hudBoxes.Count) return;
         _hudBoxes[playerIndex].SetStocks(stocks);
+    }
+
+    private void PositionHUDBoxes()
+    {
+        if (_hudBoxes.Count == 0) return;
+
+        float containerW = _playerBoxContainer.Size.X;
+        float containerH = _playerBoxContainer.Size.Y;
+        float sectionW   = containerW / 4f;
+
+        for (int i = 0; i < _hudBoxes.Count; i++)
+        {
+            PlayerHUDBox box  = _hudBoxes[i];
+            Vector2      size = box.Size;
+
+            float x = i * sectionW + (sectionW - size.X) / 2f;
+            float y = (containerH - size.Y) / 2f + _verticalOffset;
+
+            box.Position = new Vector2(x, Mathf.Max(y, 0f));
+        }
     }
 }

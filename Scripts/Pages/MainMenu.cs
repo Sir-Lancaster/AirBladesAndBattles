@@ -13,6 +13,8 @@ public partial class MainMenu : Control
 
     public override void _Ready()
     {
+        MusicManager.Instance?.PlayMusic();
+
         _singlePlayerButton.Pressed += () =>
         {
             GameManager.Instance.SetMode(GameManager.GameMode.SinglePlayer);

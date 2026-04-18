@@ -93,7 +93,7 @@ public partial class MultiplayerCharacterSelect : Control
         }
 
         UpdateStocksLabel();
-        UpdateCharacterButtonVisuals();
+        UpdateCharacterButtonStates();
 
         if (isHost)
         {
@@ -112,7 +112,7 @@ public partial class MultiplayerCharacterSelect : Control
         _selectedCharacterButton = button;
         _selectedCharacter       = character;
 
-        UpdateCharacterButtonVisuals();
+        UpdateCharacterButtonStates();
 
         string characterName = character.ToString();
 
@@ -165,6 +165,8 @@ public partial class MultiplayerCharacterSelect : Control
         if (_slotNodes.TryGetValue(peerId, out PlayerSlot slot))
             slot.ShowCharacter(FriendlyName(characterName), PortraitFor(characterName));
 
+        UpdateCharacterButtonStates();
+
         if (Multiplayer.IsServer())
             CheckAllReady();
     }
@@ -181,6 +183,7 @@ public partial class MultiplayerCharacterSelect : Control
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void AllStartBattle()
     {
+        MusicManager.Instance?.StopMusic();
         GameManager.Instance.SetStocks(_stocks);
         GameManager.Instance.StartMultiplayerMatch();
     }
@@ -213,24 +216,33 @@ public partial class MultiplayerCharacterSelect : Control
             _slotNodes[peerId] = slot;
         }
 
-        // Center slots and scale spacing so fewer players spread out more.
-        if (_slotsContainer is HBoxContainer hbox)
-        {
-            hbox.Alignment = BoxContainer.AlignmentMode.Center;
-            int separation = _peerOrder.Count switch
-            {
-                1 => 0,
-                2 => 120,
-                3 => 60,
-                _ => 30
-            };
-            hbox.AddThemeConstantOverride("separation", separation);
-        }
-
         GD.Print($"[MultiplayerCharacterSelect] Built {_peerOrder.Count} player slot(s).");
+        CallDeferred(nameof(PositionSlots));
     }
 
-    private string FriendlyName(string enumName) => enumName switch
+    private void PositionSlots()
+    {
+        if (_slotNodes.Count == 0) return;
+
+        float containerW = _slotsContainer.Size.X;
+        float containerH = _slotsContainer.Size.Y;
+        float sectionW   = containerW / 4f;
+
+        int i = 0;
+        foreach (long peerId in _peerOrder)
+        {
+            if (!_slotNodes.TryGetValue(peerId, out PlayerSlot slot)) { i++; continue; }
+
+            Vector2 size = slot.Size;
+            float   x    = i * sectionW + (sectionW - size.X) / 2f;
+            float   y    = (containerH - size.Y) / 2f;
+
+            slot.Position = new Vector2(x, Mathf.Max(y, 0f));
+            i++;
+        }
+    }
+
+    private static string FriendlyName(string enumName) => enumName switch
     {
         "KernelCowboy" => "Kernel Cowboy",
         "SirEdward"    => "Sir Edward",
@@ -250,13 +262,32 @@ public partial class MultiplayerCharacterSelect : Control
 
     private void UpdateStocksLabel() => _stocksLabel.Text = $"Stocks: {_stocks}";
 
-    private void UpdateCharacterButtonVisuals()
+    private void UpdateCharacterButtonStates()
     {
-        Button[] buttons = { _character1Button, _character2Button, _character3Button, _character4Button };
-        foreach (Button btn in buttons)
+        long localId = (long)Multiplayer.GetUniqueId();
+
+        var takenByOthers = new System.Collections.Generic.HashSet<string>();
+        foreach (var (peerId, charName) in _peerSelections)
+            if (peerId != localId)
+                takenByOthers.Add(charName);
+
+        (Button btn, GameManager.CharacterType ch)[] map =
+        [
+            (_character1Button, GameManager.CharacterType.KernelCowboy),
+            (_character2Button, GameManager.CharacterType.SirEdward),
+            (_character3Button, GameManager.CharacterType.Steampunk),
+            (_character4Button, GameManager.CharacterType.Vampire),
+        ];
+
+        foreach (var (btn, ch) in map)
         {
             if (btn == null) continue;
-            btn.Modulate = btn == _selectedCharacterButton ? SelectedTint : UnselectedTint;
+
+            bool taken    = takenByOthers.Contains(ch.ToString());
+            bool selected = btn == _selectedCharacterButton;
+
+            btn.Disabled = taken;
+            btn.Modulate = selected ? SelectedTint : (taken ? UnselectedTint : Colors.White);
         }
     }
 }

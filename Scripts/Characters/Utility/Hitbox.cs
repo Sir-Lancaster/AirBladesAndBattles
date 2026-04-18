@@ -134,8 +134,11 @@ public partial class Hitbox : Area2D
             return;
         }
 
-        if (Multiplayer.MultiplayerPeer != null && target is CharacterBase targetChar)
+        bool isNetworked = GameManager.Instance?.CurrentMode == GameManager.GameMode.Multiplayer;
+
+        if (isNetworked && target is CharacterBase targetChar)
         {
+            // Multiplayer — route the hit to whichever peer owns the victim.
             _hitTargetIds.Add(targetId);
             HitLanded?.Invoke();
 
@@ -150,7 +153,7 @@ public partial class Hitbox : Area2D
         }
         else
         {
-            // Singleplayer — call directly as before.
+            // Single player — call directly, no RPC needed.
             bool applied = damageable.TryReceiveHit(OwnerNode, this, Damage);
             if (!applied) return;
 

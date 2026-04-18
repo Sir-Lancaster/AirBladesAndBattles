@@ -53,7 +53,12 @@ icon = ExtResource("2_4l67h")
 
 [node name="KCBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1166176764]
 layout_mode = 2
-text = "Desert"
+text = "Testing
+
+use this.
+no really!
+Please 
+pick me!!"
 icon = ExtResource("2_4l67h")
 
 [node name="SirEdwardBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=445154238]

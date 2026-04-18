@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://bm26xivwe1tmw"]
 
-[ext_resource type="Script" path="res://Scripts/Stages/Utility/GameHUD.cs" id="1_script"]
+[ext_resource type="Script" uid="uid://cpmfmtkmiky3n" path="res://Scripts/Stages/Utility/GameHUD.cs" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://hx1h2h1rh7ca" path="res://Scenes/Stages/Utility/PlayerHUDBox.tscn" id="2_72xci"]
 
 [node name="GameHud" type="CanvasLayer" unique_id=1780127748]
 script = ExtResource("1_script")
 _playerHUDBoxScene = ExtResource("2_72xci")
+_verticalOffset = -200.0
 
 [node name="Control" type="Control" parent="." unique_id=1376976843]
 layout_mode = 3
@@ -21,7 +22,7 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -160.0
+offset_top = -60.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 1

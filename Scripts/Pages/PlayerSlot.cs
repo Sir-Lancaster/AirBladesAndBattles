@@ -14,11 +14,23 @@ public partial class PlayerSlot : Control
     private static readonly Color ReadyColor   = new Color(0.2f, 1.0f, 0.4f);
     private static readonly Color WaitingColor = new Color(1.0f, 1.0f, 1.0f);
 
-    /// <summary>Set the player number and whether this is the local player. Call once after instantiation.</summary>
+    /// <summary>Set the player label directly. Used by single-player for "Player 1", "AI 1", etc.</summary>
+    public void Init(string label)
+    {
+        _playerLabel.Text = label;
+        GD.Print($"[PlayerSlot] Added slot: {label}");
+    }
+
+    /// <summary>Multiplayer overload — builds label from player number and local flag.</summary>
     public void Init(int playerNumber, bool isLocal)
     {
-        _playerLabel.Text = isLocal ? $"Player {playerNumber} (You)" : $"Player {playerNumber}";
-        GD.Print($"[PlayerSlot] Added slot for Player {playerNumber}{(isLocal ? " (local)" : "")}");
+        Init(isLocal ? $"Player {playerNumber} (You)" : $"Player {playerNumber}");
+    }
+
+    /// <summary>Highlights this slot gold when it is the active picker; resets to white otherwise.</summary>
+    public void SetActive(bool active)
+    {
+        Modulate = active ? new Color(1.0f, 0.85f, 0.2f) : Colors.White;
     }
 
     /// <summary>Show the waiting state — no portrait, "Waiting..." in white.</summary>

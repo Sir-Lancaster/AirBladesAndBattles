@@ -18,7 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 NetworkManager="*res://Scripts/Multiplayer/NetworkManager.cs"
-GameManager="*res://Scripts/GameManager.cs"
+GameManager="*uid://c84syckgct216"
+MusicManager="*uid://d4jqm6bxf0ue"
 
 [display]
 

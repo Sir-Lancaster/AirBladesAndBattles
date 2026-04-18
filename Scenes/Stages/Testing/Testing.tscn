@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://drgadtrqdb0nf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bb31b"]
+size = Vector2(3309, 49)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qsoun"]
+size = Vector2(97, 444)
+
+[node name="KernelBadlands" type="Node2D" unique_id=1220850273]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=79532745]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1466011870]
+position = Vector2(924.5, 625.5)
+shape = SubResource("RectangleShape2D_bb31b")
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D" unique_id=329737987]
+position = Vector2(-186.38617, 429)
+scale = Vector2(1.3069139, 1)
+color = Color(0.43553686, 0.17134702, 0.6044284, 1)
+polygon = PackedVector2Array(1184, 169, -2, 171, -1, 216, 1182, 212, 1182, 179)
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=1219203718]
+position = Vector2(4, 9)
+
+[node name="Polygon2D2" type="Polygon2D" parent="StaticBody2D2" unique_id=2123200671]
+position = Vector2(210.00037, 2453)
+rotation = 3.1225586
+scale = Vector2(0.058791474, 10.912924)
+skew = -0.06368387
+color = Color(0.19813365, 0.3761134, 0.18901873, 1)
+polygon = PackedVector2Array(1184, 169, -2, 171, -64.90747, 211.66133, 1182, 212, 1182, 179)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2" unique_id=136717192]
+position = Vector2(-49.5, 376)
+shape = SubResource("RectangleShape2D_qsoun")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="." unique_id=1536004873]
+position = Vector2(1175, 2)
+
+[node name="Polygon2D2" type="Polygon2D" parent="StaticBody2D3" unique_id=885865131]
+position = Vector2(210.00037, 2453)
+rotation = 3.1225586
+scale = Vector2(0.058791474, 10.912924)
+skew = -0.06368387
+color = Color(0.19813365, 0.3761134, 0.18901873, 1)
+polygon = PackedVector2Array(1184, 169, -2, 171, -64.90747, 211.66133, 1182, 212, 1182, 179)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3" unique_id=1343026444]
+position = Vector2(-5.5, 376)
+shape = SubResource("RectangleShape2D_qsoun")
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=1780148689]
+
+[node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=1944338284]
+position = Vector2(152, 571)
+
+[node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1730611901]
+position = Vector2(663, 567)
+
+[node name="Spawn3" type="Marker2D" parent="SpawnPoints" unique_id=1426270854]
+position = Vector2(334, 550)
+
+[node name="Spawn4" type="Marker2D" parent="SpawnPoints" unique_id=120528770]
+position = Vector2(966, 553)

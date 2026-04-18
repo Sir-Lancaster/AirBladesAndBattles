@@ -21,7 +21,8 @@ public partial class StageSelect : Control
     // ── Stage scene path constants ────────────────────────────────────────────
     // Use the full res:// path — both GameManager and NetworkManager need it.
 
-    private const string Stage1Path = "res://Scenes/Stages/Clocktower.tscn"; // TODO: update if path changes
+    private const string Stage1Path = "res://Scenes/Stages/Clocktower.tscn";
+    private const string Stage2Path = "res://Scenes/Stages/Testing/Testing.tscn";
 
     // ── Exports ───────────────────────────────────────────────────────────────
 
@@ -47,7 +48,7 @@ public partial class StageSelect : Control
     public override void _Ready()
     {
         _stage1Button.Pressed += () => SelectStage(_stage1Button, Stage1Path);
-        _stage2Button.Pressed += () => SelectStage(_stage2Button, Stage1Path);
+        _stage2Button.Pressed += () => SelectStage(_stage2Button, Stage2Path);
         _stage3Button.Pressed += () => SelectStage(_stage3Button, Stage1Path);
         _stage4Button.Pressed += () => SelectStage(_stage4Button, Stage1Path);
 

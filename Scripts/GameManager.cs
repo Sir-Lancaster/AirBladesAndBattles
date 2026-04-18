@@ -48,7 +48,7 @@ public partial class GameManager : Node
     private const string MainMenuScene                   = "res://Scenes/Pages/Menu/MainMenu.tscn";
     private const string StageSelectScene               = "res://Scenes/Pages/StageSelect/StageSelect.tscn";
     private const string CharacterSelectScene = "res://Scenes/Pages/CharacterSelect/CharacterSelect.tscn";
-    private const string GameScene                      = "res://Scenes/Pages/Game.tscn";            // TODO: verify path
+    private const string GameScene                      = "res://Scenes/Stages/Utility/Game.tscn";
     private const string MultiplayerBattleScene         = "res://Scenes/Multiplayer/BattleScene.tscn"; // TODO: verify path
 
     // -------------------------------------------------------------------------
@@ -128,8 +128,17 @@ public partial class GameManager : Node
             GetTree().ChangeSceneToFile(CharacterSelectScene);
     }
 
-    public void StartMatch()            => GetTree().ChangeSceneToFile(GameScene);
-    public void StartMultiplayerMatch() => GetTree().ChangeSceneToFile(MultiplayerBattleScene);
+    public void StartMatch()
+    {
+        MusicManager.Instance?.StopMusic();
+        GetTree().ChangeSceneToFile(GameScene);
+    }
+
+    public void StartMultiplayerMatch()
+    {
+        MusicManager.Instance?.StopMusic();
+        GetTree().ChangeSceneToFile(MultiplayerBattleScene);
+    }
     public void QuitGame()              => GetTree().Quit();
 
     // -------------------------------------------------------------------------
