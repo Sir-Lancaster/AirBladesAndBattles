@@ -136,11 +136,16 @@ public partial class Hitbox : Area2D
 
         if (Multiplayer.MultiplayerPeer != null && target is CharacterBase targetChar)
         {
-            // In multiplayer, send the hit to the peer that has authority over the victim.
-            // Record optimistically so this hitbox won't fire again on the same target.
             _hitTargetIds.Add(targetId);
             HitLanded?.Invoke();
-            targetChar.RpcId(targetChar.GetMultiplayerAuthority(), nameof(CharacterBase.ReceiveHitRpc), Damage);
+
+            long victimAuthority = targetChar.GetMultiplayerAuthority();
+            if (victimAuthority == Multiplayer.GetUniqueId())
+                // We own the victim — apply damage directly without an RPC.
+                targetChar.ReceiveHitRpc(Damage);
+            else
+                targetChar.RpcId(victimAuthority, nameof(CharacterBase.ReceiveHitRpc), Damage);
+
             if (DestroyOnFirstHit) QueueFree();
         }
         else

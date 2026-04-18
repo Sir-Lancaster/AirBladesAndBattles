@@ -35,6 +35,10 @@ public partial class BattleManager : Node2D
     // Cached after the stage is loaded.
     private Vector2[] _spawnPoints = [];
 
+    // Ready handshake — host waits for all peers before spawning.
+    private int _readyCount;
+    private int _expectedPlayers;
+
     // -------------------------------------------------------------------------
     // Lifecycle
     // -------------------------------------------------------------------------
@@ -42,18 +46,38 @@ public partial class BattleManager : Node2D
     {
         LoadStage();
 
-        // Only the host spawns characters; MultiplayerSpawner replicates them.
-        if (!Multiplayer.IsServer()) return;
+        if (Multiplayer.IsServer())
+        {
+            _expectedPlayers = NetworkManager.Instance.ConnectedPeers.Count;
+            NetworkManager.Instance.PeerLeft += OnPeerLeft;
+            // Count the host as ready immediately.
+            RegisterReady();
+        }
+        else
+        {
+            // Tell the host this client has loaded and is ready for spawns.
+            RpcId(1, nameof(NotifyReady));
+        }
+    }
 
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void NotifyReady() => RegisterReady();
+
+    private void RegisterReady()
+    {
+        _readyCount++;
+        GD.Print($"[BattleManager] Ready {_readyCount}/{_expectedPlayers}");
+
+        if (_readyCount < _expectedPlayers) return;
+
+        // All peers have loaded — safe to spawn; MultiplayerSpawner will replicate.
         int index = 0;
         foreach (long peerId in NetworkManager.Instance.ConnectedPeers)
         {
             SpawnCharacter(peerId, index % _spawnPoints.Length);
             index++;
         }
-
-        // Remove characters when a peer disconnects mid-match.
-        NetworkManager.Instance.PeerLeft += OnPeerLeft;
     }
 
     // -------------------------------------------------------------------------
