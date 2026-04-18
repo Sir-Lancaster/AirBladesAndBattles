@@ -17,7 +17,7 @@ color = Color(0.13725491, 0.49019608, 0, 0.5529412)
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1099444895]
 layout_mode = 0
 offset_right = 200.0
-offset_bottom = 199.0
+offset_bottom = 150.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1788464354]
 layout_mode = 2

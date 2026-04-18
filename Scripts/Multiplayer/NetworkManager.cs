@@ -28,7 +28,7 @@ public partial class NetworkManager : Node
     // -------------------------------------------------------------------------
     public bool IsHost  { get; private set; }
     public string HostIp { get; private set; } = "";
-    public bool IsConnected =>
+    public new bool IsConnected =>
         Multiplayer.MultiplayerPeer != null &&
         Multiplayer.MultiplayerPeer.GetConnectionStatus() ==
             MultiplayerPeer.ConnectionStatus.Connected;
@@ -146,16 +146,6 @@ public partial class NetworkManager : Node
         GD.Print("[NetworkManager] Disconnected.");
     }
 
-    /// <summary>
-    /// Host-only. Sends all connected peers (including the host) to BattleScene.
-    /// Call this from the UI after everyone has connected and chosen a character.
-    /// </summary>
-    public void StartBattle()
-    {
-        if (!IsHost) return;
-        Rpc(MethodName.LoadBattleScene);
-    }
-
     // -------------------------------------------------------------------------
     // Internal — Multiplayer event handlers
     // -------------------------------------------------------------------------
@@ -232,7 +222,7 @@ public partial class NetworkManager : Node
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     private void LoadCharacterSelectScene()
     {
-        GetTree().ChangeSceneToFile("res://Scenes/Pages/Menu/MultiplayerCharacterSelect.tscn");
+        GetTree().ChangeSceneToFile("res://Scenes/Pages/CharacterSelect/MultiplayerCharacterSelect.tscn");
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
