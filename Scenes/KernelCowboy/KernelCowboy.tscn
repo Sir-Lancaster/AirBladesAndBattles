@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ctf3g8ckon053" path="res://Assets/Characters/KernelCowboy/KCHorizontal.png" id="2_2fosr"]
 [ext_resource type="Texture2D" uid="uid://1nu8i3bj6xka" path="res://Assets/Characters/KernelCowboy/lassoclose.png" id="2_v6plb"]
 [ext_resource type="Texture2D" uid="uid://huf8gkvrgxut" path="res://Assets/Characters/KernelCowboy/KCHurt.png" id="3_egudy"]
-[ext_resource type="Script" uid="uid://0smet61r0uwj" path="res://Scripts/Characters/KernelCowboy/LassoHandler.cs" id="3_xysxx"]
+[ext_resource type="Script" uid="uid://c6k1duhl8w4d" path="res://Scripts/Characters/KernelCowboy/LassoHandler.cs" id="3_xysxx"]
 [ext_resource type="Texture2D" uid="uid://dgq3sgvsfgm3d" path="res://Assets/Characters/KernelCowboy/KCDodge.png" id="4_7yy75"]
 [ext_resource type="Texture2D" uid="uid://q7wc8v61w3pt" path="res://Assets/Characters/KernelCowboy/KCIdle.png" id="4_a4ul0"]
 [ext_resource type="Texture2D" uid="uid://df2gsqo75jruk" path="res://Assets/Characters/KernelCowboy/KCRun.png" id="5_6st2j"]
@@ -540,20 +540,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ypg6q"]
-properties/0/path = NodePath(".:CurrentState")
-properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath(".:CurrentHP")
-properties/1/spawn = true
-properties/1/replication_mode = 2
-properties/2/path = NodePath(".:velocity")
-properties/2/spawn = false
-properties/2/replication_mode = 1
-properties/3/path = NodePath(".:position")
-properties/3/spawn = true
-properties/3/replication_mode = 1
-
 [node name="KernelCowboy" type="CharacterBody2D" unique_id=156738427 groups=["characters"]]
 script = ExtResource("1_2fosr")
 LassoPauseFrame = 1
@@ -617,6 +603,3 @@ offset = Vector2(-1, 0)
 
 [node name="HandAnchor" type="Marker2D" parent="KernelCowboy" unique_id=1294144271]
 position = Vector2(-10, 1)
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=470046876]
-replication_config = SubResource("SceneReplicationConfig_ypg6q")

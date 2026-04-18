@@ -39,23 +39,29 @@ public partial class BattleManager : Node2D
     private int _readyCount;
     private int _expectedPlayers;
 
+    private MultiplayerSpawner _spawner;
+
     // -------------------------------------------------------------------------
     // Lifecycle
     // -------------------------------------------------------------------------
     public override void _Ready()
     {
+        _spawner = GetNode<MultiplayerSpawner>("MultiplayerSpawner");
+        // Fires on both host (when it adds a node) and client (when spawn is received).
+        // Used to re-attach MultiplayerSynchronizer AFTER the spawn packet is sent,
+        // preventing the race where path registration arrives before the spawn.
+        _spawner.Spawned += OnCharacterSpawned;
+
         LoadStage();
 
         if (Multiplayer.IsServer())
         {
             _expectedPlayers = NetworkManager.Instance.ConnectedPeers.Count;
             NetworkManager.Instance.PeerLeft += OnPeerLeft;
-            // Count the host as ready immediately.
             RegisterReady();
         }
         else
         {
-            // Tell the host this client has loaded and is ready for spawns.
             RpcId(1, nameof(NotifyReady));
         }
     }
@@ -149,22 +155,44 @@ public partial class BattleManager : Node2D
         }
 
         var node = scene.Instantiate<CharacterBase>();
-
-        // Name must be the peer ID string — CharacterBase._EnterTree parses it
-        // to call SetMultiplayerAuthority(), which determines who controls this character.
         node.Name = peerId.ToString();
 
         if (_spawnPoints.Length > 0)
             node.GlobalPosition = _spawnPoints[spawnIndex];
 
-        // "characters" group is read by Camera2d.cs to keep all players in frame.
         node.AddToGroup("characters");
 
-        // CallDeferred so the node is added at the start of the next frame,
-        // which is required for MultiplayerSpawner to replicate it correctly.
-        CallDeferred(Node.MethodName.AddChild, node);
+        // Strip the embedded MultiplayerSynchronizer before the node enters the tree.
+        // In Godot 4, a child's NOTIFICATION_ENTER_TREE fires before child_entered_tree
+        // on the parent, so the sync would send its path registration to clients BEFORE
+        // MultiplayerSpawner sends the spawn packet — clients would fail to find the node.
+        // We re-attach it inside OnCharacterSpawned, which fires after the spawn packet.
+        var sync = node.GetNodeOrNull<MultiplayerSynchronizer>("MultiplayerSynchronizer");
+        if (sync != null)
+        {
+            node.RemoveChild(sync);
+            sync.Free();
+        }
 
+        _spawner.CallDeferred(Node.MethodName.AddChild, node);
         GD.Print($"[BattleManager] Spawning {charName} for peer {peerId} at {node.GlobalPosition}");
+    }
+
+    // -------------------------------------------------------------------------
+    // Sync re-attachment
+    // -------------------------------------------------------------------------
+
+    // Fires on both host and client when a character enters the scene tree.
+    // Strips any embedded MultiplayerSynchronizer — CharacterBase.SyncState RPC
+    // handles state propagation and avoids the cross-channel race condition.
+    private void OnCharacterSpawned(Node node)
+    {
+        if (node is not CharacterBase character) return;
+        var sync = character.GetNodeOrNull<MultiplayerSynchronizer>("MultiplayerSynchronizer");
+        if (sync == null) return;
+        character.RemoveChild(sync);
+        sync.Free();
+        GD.Print($"[BattleManager] Removed embedded sync from {character.Name} — using RPC sync.");
     }
 
     // -------------------------------------------------------------------------

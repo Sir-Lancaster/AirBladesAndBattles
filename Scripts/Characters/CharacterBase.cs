@@ -34,8 +34,8 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     /// Runtime character attributes.
     /// </summary>
     public bool IsDead { get; protected set; }
-    public int CurrentHP { get; set; }
-    public CharacterState CurrentState { get; set; }
+    [Export] public int CurrentHP { get; set; }
+    [Export] public CharacterState CurrentState { get; set; }
     public bool IsInvincible { get; private set; }
     private float _hitStunRemaining;
     private float _dodgeRemaining;
@@ -293,6 +293,21 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         }
 
         MoveAndSlide();
+
+        // Broadcast state to all non-authority peers every physics frame.
+        if (Multiplayer.MultiplayerPeer != null)
+            Rpc(nameof(SyncState), GlobalPosition, Velocity, (int)CurrentState, CurrentHP);
+    }
+
+    // UnreliableOrdered: only the freshest packet matters, old ones are dropped.
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+    private void SyncState(Vector2 pos, Vector2 vel, int state, int hp)
+    {
+        GlobalPosition = pos;
+        Velocity       = vel;
+        CurrentState   = (CharacterState)state;
+        CurrentHP      = hp;
     }
 
     private void HandleCombatInput()
