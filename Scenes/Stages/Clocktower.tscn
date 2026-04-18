@@ -1,10 +1,8 @@
 [gd_scene format=3 uid="uid://dk13b8nao4v4o"]
 
-[ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="1_7b7cw"]
 [ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="1_iukx0"]
 [ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_5lg6u"]
 [ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="3_i5jib"]
-[ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="4_sonsx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5lg6u"]
 size = Vector2(351, 30)
@@ -108,13 +106,6 @@ use_parent_material = true
 position = Vector2(938, 556)
 zoom = Vector2(2, 2)
 script = ExtResource("3_5lg6u")
-
-[node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("1_7b7cw")]
-position = Vector2(1162, 377)
-
-[node name="Steampunk2" parent="." unique_id=1841756279 node_paths=PackedStringArray("Target") groups=["characters"] instance=ExtResource("4_sonsx")]
-position = Vector2(227, 347)
-Target = NodePath("../Steampunk")
 
 [node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=960764150]
 position = Vector2(0, 130)

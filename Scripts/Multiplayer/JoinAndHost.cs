@@ -1,4 +1,6 @@
 using Godot;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 public partial class JoinAndHost : Control
 {
@@ -32,13 +34,27 @@ public partial class JoinAndHost : Control
 		GetTree().ChangeSceneToFile("res://Scenes/Multiplayer/Join.tscn");
 	}
 
-	// Returns the most likely LAN IP address of this machine.
+	// Returns the LAN IP of the first active physical network adapter, skipping VPNs.
 	private static string GetLocalIp()
 	{
-		foreach (string addr in IP.GetLocalAddresses())
+		foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
 		{
-			if (addr.StartsWith("192.168.") || addr.StartsWith("10.") || addr.StartsWith("172."))
-				return addr;
+			if (nic.OperationalStatus != OperationalStatus.Up) continue;
+			if (nic.NetworkInterfaceType == NetworkInterfaceType.Loopback) continue;
+
+			string name = nic.Name.ToLowerInvariant();
+			if (name.Contains("zerotier") || name.Contains("hamachi") ||
+			    name.Contains("virtual") || name.Contains("vpn") ||
+			    name.Contains("tunnel") || name.Contains("bluetooth"))
+				continue;
+
+			foreach (UnicastIPAddressInformation addr in nic.GetIPProperties().UnicastAddresses)
+			{
+				if (addr.Address.AddressFamily != AddressFamily.InterNetwork) continue;
+				string ip = addr.Address.ToString();
+				if (ip.StartsWith("169.254.")) continue; // skip link-local
+				return ip;
+			}
 		}
 		return "127.0.0.1";
 	}
