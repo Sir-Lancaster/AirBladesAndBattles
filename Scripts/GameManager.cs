@@ -47,8 +47,7 @@ public partial class GameManager : Node
 
     private const string MainMenuScene                   = "res://Scenes/Pages/Menu/MainMenu.tscn";
     private const string StageSelectScene               = "res://Scenes/Pages/StageSelect/StageSelect.tscn";
-    private const string CharacterSelectScene           = "res://Scenes/Pages/CharacterSelect/CharacterSelect.tscn";
-    private const string MultiplayerCharacterSelectScene = "res://Scenes/Pages/Menu/MultiplayerCharacterSelect.tscn";
+    private const string CharacterSelectScene = "res://Scenes/Pages/CharacterSelect/CharacterSelect.tscn";
     private const string GameScene                      = "res://Scenes/Pages/Game.tscn";            // TODO: verify path
     private const string MultiplayerBattleScene         = "res://Scenes/Multiplayer/BattleScene.tscn"; // TODO: verify path
 
@@ -91,8 +90,8 @@ public partial class GameManager : Node
     public void SetStage(string stagePath)
     {
         CurrentMatch.StageName = stagePath;
-        // TODO: when multiplayer stage select is wired up, push stagePath to NetworkManager here.
-        // NetworkManager.Instance.SelectedStage = stagePath;
+        if (CurrentMode == GameMode.Multiplayer)
+            NetworkManager.Instance.SelectedStage = stagePath;
     }
 
     /// <summary>
@@ -117,13 +116,16 @@ public partial class GameManager : Node
 
     public void GoToStageSelect() => GetTree().ChangeSceneToFile(StageSelectScene);
 
-    /// <summary>Routes to the correct character select scene based on the current game mode.</summary>
+    /// <summary>
+    /// Single player: local scene change to CharacterSelect.
+    /// Multiplayer: host calls NetworkManager.StartCharacterSelect() which RPC's all peers there.
+    /// </summary>
     public void GoToCharacterSelect()
     {
-        string scene = CurrentMode == GameMode.Multiplayer
-            ? MultiplayerCharacterSelectScene
-            : CharacterSelectScene;
-        GetTree().ChangeSceneToFile(scene);
+        if (CurrentMode == GameMode.Multiplayer)
+            NetworkManager.Instance.StartCharacterSelect();
+        else
+            GetTree().ChangeSceneToFile(CharacterSelectScene);
     }
 
     public void StartMatch()            => GetTree().ChangeSceneToFile(GameScene);

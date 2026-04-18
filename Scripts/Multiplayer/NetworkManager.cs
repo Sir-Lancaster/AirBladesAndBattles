@@ -198,8 +198,42 @@ public partial class NetworkManager : Node
     }
 
     // -------------------------------------------------------------------------
-    // Scene transition — called on all peers by StartBattle()
+    // Scene transitions — each public method is host-only and triggers the
+    // matching RPC which runs on every peer (including the host via CallLocal).
     // -------------------------------------------------------------------------
+
+    /// <summary>Host-only. Sends all peers to StageSelect when the host is ready to begin.</summary>
+    public void StartStageSelect()
+    {
+        if (!IsHost) return;
+        Rpc(MethodName.LoadStageSelectScene);
+    }
+
+    /// <summary>Host-only. Sends all peers to MultiplayerCharacterSelect after stage is chosen.</summary>
+    public void StartCharacterSelect()
+    {
+        if (!IsHost) return;
+        Rpc(MethodName.LoadCharacterSelectScene);
+    }
+
+    /// <summary>Host-only. Sends all peers to BattleScene after characters are chosen.</summary>
+    public void StartBattle()
+    {
+        if (!IsHost) return;
+        Rpc(MethodName.LoadBattleScene);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    private void LoadStageSelectScene()
+    {
+        GetTree().ChangeSceneToFile("res://Scenes/Pages/StageSelect/StageSelect.tscn");
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
+    private void LoadCharacterSelectScene()
+    {
+        GetTree().ChangeSceneToFile("res://Scenes/Pages/Menu/MultiplayerCharacterSelect.tscn");
+    }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
     private void LoadBattleScene()

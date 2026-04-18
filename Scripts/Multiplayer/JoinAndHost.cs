@@ -12,13 +12,14 @@ public partial class JoinAndHost : Control
 		}
 
 		// Show the local IP so the host can share it with joining players.
+		// When the host clicks OK they have decided everyone is ready — send all peers to StageSelect.
 		var dialog = new AcceptDialog
 		{
 			Title = "Hosting",
-			DialogText = $"Your IP address:\n{GetLocalIp()}\n\nShare this with players who want to join."
+			DialogText = $"Your IP address:\n{GetLocalIp()}\n\nShare this with players who want to join.\n\nClick OK when everyone has connected."
 		};
 		AddChild(dialog);
-		// dialog.Confirmed += () => GetTree().ChangeSceneToFile("res://Scenes/Multiplayer/StageSelect.tscn");
+		dialog.Confirmed += () => NetworkManager.Instance.StartStageSelect();
 		dialog.PopupCentered();
 	}
 

@@ -57,6 +57,19 @@ public partial class StageSelect : Control
         // Nothing selected yet — disable Continue until the player makes a choice.
         _continueButton.Disabled = true;
 
+        // In multiplayer only the host picks the stage; clients watch and wait.
+        bool clientOnly = GameManager.Instance.CurrentMode == GameManager.GameMode.Multiplayer
+                          && !NetworkManager.Instance.IsHost;
+        if (clientOnly)
+        {
+            _stage1Button.Disabled   = true;
+            _stage2Button.Disabled   = true;
+            _stage3Button.Disabled   = true;
+            _stage4Button.Disabled   = true;
+            _continueButton.Disabled = true;
+            _backButton.Disabled     = true;
+        }
+
         // Dim all stage buttons to start so the golden highlight is clearly meaningful.
         UpdateButtonVisuals();
     }

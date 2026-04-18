@@ -7,18 +7,18 @@ using System.Linq;
 ///
 /// SCENE SETUP:
 ///   - 4 character buttons (KernelCowboy, SirEdward, Steampunk, Vampire)
-///   - ConfirmButton     — local player locks in their pick
-///   - StartMatchButton  — visible to host only; enabled when all peers have confirmed
+///   - StartMatchButton  — visible to host only; enabled once every peer has a selection
 ///   - BackButton
-///   - StocksLabel + StocksUpButton + StocksDownButton  — only host can adjust; syncs to all
+///   - StocksLabel + StocksUpButton + StocksDownButton  — host adjusts; syncs to all
 ///   - SlotsContainer    — HBoxContainer; PlayerSlot scenes are instantiated here at runtime
 ///   - PlayerSlotScene   — drag PlayerSlot.tscn into this export slot
 ///   - One Texture2D export per character for portraits (assign in Inspector)
 ///
 /// FLOW:
-///   Each player picks a character and hits Confirm. The choice is RPC'd to the host,
-///   which broadcasts readiness to all clients. Once all peers confirm, the host's
-///   Start Match button activates and all clients change scene simultaneously.
+///   Clicking a character button immediately RPC's the selection to all peers.
+///   Everyone's PlayerSlot box updates in real time as players browse.
+///   Once every peer has selected something the host's Start Match button activates.
+///   Host clicks Start Match → all clients change scene simultaneously.
 ///
 /// DEPENDENCIES:
 ///   NetworkManager.Instance.ConnectedPeers / PeerCharacters must be populated
@@ -34,10 +34,8 @@ public partial class MultiplayerCharacterSelect : Control
     [Export] private Button _character4Button;
 
     [Export] private Button _backButton;
-    [Export] private Button _confirmButton;
     [Export] private Button _startMatchButton;
 
-    [Export] private Label  _titleLabel;
     [Export] private Label  _stocksLabel;
     [Export] private Button _stocksUpButton;
     [Export] private Button _stocksDownButton;
@@ -61,14 +59,13 @@ public partial class MultiplayerCharacterSelect : Control
 
     // ── Private state ─────────────────────────────────────────────────────────
 
-    private int    _stocks = 1;
-    private bool   _hasConfirmed;
+    private int _stocks = 1;
 
     private GameManager.CharacterType? _selectedCharacter;
     private Button                     _selectedCharacterButton;
 
     private List<long>                        _peerOrder      = new();
-    private readonly Dictionary<long, string>     _confirmedPeers = new();
+    private readonly Dictionary<long, string>     _peerSelections = new();
     private readonly Dictionary<long, PlayerSlot> _slotNodes      = new();
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -80,9 +77,7 @@ public partial class MultiplayerCharacterSelect : Control
         _character3Button.Pressed += () => SelectCharacter(_character3Button, GameManager.CharacterType.Steampunk);
         _character4Button.Pressed += () => SelectCharacter(_character4Button, GameManager.CharacterType.Vampire);
 
-        _backButton.Pressed    += OnBackPressed;
-        _confirmButton.Pressed += OnConfirmPressed;
-        _confirmButton.Disabled = true;
+        _backButton.Pressed += OnBackPressed;
 
         _startMatchButton.Pressed  += OnStartMatchPressed;
         _startMatchButton.Visible   = Multiplayer.IsServer();
@@ -96,8 +91,6 @@ public partial class MultiplayerCharacterSelect : Control
             _stocksUpButton.Pressed   += () => Rpc(nameof(SyncStocks), Mathf.Clamp(_stocks + 1, 1, 5));
             _stocksDownButton.Pressed += () => Rpc(nameof(SyncStocks), Mathf.Clamp(_stocks - 1, 1, 5));
         }
-
-        _titleLabel.Text = "Pick Your Character";
 
         UpdateStocksLabel();
         UpdateCharacterButtonVisuals();
@@ -116,33 +109,21 @@ public partial class MultiplayerCharacterSelect : Control
 
     private void SelectCharacter(Button button, GameManager.CharacterType character)
     {
-        if (_hasConfirmed) return;
-
         _selectedCharacterButton = button;
         _selectedCharacter       = character;
-        _confirmButton.Disabled  = false;
 
         UpdateCharacterButtonVisuals();
-    }
 
-    private void OnConfirmPressed()
-    {
-        if (_selectedCharacter == null || _hasConfirmed) return;
-
-        _hasConfirmed           = true;
-        _confirmButton.Disabled = true;
-        SetCharacterButtonsDisabled(true);
-
-        string characterName = _selectedCharacter.Value.ToString();
+        string characterName = character.ToString();
 
         if (Multiplayer.IsServer())
         {
             NetworkManager.Instance.PeerCharacters[(long)Multiplayer.GetUniqueId()] = characterName;
-            Rpc(nameof(ClientPeerReady), (long)Multiplayer.GetUniqueId(), characterName);
+            Rpc(nameof(ClientReceiveSelection), (long)Multiplayer.GetUniqueId(), characterName);
         }
         else
         {
-            RpcId(1, nameof(ServerReceiveChoice), characterName);
+            RpcId(1, nameof(ServerReceiveSelection), characterName);
         }
     }
 
@@ -166,20 +147,20 @@ public partial class MultiplayerCharacterSelect : Control
         BuildSlotNodes();
     }
 
-    /// <summary>Client sends their confirmed character to the server.</summary>
+    /// <summary>Client sends their current character selection to the server.</summary>
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void ServerReceiveChoice(string characterName)
+    private void ServerReceiveSelection(string characterName)
     {
         long senderId = Multiplayer.GetRemoteSenderId();
         NetworkManager.Instance.PeerCharacters[senderId] = characterName;
-        Rpc(nameof(ClientPeerReady), senderId, characterName);
+        Rpc(nameof(ClientReceiveSelection), senderId, characterName);
     }
 
-    /// <summary>Server notifies all clients that a peer has locked in their character.</summary>
+    /// <summary>Broadcasts a peer's current selection to all clients so their slot box updates in real time.</summary>
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void ClientPeerReady(long peerId, string characterName)
+    private void ClientReceiveSelection(long peerId, string characterName)
     {
-        _confirmedPeers[peerId] = characterName;
+        _peerSelections[peerId] = characterName;
 
         if (_slotNodes.TryGetValue(peerId, out PlayerSlot slot))
             slot.ShowCharacter(FriendlyName(characterName), PortraitFor(characterName));
@@ -208,13 +189,12 @@ public partial class MultiplayerCharacterSelect : Control
 
     private void CheckAllReady()
     {
-        bool allReady = _peerOrder.Count > 0 && _peerOrder.All(id => _confirmedPeers.ContainsKey(id));
+        bool allReady = _peerOrder.Count > 0 && _peerOrder.All(id => _peerSelections.ContainsKey(id));
         _startMatchButton.Disabled = !allReady;
     }
 
     private void BuildSlotNodes()
     {
-        // Clear any previously instantiated slots.
         foreach (Node child in _slotsContainer.GetChildren())
             child.QueueFree();
         _slotNodes.Clear();
@@ -262,13 +242,5 @@ public partial class MultiplayerCharacterSelect : Control
             if (btn == null) continue;
             btn.Modulate = btn == _selectedCharacterButton ? SelectedTint : UnselectedTint;
         }
-    }
-
-    private void SetCharacterButtonsDisabled(bool disabled)
-    {
-        _character1Button.Disabled = disabled;
-        _character2Button.Disabled = disabled;
-        _character3Button.Disabled = disabled;
-        _character4Button.Disabled = disabled;
     }
 }

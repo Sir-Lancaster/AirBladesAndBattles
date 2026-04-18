@@ -21,7 +21,7 @@ public partial class MainMenu : Control
         _multiplayerButton.Pressed += () =>
         {
             GameManager.Instance.SetMode(GameManager.GameMode.Multiplayer);
-            GameManager.Instance.GoToStageSelect();
+            GetTree().ChangeSceneToFile("res://Scenes/Multiplayer/JoinAndHost.tscn");
         };
         _quitButton.Pressed += GameManager.Instance.QuitGame;
     }
