@@ -7,20 +7,21 @@ using System.Linq;
 ///
 /// SCENE SETUP:
 ///   - 4 character buttons (KernelCowboy, SirEdward, Steampunk, Vampire)
-///   - ConfirmButton   — local player locks in their pick
-///   - StartMatchButton — visible to host only; enabled when all peers have confirmed
+///   - ConfirmButton     — local player locks in their pick
+///   - StartMatchButton  — visible to host only; enabled when all peers have confirmed
 ///   - BackButton
 ///   - StocksLabel + StocksUpButton + StocksDownButton  — only host can adjust; syncs to all
-///   - Player1StatusLabel … Player4StatusLabel           — one per connected peer slot
+///   - SlotsContainer    — HBoxContainer; PlayerSlot scenes are instantiated here at runtime
+///   - PlayerSlotScene   — drag PlayerSlot.tscn into this export slot
+///   - One Texture2D export per character for portraits (assign in Inspector)
 ///
 /// FLOW:
-///   Each player (on their own machine) picks a character and hits Confirm.
-///   The choice is sent via RPC to the host, which broadcasts readiness to everyone.
-///   Once all players have confirmed, the host's Start Match button activates.
-///   Host clicks Start Match → all clients change to the battle scene simultaneously.
+///   Each player picks a character and hits Confirm. The choice is RPC'd to the host,
+///   which broadcasts readiness to all clients. Once all peers confirm, the host's
+///   Start Match button activates and all clients change scene simultaneously.
 ///
 /// DEPENDENCIES:
-///   NetworkManager.Instance.IsHost / ConnectedPeers / PeerCharacters must be set
+///   NetworkManager.Instance.ConnectedPeers / PeerCharacters must be populated
 ///   before this scene loads (done by the join/host flow).
 /// </summary>
 public partial class MultiplayerCharacterSelect : Control
@@ -41,16 +42,22 @@ public partial class MultiplayerCharacterSelect : Control
     [Export] private Button _stocksUpButton;
     [Export] private Button _stocksDownButton;
 
-    [Export] private Label _player1StatusLabel;
-    [Export] private Label _player2StatusLabel;
-    [Export] private Label _player3StatusLabel;
-    [Export] private Label _player4StatusLabel;
+    /// <summary>HBoxContainer that holds the dynamically created PlayerSlot nodes.</summary>
+    [Export] private Control _slotsContainer;
+
+    /// <summary>Drag PlayerSlot.tscn here in the Inspector.</summary>
+    [Export] private PackedScene _playerSlotScene;
+
+    // Character portrait textures — assign each in the Inspector.
+    [Export] private Texture2D _kernelCowboyPortrait;
+    [Export] private Texture2D _sirEdwardPortrait;
+    [Export] private Texture2D _steampunkPortrait;
+    [Export] private Texture2D _vampirePortrait;
 
     // ── Visuals ───────────────────────────────────────────────────────────────
 
     private static readonly Color SelectedTint   = new Color(1.0f, 0.85f, 0.2f);
     private static readonly Color UnselectedTint = new Color(0.55f, 0.55f, 0.55f);
-    private static readonly Color ReadyTint      = new Color(0.2f,  1.0f,  0.4f);
 
     // ── Private state ─────────────────────────────────────────────────────────
 
@@ -60,8 +67,9 @@ public partial class MultiplayerCharacterSelect : Control
     private GameManager.CharacterType? _selectedCharacter;
     private Button                     _selectedCharacterButton;
 
-    private List<long>                      _peerOrder      = new();
-    private readonly Dictionary<long, string> _confirmedPeers = new();
+    private List<long>                        _peerOrder      = new();
+    private readonly Dictionary<long, string>     _confirmedPeers = new();
+    private readonly Dictionary<long, PlayerSlot> _slotNodes      = new();
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -155,7 +163,7 @@ public partial class MultiplayerCharacterSelect : Control
                 if (long.TryParse(s, out long id))
                     _peerOrder.Add(id);
 
-        UpdateStatusLabels();
+        BuildSlotNodes();
     }
 
     /// <summary>Client sends their confirmed character to the server.</summary>
@@ -172,7 +180,9 @@ public partial class MultiplayerCharacterSelect : Control
     private void ClientPeerReady(long peerId, string characterName)
     {
         _confirmedPeers[peerId] = characterName;
-        UpdateStatusLabels();
+
+        if (_slotNodes.TryGetValue(peerId, out PlayerSlot slot))
+            slot.ShowCharacter(FriendlyName(characterName), PortraitFor(characterName));
 
         if (Multiplayer.IsServer())
             CheckAllReady();
@@ -202,38 +212,45 @@ public partial class MultiplayerCharacterSelect : Control
         _startMatchButton.Disabled = !allReady;
     }
 
-    private void UpdateStatusLabels()
+    private void BuildSlotNodes()
     {
-        Label[] labels = { _player1StatusLabel, _player2StatusLabel, _player3StatusLabel, _player4StatusLabel };
+        // Clear any previously instantiated slots.
+        foreach (Node child in _slotsContainer.GetChildren())
+            child.QueueFree();
+        _slotNodes.Clear();
 
-        for (int i = 0; i < labels.Length; i++)
+        long localId = (long)Multiplayer.GetUniqueId();
+
+        for (int i = 0; i < _peerOrder.Count; i++)
         {
-            if (labels[i] == null) continue;
+            long       peerId = _peerOrder[i];
+            PlayerSlot slot   = _playerSlotScene.Instantiate<PlayerSlot>();
 
-            if (i >= _peerOrder.Count)
-            {
-                labels[i].Visible = false;
-                continue;
-            }
+            _slotsContainer.AddChild(slot);
+            slot.Init(i + 1, peerId == localId);
+            slot.ShowWaiting();
 
-            labels[i].Visible = true;
-
-            long   peerId    = _peerOrder[i];
-            bool   isLocal   = peerId == (long)Multiplayer.GetUniqueId();
-            string playerTag = $"Player {i + 1}{(isLocal ? " (You)" : "")}";
-
-            if (_confirmedPeers.TryGetValue(peerId, out string characterName))
-            {
-                labels[i].Text     = $"{playerTag}: {characterName}";
-                labels[i].Modulate = ReadyTint;
-            }
-            else
-            {
-                labels[i].Text     = $"{playerTag}: Waiting...";
-                labels[i].Modulate = Colors.White;
-            }
+            _slotNodes[peerId] = slot;
         }
     }
+
+    private string FriendlyName(string enumName) => enumName switch
+    {
+        "KernelCowboy" => "Kernel Cowboy",
+        "SirEdward"    => "Sir Edward",
+        "Steampunk"    => "Steampunk",
+        "Vampire"      => "Vampire",
+        _              => enumName
+    };
+
+    private Texture2D PortraitFor(string enumName) => enumName switch
+    {
+        "KernelCowboy" => _kernelCowboyPortrait,
+        "SirEdward"    => _sirEdwardPortrait,
+        "Steampunk"    => _steampunkPortrait,
+        "Vampire"      => _vampirePortrait,
+        _              => null
+    };
 
     private void UpdateStocksLabel() => _stocksLabel.Text = $"Stocks: {_stocks}";
 

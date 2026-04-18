@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bm26xivwe1tmw"]
 
-[ext_resource type="Script" uid="uid://cpmfmtkmiky3n" path="res://Scripts/Stages/Utility/GameHUD.cs" id="1_script"]
+[ext_resource type="Script" path="res://Scripts/Stages/Utility/GameHUD.cs" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://hx1h2h1rh7ca" path="res://Scenes/Stages/Utility/PlayerHUDBox.tscn" id="2_72xci"]
 
 [node name="GameHud" type="CanvasLayer" unique_id=1780127748]
