@@ -10,7 +10,8 @@ public partial class Join : Control
 		_ipInput = GetNode<LineEdit>("CanvasLayer/VBoxContainer/HBoxContainer/LineEdit");
 		GetNode<Button>("CanvasLayer/VBoxContainer/Button").Pressed += _on_connect_pressed;
 
-		_statusLabel = GetNode<Label>("CanvasLayer/VBoxContainer/StatusLabel");
+		_statusLabel = new Label { HorizontalAlignment = HorizontalAlignment.Center };
+		GetNode("CanvasLayer/VBoxContainer").AddChild(_statusLabel);
 
 		NetworkManager.Instance.ConnectedToServer += OnConnectedToServer;
 		NetworkManager.Instance.ConnectionFailed  += OnConnectionFailed;
