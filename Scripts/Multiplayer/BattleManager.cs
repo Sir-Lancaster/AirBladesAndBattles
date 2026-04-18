@@ -174,7 +174,7 @@ public partial class BattleManager : Node2D
             sync.Free();
         }
 
-        CallDeferred(Node.MethodName.AddChild, node);
+        _spawner.CallDeferred(Node.MethodName.AddChild, node);
         GD.Print($"[BattleManager] Spawning {charName} for peer {peerId} at {node.GlobalPosition}");
     }
 
