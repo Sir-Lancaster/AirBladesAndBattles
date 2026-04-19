@@ -9,80 +9,444 @@ radius = 43.931767
 
 [node name="Cpu" type="Node2D" unique_id=1796150636]
 
-[node name="BehindLeft" type="Polygon2D" parent="." unique_id=1193469048]
+[node name="Mesa3" type="Polygon2D" parent="." unique_id=1193469048]
 position = Vector2(-58, 2)
 color = Color(0.36078432, 0.1764706, 0, 1)
 polygon = PackedVector2Array(328, 286, 342, 286, 344, 290, 458, 290, 459, 294, 464, 294, 464, 299, 479, 299, 482, 360, 492, 360, 493, 392, 518, 394, 537, 424, 552, 449, 584, 470, 625, 493, 659, 506, 710, 528, 755, 540, 794, 572, 804, 642, -35, 643, 47, 550, 93, 500, 127, 470, 160, 434, 188, 415, 234, 398, 242, 396, 252, 394, 262, 345, 288, 344, 292, 316, 298, 284)
 
-[node name="MesaHighlight" type="Polygon2D" parent="BehindLeft" unique_id=1652953126]
+[node name="MesaHighlight" type="Polygon2D" parent="Mesa3" unique_id=1652953126]
 color = Color(0.47843137, 0.24313726, 0.03137255, 1)
 polygon = PackedVector2Array(298, 284, 328, 286, 342, 286, 344, 290, 458, 290, 459, 294, 464, 294, 464, 299, 479, 299, 482, 360, 492, 360, 493, 392, 518, 394, 552, 449, 625, 493, 664, 508, 710, 528, 755, 540, 794, 572, 804, 641, 804, 642, 797, 642, 789, 578, 753, 550, 709, 538, 615, 499, 542, 450, 516, 402, 485, 399, 483, 368, 475, 367, 473, 305, 464, 305, 460, 305, 460, 298, 455, 298, 455, 294, 343, 294, 340, 289, 298, 288)
 
-[node name="FrontLeft" type="Polygon2D" parent="." unique_id=237481318]
-position = Vector2(-54, 5)
-color = Color(0.36078432, 0.1764706, 0, 1)
-polygon = PackedVector2Array(0, 648, 2, 489, 12, 472, 24, 465, 39, 463, 68, 431, 77, 369, 116, 365, 125, 351, 130, 232, 168, 231, 169, 216, 308, 213, 324, 218, 332, 362, 351, 385, 385, 385, 424, 498, 436, 512, 458, 565, 500, 640, 425, 640)
-
-[node name="Label" type="Label" parent="FrontLeft" unique_id=289733068]
-offset_left = 149.0
-offset_top = 275.0
-offset_right = 250.0
-offset_bottom = 312.0
+[node name="KC3" type="Label" parent="Mesa3" unique_id=1177488780]
+offset_left = 329.0
+offset_top = 303.0
+offset_right = 437.0
+offset_bottom = 382.0
 theme_override_colors/font_color = Color(0, 1, 0.53333336, 1)
 theme_override_colors/font_outline_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("1_iyqf0")
-theme_override_font_sizes/font_size = 28
-text = "KC-001"
+theme_override_font_sizes/font_size = 30
+text = "CPU
+KC-003"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MesaHighlight" type="Polygon2D" parent="FrontLeft" unique_id=639119645]
+[node name="SolderPad9" type="Polygon2D" parent="Mesa3/KC3" unique_id=195622944]
+position = Vector2(179, 120)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-587, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad10" type="Polygon2D" parent="Mesa3/KC3" unique_id=1432990226]
+position = Vector2(196, 141)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-587, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad11" type="Polygon2D" parent="Mesa3/KC3" unique_id=212492605]
+position = Vector2(183, 237)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="ChipLine" type="Line2D" parent="Mesa3/KC3" unique_id=2009431999]
+points = PackedVector2Array(78, 15, 136, 15, 136, 120, 182, 120)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="ChipLine3" type="Line2D" parent="Mesa3/KC3" unique_id=74222521]
+position = Vector2(-54, 56)
+points = PackedVector2Array(136, 13, 136, 104, 238, 104, 238, 177)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="ChipLine5" type="Line2D" parent="Mesa3/KC3" unique_id=1520474093]
+position = Vector2(-108, 56)
+points = PackedVector2Array(136, 13, 136, 104)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="ChipLine7" type="Line2D" parent="Mesa3/KC3" unique_id=1255404363]
+position = Vector2(43, -117)
+rotation = 1.5719447
+points = PackedVector2Array(136, 13, 136, 104)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="ChipLine2" type="Line2D" parent="Mesa3/KC3" unique_id=1215548431]
+position = Vector2(-35, 54)
+points = PackedVector2Array(136, 15, 136, 87, 229, 87)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="ChipLine4" type="Line2D" parent="Mesa3/KC3" unique_id=571845108]
+position = Vector2(-73, 54)
+points = PackedVector2Array(136, 15, 136, 87)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="ChipLine6" type="Line2D" parent="Mesa3/KC3" unique_id=978431426]
+position = Vector2(-87.2, 13)
+points = PackedVector2Array(136, 15, 136.19014, 25.457165, 64.2, 25)
+width = 2.8
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Mesa1" type="Polygon2D" parent="." unique_id=237481318]
+position = Vector2(-54, 5)
+color = Color(0.36078432, 0.1764706, 0, 1)
+polygon = PackedVector2Array(-62, 644, -34, 494, -23, 479, -15, 470, -1, 467, 29, 437, 41, 373, 69, 372, 81, 364, 91.46126, 240.36696, 97, 233, 115, 233, 118, 215, 308, 213, 324, 218, 332, 362, 351, 385, 385, 385, 424, 498, 436, 512, 458, 565, 500, 640, 425, 640)
+
+[node name="KC1" type="Label" parent="Mesa1" unique_id=289733068]
+offset_left = 124.0
+offset_top = 227.0
+offset_right = 263.0
+offset_bottom = 316.0
+theme_override_colors/font_color = Color(0, 1, 0.53333336, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("1_iyqf0")
+theme_override_font_sizes/font_size = 34
+text = "CPU
+KC-001"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Line2D" type="Line2D" parent="Mesa1/KC1" unique_id=123332868]
+points = PackedVector2Array(122, 77, 122, 177, 221, 177)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D2" type="Line2D" parent="Mesa1/KC1" unique_id=1778316045]
+position = Vector2(-21, 1)
+points = PackedVector2Array(122, 77, 122, 192, 263, 192, 263, 320)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D4" type="Line2D" parent="Mesa1/KC1" unique_id=394840654]
+position = Vector2(-82, 2)
+points = PackedVector2Array(122, 77, 122, 192)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D12" type="Line2D" parent="Mesa1/KC1" unique_id=618201778]
+position = Vector2(55, -64)
+points = PackedVector2Array(122, 77, 122, 192)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D5" type="Line2D" parent="Mesa1/KC1" unique_id=1072259706]
+position = Vector2(-82, 163)
+points = PackedVector2Array(143, 77, 284, 77)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D11" type="Line2D" parent="Mesa1/KC1" unique_id=731136430]
+position = Vector2(-47, -56)
+points = PackedVector2Array(143, 77, 172, 77)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D10" type="Line2D" parent="Mesa1/KC1" unique_id=370551247]
+position = Vector2(-315, 154)
+points = PackedVector2Array(143, 77, 284, 77)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D9" type="Line2D" parent="Mesa1/KC1" unique_id=928430652]
+position = Vector2(-243, -55)
+points = PackedVector2Array(145, 286, 181.98706, 285.77466, 181.74275, 205.92334, 223, 205.25668, 223, 77, 284, 77)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D3" type="Line2D" parent="Mesa1/KC1" unique_id=322055414]
+position = Vector2(-42, 19)
+points = PackedVector2Array(122, 59, 122, 192, 263, 192, 263, 261)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D8" type="Line2D" parent="Mesa1/KC1" unique_id=836014921]
+position = Vector2(-128, 125)
+points = PackedVector2Array(122, 59, 122, 192, -11, 192)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D6" type="Line2D" parent="Mesa1/KC1" unique_id=932913463]
+position = Vector2(-109.7, 18)
+points = PackedVector2Array(122, 59, 121.71141, 151.34688, 77.7, 151)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D7" type="Line2D" parent="Mesa1/KC1" unique_id=111599987]
+position = Vector2(-59, -28)
+points = PackedVector2Array(122, 59, 121.999985, 72.13296, 54, 72, 54, 186)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="SolderPad12" type="Polygon2D" parent="Mesa1/KC1" unique_id=677774758]
+position = Vector2(221, 178)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-587, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad15" type="Polygon2D" parent="Mesa1/KC1" unique_id=1611636413]
+position = Vector2(39, 195)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad21" type="Polygon2D" parent="Mesa1/KC1" unique_id=396420245]
+position = Vector2(-33, 231)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad16" type="Polygon2D" parent="Mesa1/KC1" unique_id=1047117664]
+position = Vector2(60, 240)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad22" type="Polygon2D" parent="Mesa1/KC1" unique_id=1822735950]
+position = Vector2(124, 22)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad23" type="Polygon2D" parent="Mesa1/KC1" unique_id=1887607630]
+position = Vector2(176, 129)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad24" type="Polygon2D" parent="Mesa1/KC1" unique_id=1236643668]
+position = Vector2(176, 12)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad17" type="Polygon2D" parent="Mesa1/KC1" unique_id=1379884017]
+position = Vector2(201, 240)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad13" type="Polygon2D" parent="Mesa1/KC1" unique_id=311887924]
+position = Vector2(241, 327)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad14" type="Polygon2D" parent="Mesa1/KC1" unique_id=2094266571]
+position = Vector2(220, 282)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad19" type="Polygon2D" parent="Mesa1/KC1" unique_id=135980474]
+position = Vector2(-6, 159)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad20" type="Polygon2D" parent="Mesa1/KC1" unique_id=1295590289]
+position = Vector2(-7, 184)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad18" type="Polygon2D" parent="Mesa1/KC1" unique_id=285809825]
+position = Vector2(-35, 169)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="MesaHighlight" type="Polygon2D" parent="Mesa1" unique_id=639119645]
 color = Color(0.47843137, 0.24313726, 0.03137255, 1)
 polygon = PackedVector2Array(489, 640, 451, 569, 428, 517, 415, 500, 378, 403, 366, 393, 350, 392, 290, 390, 289, 383, 350, 385, 385, 385, 424, 498, 436, 512, 458, 565, 481, 605, 499, 638, 500, 640, 492, 640)
 
-[node name="MesaHighlight2" type="Polygon2D" parent="FrontLeft" unique_id=825916451]
+[node name="MesaHighlight2" type="Polygon2D" parent="Mesa1" unique_id=825916451]
 color = Color(0.47843137, 0.24313726, 0.03137255, 1)
 polygon = PackedVector2Array(351, 385, 332, 362, 324, 218, 308, 213, 304, 213, 304, 214, 304, 216, 308, 216, 319, 222, 325, 364, 345, 385)
 
-[node name="MesaHighlight3" type="Polygon2D" parent="FrontLeft" unique_id=1939947079]
+[node name="MesaHighlight3" type="Polygon2D" parent="Mesa1" unique_id=1939947079]
 position = Vector2(-58, 3)
 color = Color(0.47843137, 0.24313726, 0.03137255, 1)
 polygon = PackedVector2Array(354, 387, 343, 368, 325, 219, 323, 214, 321, 211, 315, 211, 313, 211, 309, 211, 310, 213, 312, 215, 313, 216, 319, 217, 321, 221, 327, 363, 329, 372, 335, 379, 340, 384, 348, 387)
 
-[node name="RightMesa" type="Polygon2D" parent="." unique_id=691314163]
+[node name="Mesa2" type="Polygon2D" parent="." unique_id=691314163]
 position = Vector2(8, 6)
 color = Color(0.36078432, 0.1764706, 0, 1)
 polygon = PackedVector2Array(406, 562, 432, 554, 486, 546, 544, 537, 618, 529, 661, 531, 681, 515, 706, 490, 716, 465, 739, 465, 771, 447, 772, 370, 788, 369, 789, 359, 857, 356, 858, 362, 992, 359, 992, 363, 999, 363, 999, 367, 1006, 367, 1006, 364, 1014, 364, 1015, 364, 1018, 368, 1018, 397, 1025, 395, 1031, 398, 1032, 425, 1038, 427, 1044, 434, 1047, 441, 1050, 447, 1055, 451, 1065, 454, 1073, 459, 1082, 456, 1082, 408, 1086, 405, 1088, 361, 1094, 358, 1099, 361, 1100, 401, 1103, 405, 1104, 444, 1114, 444, 1118, 447, 1122, 452, 1124, 458, 1126, 460, 1131, 465, 1145, 474, 1152, 483, 1164, 488, 1216, 531, 1259, 553, 1343, 615, 1363, 640, 1358, 665, 159, 668, 187, 646, 202, 633, 217, 623, 245, 612, 298, 605, 335, 593, 365, 573, 381, 567)
 
-[node name="Label" type="Label" parent="RightMesa" unique_id=977344576]
-offset_left = 849.0
-offset_top = 378.0
-offset_right = 950.0
-offset_bottom = 429.0
+[node name="KC2" type="Label" parent="Mesa2" unique_id=977344576]
+offset_left = 861.0
+offset_top = 370.0
+offset_right = 994.0
+offset_bottom = 467.0
 theme_override_colors/font_color = Color(0, 1, 0.53333336, 1)
 theme_override_colors/font_outline_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
+theme_override_constants/line_spacing = -3
 theme_override_constants/outline_size = 6
 theme_override_fonts/font = ExtResource("1_iyqf0")
-theme_override_font_sizes/font_size = 40
-text = "CPU"
+theme_override_font_sizes/font_size = 37
+text = "CPU
+KC-002"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MesaHighlight" type="Polygon2D" parent="RightMesa" unique_id=1051486826]
-color = Color(0.47843137, 0.23921569, 0.03137255, 1)
-polygon = PackedVector2Array(159, 668, 187, 646, 202, 633, 210, 619, 245, 612, 298, 605, 328, 594, 365, 573, 381, 567, 406, 562, 432, 554, 530, 539, 618, 529, 661, 531, 681, 515, 696, 500, 706, 490, 716, 465, 739, 465, 771, 447, 772, 370, 788, 369, 789, 359, 857, 356, 852, 361, 795, 365, 795, 375, 778, 376, 777, 452, 743, 472, 721, 472, 712, 493, 689, 521, 680, 532, 669, 545, 624, 554, 532, 573, 438, 590, 404, 607, 363, 619, 326, 644, 289, 655, 260, 666, 238, 668, 227, 668, 211, 668, 186, 668)
+[node name="Chipline" type="Line2D" parent="Mesa2/KC2" unique_id=1189377542]
+position = Vector2(-861, -370)
+points = PackedVector2Array(959, 394, 1011, 394, 1011, 497, 1142, 498)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
 
-[node name="MesaHighlight2" type="Polygon2D" parent="RightMesa" unique_id=1891481255]
+[node name="Chipline2" type="Line2D" parent="Mesa2/KC2" unique_id=1206393255]
+position = Vector2(-861, -370)
+points = PackedVector2Array(1011, 395, 1011, 375, 1017, 375, 1018, 375)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline3" type="Line2D" parent="Mesa2/KC2" unique_id=2103566762]
+position = Vector2(-883, -278)
+points = PackedVector2Array(1170, 420, 1010, 420, 1010, 360)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline4" type="Line2D" parent="Mesa2/KC2" unique_id=1194844570]
+position = Vector2(-909, -275)
+points = PackedVector2Array(1153, 434, 1010, 434, 1010, 358)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline8" type="Line2D" parent="Mesa2/KC2" unique_id=892023786]
+position = Vector2(-1005.3, -276)
+points = PackedVector2Array(958.3, 452, 957.8084, 434, 1010, 434, 1010, 357)
+width = 3.5
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline9" type="Line2D" parent="Mesa2/KC2" unique_id=182245421]
+position = Vector2(-950.3, -321)
+points = PackedVector2Array(941.3, 448, 941.3, 371, 1010, 371, 1010, 357)
+width = 3.5
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline6" type="Line2D" parent="Mesa2/KC2" unique_id=1449687101]
+position = Vector2(-932, -274)
+points = PackedVector2Array(1010, 491, 1010, 356)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline10" type="Line2D" parent="Mesa2/KC2" unique_id=756496174]
+position = Vector2(-1041, -349)
+points = PackedVector2Array(895, 486, 1011.0001, 486.59506, 1011, 355, 1086, 355, 1086, 362)
+width = 5.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline7" type="Line2D" parent="Mesa2/KC2" unique_id=276888725]
+position = Vector2(-975, -275)
+points = PackedVector2Array(1010, 438, 1010, 358)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Chipline5" type="Line2D" parent="Mesa2/KC2" unique_id=759366393]
+position = Vector2(-860, -368)
+points = PackedVector2Array(1090, 373, 1094, 373, 1094, 414)
+width = 3.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="SolderPad" type="Polygon2D" parent="Mesa2/KC2" unique_id=1335874909]
+position = Vector2(233, 49)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad2" type="Polygon2D" parent="Mesa2/KC2" unique_id=949061959]
+position = Vector2(280, 128.00003)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-587, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad3" type="Polygon2D" parent="Mesa2/KC2" unique_id=1438276399]
+position = Vector2(244, 159)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-587, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad4" type="Polygon2D" parent="Mesa2/KC2" unique_id=1734904359]
+position = Vector2(77, 218)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad8" type="Polygon2D" parent="Mesa2/KC2" unique_id=2082037321]
+position = Vector2(-146, 138)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad6" type="Polygon2D" parent="Mesa2/KC2" unique_id=1582702796]
+position = Vector2(-48, 179)
+scale = Vector2(0.1, 0.1)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad7" type="Polygon2D" parent="Mesa2/KC2" unique_id=787521510]
+position = Vector2(-10.000004, 130)
+scale = Vector2(0.1, 0.1)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad5" type="Polygon2D" parent="Mesa2/KC2" unique_id=2098654085]
+position = Vector2(34, 166)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="MesaHighlight" type="Polygon2D" parent="Mesa2" unique_id=1051486826]
+color = Color(0.47843137, 0.23921569, 0.03137255, 1)
+polygon = PackedVector2Array(159, 668, 187, 646, 202, 633, 210, 619, 245, 612, 298, 605, 328, 594, 365, 573, 381, 567, 406, 562, 432, 554, 530, 539, 618, 529, 661, 531, 681, 515, 696, 500, 706, 490, 716, 465, 739, 465, 771, 447, 772, 370, 788, 369, 789, 359, 857, 356, 852, 361, 798, 365, 797, 368, 794, 368, 788, 369, 778, 376, 777, 452, 743, 472, 721, 472, 712, 493, 689, 521, 680, 532, 669, 545, 624, 554, 532, 573, 438, 590, 404, 607, 363, 619, 326, 644, 289, 655, 260, 666, 238, 668, 227, 668, 211, 668, 186, 668)
+
+[node name="MesaHighlight3" type="Polygon2D" parent="Mesa2" unique_id=760271910]
+position = Vector2(31, 11)
+color = Color(0.47843137, 0.23921569, 0.03137255, 1)
+polygon = PackedVector2Array(701, 453, 715, 456, 723, 456, 732, 455, 750, 453, 757, 451, 763, 448, 766, 444, 768, 425, 765, 414, 767, 395, 765, 371, 766, 353, 785, 354, 781, 356, 779, 359, 778, 361, 778, 364, 778, 376, 778, 392, 780, 406, 777, 419, 778, 430, 777, 452, 777, 457, 774, 462, 767, 466, 753, 467, 730, 467, 716.11127, 468.22614, 686, 464)
+
+[node name="MesaHighlight2" type="Polygon2D" parent="Mesa2" unique_id=1891481255]
 color = Color(0.47843137, 0.24313726, 0.03137255, 1)
 polygon = PackedVector2Array(858, 362, 992, 359, 992.00006, 363.293, 999, 363, 999, 366, 995, 366, 992, 366, 985, 369, 859, 366)
 
-[node name="Polygon2D" type="Polygon2D" parent="RightMesa" unique_id=1339162691]
+[node name="Polygon2D" type="Polygon2D" parent="Mesa2" unique_id=1339162691]
 color = Color(0.47843137, 0.24313726, 0.03137255, 1)
 polygon = PackedVector2Array(1082, 408, 1086, 405, 1088, 361, 1094, 358, 1096, 361, 1091, 364, 1090, 407, 1082, 413)
 
 [node name="TheBigYellowOne" type="CollisionShape2D" parent="." unique_id=834369166]
 material = SubResource("ShaderMaterial_w35dm")
-position = Vector2(598, 274)
+position = Vector2(640, 272)
 shape = SubResource("CircleShape2D_u637t")
 debug_color = Color(0.79457694, 0.6948971, 0, 1)
