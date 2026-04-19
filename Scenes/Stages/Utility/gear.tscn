@@ -4,14 +4,14 @@
 [ext_resource type="Script" uid="uid://43epun68m0ut" path="res://Scripts/Stages/Utility/Gear.cs" id="1_vafe5"]
 [ext_resource type="Shader" uid="uid://djggkv35w5mhf" path="res://Scenes/Stages/Clocktower/light.gdshader" id="2_gearshr"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hub"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wo0bc"]
 shader = ExtResource("2_gearshr")
 shader_parameter/light1_pos = Vector2(291, 560)
 shader_parameter/light2_pos = Vector2(789, 380)
 shader_parameter/light3_pos = Vector2(1267, 550)
-shader_parameter/falloff = 700.0
-shader_parameter/ambient = 0.05
-shader_parameter/radius = 50.0
+shader_parameter/falloff = 906.62404301714
+shader_parameter/ambient = 0.03
+shader_parameter/radius = 186.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gear"]
 shader = ExtResource("2_gearshr")
@@ -22,7 +22,17 @@ shader_parameter/falloff = 700.0
 shader_parameter/ambient = 0.05
 shader_parameter/radius = 186.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hub"]
+shader = ExtResource("2_gearshr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 700.0
+shader_parameter/ambient = 0.05
+shader_parameter/radius = 50.0
+
 [node name="Gear" type="Node2D" unique_id=1061900053]
+material = SubResource("ShaderMaterial_wo0bc")
 script = ExtResource("1_mscjj")
 
 [node name="gearinside1" type="Polygon2D" parent="." unique_id=1240222685]
