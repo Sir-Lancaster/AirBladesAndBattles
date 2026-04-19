@@ -2,25 +2,37 @@
 
 [ext_resource type="Script" uid="uid://43epun68m0ut" path="res://Scripts/Stages/Utility/Gear.cs" id="1_gear6"]
 [ext_resource type="Script" uid="uid://dq4ob5fqupji6" path="res://Scripts/Stages/Utility/Gears.cs" id="1_gear6grs"]
-[ext_resource type="Shader" uid="uid://djggkv35w5mhf" path="res://Scenes/Stages/Clocktower/light.gdshader" id="2_gear6shr"]
+[ext_resource type="Shader" uid="uid://dc8ft5270pjbl" path="res://Scenes/Stages/Clocktower/gear_world_light.gdshader" id="2_gear6shr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_febxd"]
+shader = ExtResource("2_gear6shr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
+shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gear6"]
 shader = ExtResource("2_gear6shr")
 shader_parameter/light1_pos = Vector2(291, 560)
 shader_parameter/light2_pos = Vector2(789, 380)
 shader_parameter/light3_pos = Vector2(1267, 550)
-shader_parameter/falloff = 700.0
-shader_parameter/ambient = 0.05
-shader_parameter/radius = 60.0
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
+shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wn1sy"]
 shader = ExtResource("2_gear6shr")
 shader_parameter/light1_pos = Vector2(291, 560)
 shader_parameter/light2_pos = Vector2(789, 380)
 shader_parameter/light3_pos = Vector2(1267, 550)
-shader_parameter/falloff = 700.0
-shader_parameter/ambient = 0.05
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
 shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hub6"]
 shader = ExtResource("2_gear6shr")
@@ -30,8 +42,10 @@ shader_parameter/light3_pos = Vector2(1267, 550)
 shader_parameter/falloff = 700.0
 shader_parameter/ambient = 0.05
 shader_parameter/radius = 20.0
+shader_parameter/sphere_mix = 0.5
 
-[node name="Gear" type="Node2D" unique_id=500000001]
+[node name="Gear2" type="Node2D" unique_id=500000001]
+material = SubResource("ShaderMaterial_febxd")
 script = ExtResource("1_gear6grs")
 
 [node name="gearinside1" type="Polygon2D" parent="." unique_id=601810439]
@@ -52,5 +66,5 @@ polygon = PackedVector2Array(76, -25, 118, -23, 118, 23, 76, 25, 69, 40, 59, 54,
 script = ExtResource("1_gear6")
 ProngCount = 6
 HoleRadius = 50.0
-HoleColor = Color(0.546786, 0.50053024, 0.3581443, 1)
+HoleColor = Color(0.34117648, 0.30980393, 0.20784314, 1)
 HoleMaterial = SubResource("ShaderMaterial_hub6")

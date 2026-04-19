@@ -2,25 +2,27 @@
 
 [ext_resource type="Script" uid="uid://dq4ob5fqupji6" path="res://Scripts/Stages/Utility/Gears.cs" id="1_mscjj"]
 [ext_resource type="Script" uid="uid://43epun68m0ut" path="res://Scripts/Stages/Utility/Gear.cs" id="1_vafe5"]
-[ext_resource type="Shader" uid="uid://djggkv35w5mhf" path="res://Scenes/Stages/Clocktower/light.gdshader" id="2_gearshr"]
+[ext_resource type="Shader" uid="uid://dc8ft5270pjbl" path="res://Scenes/Stages/Clocktower/gear_world_light.gdshader" id="2_gearshr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wo0bc"]
 shader = ExtResource("2_gearshr")
 shader_parameter/light1_pos = Vector2(291, 560)
 shader_parameter/light2_pos = Vector2(789, 380)
 shader_parameter/light3_pos = Vector2(1267, 550)
-shader_parameter/falloff = 906.62404301714
+shader_parameter/falloff = 2000.0000949525
 shader_parameter/ambient = 0.03
 shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gear"]
 shader = ExtResource("2_gearshr")
 shader_parameter/light1_pos = Vector2(291, 560)
 shader_parameter/light2_pos = Vector2(789, 380)
 shader_parameter/light3_pos = Vector2(1267, 550)
-shader_parameter/falloff = 700.0
-shader_parameter/ambient = 0.05
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
 shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hub"]
 shader = ExtResource("2_gearshr")
@@ -30,6 +32,7 @@ shader_parameter/light3_pos = Vector2(1267, 550)
 shader_parameter/falloff = 700.0
 shader_parameter/ambient = 0.05
 shader_parameter/radius = 50.0
+shader_parameter/sphere_mix = 0.5
 
 [node name="Gear" type="Node2D" unique_id=1061900053]
 material = SubResource("ShaderMaterial_wo0bc")
@@ -54,5 +57,5 @@ offset = Vector2(-540, 320)
 polygon = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
 uv = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
 script = ExtResource("1_vafe5")
-HoleColor = Color(0.546786, 0.50053024, 0.3581443, 1)
+HoleColor = Color(0.3417166, 0.31091017, 0.20724851, 1)
 HoleMaterial = SubResource("ShaderMaterial_hub")

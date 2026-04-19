@@ -279,14 +279,16 @@ texture = SubResource("GradTex_win")
 texture_scale = 2.5
 
 [node name="Gear" parent="." unique_id=1061900053 instance=ExtResource("1_48itk")]
-material = SubResource("ShaderMaterial_3dkk4")
+material = null
 position = Vector2(667, 730)
 RotateClockwise = false
 
 [node name="Gear3" parent="." unique_id=500000001 instance=ExtResource("4_4l0pb")]
+material = null
 position = Vector2(788, 661)
 
 [node name="Gear2" parent="." unique_id=545824321 instance=ExtResource("1_48itk")]
+material = null
 position = Vector2(590, 890)
 
 [node name="Platform2" type="StaticBody2D" parent="." unique_id=1088427752]
