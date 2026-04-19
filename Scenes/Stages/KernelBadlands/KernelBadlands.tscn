@@ -1,8 +1,16 @@
 [gd_scene format=3 uid="uid://cfikufu28m0wb"]
 
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d36ga"]
 [ext_resource type="FontFile" uid="uid://baxoray2nhnnw" path="res://Assets/Levels/KernelBadlands/GoogleSansCode-VariableFont_MONO,wght.ttf" id="1_lttus"]
-[ext_resource type="Shader" uid="uid://bb1rrryl42wh6" path="res://Scripts/Stages/KernelBadlands/DaySky.gdshader" id="1_y2tob"]
-[ext_resource type="Shader" uid="uid://bn2h7vlb08kuo" path="res://Scripts/Stages/KernelBadlands/DaySun.gdshader" id="3_ecyni"]
+[ext_resource type="Shader" path="res://Scripts/Stages/KernelBadlands/DaySky.gdshader" id="1_y2tob"]
+[ext_resource type="Shader" path="res://Scripts/Stages/KernelBadlands/DaySun.gdshader" id="3_ecyni"]
+[ext_resource type="PackedScene" uid="uid://cs7qyghscvvuf" path="res://Scenes/KernelCowboy/KernelCowboy.tscn" id="4_ecyni"]
+[ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="6_2im1a"]
+[ext_resource type="Script" uid="uid://be56f8ystbquh" path="res://Scripts/Stages/Utility/KernelBadlandsCam.cs" id="6_d36ga"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nainl"]
+shader = ExtResource("1_d36ga")
+shader_parameter/pixel_size = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7pl6s"]
 shader = ExtResource("1_y2tob")
@@ -21,7 +29,27 @@ shader_parameter/glow_size = 0.12
 shader_parameter/edge_softness = 0.02
 shader_parameter/center = Vector2(0.5, 0.5)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d36ga"]
+size = Vector2(835, 150)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7pl6s"]
+size = Vector2(594.5, 46.75)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2im1a"]
+
 [node name="KernelBadlands" type="Node2D" unique_id=1796150636]
+position = Vector2(274, 245)
+
+[node name="Pixelator" type="ColorRect" parent="." unique_id=1921458910]
+visible = false
+z_index = 12
+material = SubResource("ShaderMaterial_nainl")
+layout_direction = 1
+offset_left = -346.99997
+offset_top = -277.99997
+offset_right = -246.99997
+offset_bottom = -177.99997
+scale = Vector2(20, 20)
 
 [node name="Background" type="CanvasLayer" parent="." unique_id=1703109906]
 layer = -1
@@ -46,7 +74,8 @@ offset_bottom = 322.0
 
 [node name="Mesas" type="Node2D" parent="." unique_id=1430090127]
 z_index = 2
-position = Vector2(0, -50)
+position = Vector2(-229.00002, -193.99998)
+scale = Vector2(1.25, 1.25)
 
 [node name="KC-001" type="Node2D" parent="Mesas" unique_id=1879413948]
 z_index = 1
@@ -507,11 +536,165 @@ width = 2.8
 default_color = Color(0, 1, 0.53333336, 1)
 
 [node name="Ground" type="Node2D" parent="." unique_id=500793560]
-z_index = 3
+z_index = 4
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Ground" unique_id=676059730]
+
+[node name="MesaOutcroppingcollision" type="CollisionShape2D" parent="Ground/StaticBody2D" unique_id=1342125008]
+position = Vector2(31.5, 574)
+shape = SubResource("RectangleShape2D_d36ga")
+
+[node name="groundcollision" type="CollisionShape2D" parent="Ground/StaticBody2D" unique_id=1144138776]
+position = Vector2(1335.25, 625)
+shape = SubResource("RectangleShape2D_7pl6s")
+
+[node name="QuicksandCollision" type="CollisionShape2D" parent="Ground/StaticBody2D" unique_id=256116034]
+visible = false
+position = Vector2(742, 625)
+shape = SubResource("RectangleShape2D_7pl6s")
+
+[node name="MesaOutcropping" type="Polygon2D" parent="Ground/StaticBody2D" unique_id=2027597480]
+position = Vector2(452.00003, -1320.9081)
+scale = Vector2(12.938462, 3.0399804)
+color = Color(0.18039216, 0.08627451, 0.03137255, 1)
+polygon = PackedVector2Array(-65, 648, -65, 598, 0, 598, 0, 648)
+
+[node name="GroundBase" type="Polygon2D" parent="Ground/StaticBody2D" unique_id=874175855]
+position = Vector2(1039, -12.960022)
+scale = Vector2(0.51733094, 1.02)
+color = Color(0.18039216, 0.08627451, 0.03137255, 1)
+polygon = PackedVector2Array(0, 648, 0, 598, 1154, 598, 1154, 648)
+
+[node name="Quicksand" type="Polygon2D" parent="Ground/StaticBody2D" unique_id=1379063442]
+position = Vector2(439.00006, -2010.2788)
+scale = Vector2(0.5199307, 4.359998)
+color = Color(0.18039216, 0.08627451, 0.03137255, 1)
+polygon = PackedVector2Array(0, 648, 0, 598, 1154, 598, 1154, 648)
+
+[node name="Traces" type="Node2D" parent="Ground/StaticBody2D" unique_id=463251348]
+
+[node name="SolderPad25" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=669952423]
+position = Vector2(-141, 579)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad27" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=654870901]
+position = Vector2(-28, 519)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad28" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1467335183]
+position = Vector2(15, 587)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad29" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1547798473]
+position = Vector2(52, 610)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad30" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1387696156]
+position = Vector2(199, 574.99994)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad31" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1260644115]
+position = Vector2(295, 612)
+scale = Vector2(0.1, 0.1)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad32" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1620270570]
+position = Vector2(424, 524)
+scale = Vector2(0.1, 0.1)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad26" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=33129911]
+position = Vector2(-70, 522)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-579, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="Line2D" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1737204584]
+points = PackedVector2Array(-347, 522, -183, 522, -183, 579, -139, 579)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D2" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1929941188]
+position = Vector2(165, 38)
+points = PackedVector2Array(-347, 522, -234, 522, -234, 484)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D6" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1115631674]
+position = Vector2(433, 52)
+points = PackedVector2Array(-234, 522, -234, 484)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="SolderPad33" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=31624565]
+position = Vector2(394.73, 604.99994)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="Line2D8" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=133634264]
+position = Vector2(628.73, 82)
+points = PackedVector2Array(-234, 522, -234, 484)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D5" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1417966935]
+position = Vector2(384, 13)
+points = PackedVector2Array(-347, 522, -88, 522, -88, 599)
+width = 4.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D7" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=688140933]
+position = Vector2(512, 43)
+points = PackedVector2Array(-216, 522, -88, 522, -88, 480)
+width = 4.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D4" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=2054754738]
+position = Vector2(249, 30)
+points = PackedVector2Array(-234, 522, -234, 556)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D3" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=215870455]
+position = Vector2(270, 30)
+points = PackedVector2Array(-218, 580, -291, 580.0651, -291, 522, -267.21265, 522, -234, 522, -234, 489, -296, 489)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="KernelCowboy" parent="Ground" unique_id=156738427 instance=ExtResource("4_ecyni")]
+position = Vector2(1158, 499)
+
+[node name="SteampunkAi" parent="Ground" unique_id=1806914756 instance=ExtResource("6_2im1a")]
+position = Vector2(134, 427)
 
 [node name="KillZones" type="Node2D" parent="." unique_id=2123798175]
 
-[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1980879264]
-visible = false
-position = Vector2(160, -256)
-polygon = PackedVector2Array(519, 601, 666, 601, 665, 498, 519, 498)
+[node name="Camera2D" type="Camera2D" parent="." unique_id=52363870]
+material = SubResource("ShaderMaterial_2im1a")
+use_parent_material = true
+position = Vector2(655, 219)
+scale = Vector2(1.5, 1.5)
+script = ExtResource("6_d36ga")
+YOffset = -150.0
