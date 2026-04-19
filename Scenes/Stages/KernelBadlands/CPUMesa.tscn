@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://cfikufu28m0wb"]
+
+[ext_resource type="FontFile" uid="uid://baxoray2nhnnw" path="res://Assets/Levels/KernelBadlands/GoogleSansCode-VariableFont_MONO,wght.ttf" id="1_iyqf0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w35dm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u637t"]
+radius = 43.931767
+
+[node name="Cpu" type="Node2D" unique_id=1796150636]
+
+[node name="BehindLeft" type="Polygon2D" parent="." unique_id=1193469048]
+position = Vector2(-58, 2)
+color = Color(0.36078432, 0.1764706, 0, 1)
+polygon = PackedVector2Array(328, 286, 342, 286, 344, 290, 458, 290, 459, 294, 464, 294, 464, 299, 479, 299, 482, 360, 492, 360, 493, 392, 518, 394, 537, 424, 552, 449, 584, 470, 625, 493, 659, 506, 710, 528, 755, 540, 794, 572, 804, 642, -35, 643, 47, 550, 93, 500, 127, 470, 160, 434, 188, 415, 234, 398, 242, 396, 252, 394, 262, 345, 288, 344, 292, 316, 298, 284)
+
+[node name="MesaHighlight" type="Polygon2D" parent="BehindLeft" unique_id=1652953126]
+color = Color(0.47843137, 0.24313726, 0.03137255, 1)
+polygon = PackedVector2Array(298, 284, 328, 286, 342, 286, 344, 290, 458, 290, 459, 294, 464, 294, 464, 299, 479, 299, 482, 360, 492, 360, 493, 392, 518, 394, 552, 449, 625, 493, 664, 508, 710, 528, 755, 540, 794, 572, 804, 641, 804, 642, 797, 642, 789, 578, 753, 550, 709, 538, 615, 499, 542, 450, 516, 402, 485, 399, 483, 368, 475, 367, 473, 305, 464, 305, 460, 305, 460, 298, 455, 298, 455, 294, 343, 294, 340, 289, 298, 288)
+
+[node name="FrontLeft" type="Polygon2D" parent="." unique_id=237481318]
+position = Vector2(-54, 5)
+color = Color(0.36078432, 0.1764706, 0, 1)
+polygon = PackedVector2Array(0, 648, 2, 489, 12, 472, 24, 465, 39, 463, 68, 431, 77, 369, 116, 365, 125, 351, 130, 232, 168, 231, 169, 216, 308, 213, 324, 218, 332, 362, 351, 385, 385, 385, 424, 498, 436, 512, 458, 565, 500, 640, 425, 640)
+
+[node name="Label" type="Label" parent="FrontLeft" unique_id=289733068]
+offset_left = 149.0
+offset_top = 275.0
+offset_right = 250.0
+offset_bottom = 312.0
+theme_override_colors/font_color = Color(0, 1, 0.53333336, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("1_iyqf0")
+theme_override_font_sizes/font_size = 28
+text = "KC-001"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MesaHighlight" type="Polygon2D" parent="FrontLeft" unique_id=639119645]
+color = Color(0.47843137, 0.24313726, 0.03137255, 1)
+polygon = PackedVector2Array(489, 640, 451, 569, 428, 517, 415, 500, 378, 403, 366, 393, 350, 392, 290, 390, 289, 383, 350, 385, 385, 385, 424, 498, 436, 512, 458, 565, 481, 605, 499, 638, 500, 640, 492, 640)
+
+[node name="MesaHighlight2" type="Polygon2D" parent="FrontLeft" unique_id=825916451]
+color = Color(0.47843137, 0.24313726, 0.03137255, 1)
+polygon = PackedVector2Array(351, 385, 332, 362, 324, 218, 308, 213, 304, 213, 304, 214, 304, 216, 308, 216, 319, 222, 325, 364, 345, 385)
+
+[node name="MesaHighlight3" type="Polygon2D" parent="FrontLeft" unique_id=1939947079]
+position = Vector2(-58, 3)
+color = Color(0.47843137, 0.24313726, 0.03137255, 1)
+polygon = PackedVector2Array(354, 387, 343, 368, 325, 219, 323, 214, 321, 211, 315, 211, 313, 211, 309, 211, 310, 213, 312, 215, 313, 216, 319, 217, 321, 221, 327, 363, 329, 372, 335, 379, 340, 384, 348, 387)
+
+[node name="RightMesa" type="Polygon2D" parent="." unique_id=691314163]
+position = Vector2(8, 6)
+color = Color(0.36078432, 0.1764706, 0, 1)
+polygon = PackedVector2Array(406, 562, 432, 554, 486, 546, 544, 537, 618, 529, 661, 531, 681, 515, 706, 490, 716, 465, 739, 465, 771, 447, 772, 370, 788, 369, 789, 359, 857, 356, 858, 362, 992, 359, 992, 363, 999, 363, 999, 367, 1006, 367, 1006, 364, 1014, 364, 1015, 364, 1018, 368, 1018, 397, 1025, 395, 1031, 398, 1032, 425, 1038, 427, 1044, 434, 1047, 441, 1050, 447, 1055, 451, 1065, 454, 1073, 459, 1082, 456, 1082, 408, 1086, 405, 1088, 361, 1094, 358, 1099, 361, 1100, 401, 1103, 405, 1104, 444, 1114, 444, 1118, 447, 1122, 452, 1124, 458, 1126, 460, 1131, 465, 1145, 474, 1152, 483, 1164, 488, 1216, 531, 1259, 553, 1343, 615, 1363, 640, 1358, 665, 159, 668, 187, 646, 202, 633, 217, 623, 245, 612, 298, 605, 335, 593, 365, 573, 381, 567)
+
+[node name="Label" type="Label" parent="RightMesa" unique_id=977344576]
+offset_left = 849.0
+offset_top = 378.0
+offset_right = 950.0
+offset_bottom = 429.0
+theme_override_colors/font_color = Color(0, 1, 0.53333336, 1)
+theme_override_colors/font_outline_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("1_iyqf0")
+theme_override_font_sizes/font_size = 40
+text = "CPU"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MesaHighlight" type="Polygon2D" parent="RightMesa" unique_id=1051486826]
+color = Color(0.47843137, 0.23921569, 0.03137255, 1)
+polygon = PackedVector2Array(159, 668, 187, 646, 202, 633, 210, 619, 245, 612, 298, 605, 328, 594, 365, 573, 381, 567, 406, 562, 432, 554, 530, 539, 618, 529, 661, 531, 681, 515, 696, 500, 706, 490, 716, 465, 739, 465, 771, 447, 772, 370, 788, 369, 789, 359, 857, 356, 852, 361, 795, 365, 795, 375, 778, 376, 777, 452, 743, 472, 721, 472, 712, 493, 689, 521, 680, 532, 669, 545, 624, 554, 532, 573, 438, 590, 404, 607, 363, 619, 326, 644, 289, 655, 260, 666, 238, 668, 227, 668, 211, 668, 186, 668)
+
+[node name="MesaHighlight2" type="Polygon2D" parent="RightMesa" unique_id=1891481255]
+color = Color(0.47843137, 0.24313726, 0.03137255, 1)
+polygon = PackedVector2Array(858, 362, 992, 359, 992.00006, 363.293, 999, 363, 999, 366, 995, 366, 992, 366, 985, 369, 859, 366)
+
+[node name="Polygon2D" type="Polygon2D" parent="RightMesa" unique_id=1339162691]
+color = Color(0.47843137, 0.24313726, 0.03137255, 1)
+polygon = PackedVector2Array(1082, 408, 1086, 405, 1088, 361, 1094, 358, 1096, 361, 1091, 364, 1090, 407, 1082, 413)
+
+[node name="TheBigYellowOne" type="CollisionShape2D" parent="." unique_id=834369166]
+material = SubResource("ShaderMaterial_w35dm")
+position = Vector2(598, 274)
+shape = SubResource("CircleShape2D_u637t")
+debug_color = Color(0.79457694, 0.6948971, 0, 1)
