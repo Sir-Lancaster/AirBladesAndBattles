@@ -2,11 +2,13 @@
 
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d36ga"]
 [ext_resource type="FontFile" uid="uid://baxoray2nhnnw" path="res://Assets/Levels/KernelBadlands/GoogleSansCode-VariableFont_MONO,wght.ttf" id="1_lttus"]
+[ext_resource type="Script" uid="uid://wh36lpndux4l" path="res://Scripts/Stages/KernelBadlands/KernelBadlands.cs" id="1_wmi0o"]
 [ext_resource type="Shader" uid="uid://bb1rrryl42wh6" path="res://Scripts/Stages/KernelBadlands/DaySky.gdshader" id="1_y2tob"]
 [ext_resource type="Shader" uid="uid://bn2h7vlb08kuo" path="res://Scripts/Stages/KernelBadlands/DaySun.gdshader" id="3_ecyni"]
 [ext_resource type="PackedScene" uid="uid://cs7qyghscvvuf" path="res://Scenes/KernelCowboy/KernelCowboy.tscn" id="4_ecyni"]
 [ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="6_2im1a"]
 [ext_resource type="Script" uid="uid://be56f8ystbquh" path="res://Scripts/Stages/Utility/KernelBadlandsCam.cs" id="6_d36ga"]
+[ext_resource type="Shader" uid="uid://dg5dhntynidq1" path="res://Scripts/Stages/KernelBadlands/TraceChaser.gdshader" id="6_oye3f"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nainl"]
 shader = ExtResource("1_d36ga")
@@ -14,10 +16,15 @@ shader_parameter/pixel_size = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7pl6s"]
 shader = ExtResource("1_y2tob")
-shader_parameter/color_top = Color(0.42, 0.231, 0, 1)
-shader_parameter/color_mid = Color(0.788, 0.388, 0.008, 1)
-shader_parameter/color_horizon = Color(0.9607843, 0.627451, 0.1882353, 1)
-shader_parameter/color_low = Color(0.961, 0.627, 0.188, 1)
+shader_parameter/day_night = 1.0
+shader_parameter/day_top = Color(0.42, 0.231, 0, 1)
+shader_parameter/day_mid = Color(0.788, 0.388, 0.008, 1)
+shader_parameter/day_horizon = Color(0.9607843, 0.627451, 0.1882353, 1)
+shader_parameter/day_low = Color(0.961, 0.627, 0.188, 1)
+shader_parameter/dusk_top = Color(0.102, 0.039, 0.18, 1)
+shader_parameter/dusk_mid = Color(0.239, 0.102, 0.039, 1)
+shader_parameter/dusk_horizon = Color(0.478, 0.18, 0, 1)
+shader_parameter/dusk_low = Color(0.722, 0.29, 0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_d36ga"]
 resource_local_to_scene = true
@@ -29,19 +36,169 @@ shader_parameter/glow_size = 0.12
 shader_parameter/edge_softness = 0.02
 shader_parameter/center = Vector2(0.5, 0.5)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vta1v"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4eb58"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rfvg2"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i4ey4"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1fkst"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wmi0o"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oye3f"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qkssk"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_76iqt"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iau2r"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tdk5n"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x5nks"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.12
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ipb6n"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.1
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_btddj"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.1
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d36ga"]
 size = Vector2(835, 150)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7pl6s"]
 size = Vector2(594.5, 46.75)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ejw6o"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.1
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8ma33"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.1
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2uqam"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.1
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7vuhl"]
+shader = ExtResource("6_oye3f")
+shader_parameter/chaser_progress = 0.0
+shader_parameter/pulse_width = 0.1
+shader_parameter/pulse_aura_width = 0.35
+shader_parameter/base_color = Color(0, 1, 0.533, 1)
+shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2im1a"]
+
+[sub_resource type="Environment" id="Environment_wmi0o"]
+glow_enabled = true
+glow_intensity = 1.5
+glow_bloom = 0.5
 
 [node name="KernelBadlands" type="Node2D" unique_id=1796150636]
 position = Vector2(274, 245)
+script = ExtResource("1_wmi0o")
+CycleDuration = 3.0
 
 [node name="Pixelator" type="ColorRect" parent="." unique_id=1921458910]
-visible = false
 z_index = 12
 material = SubResource("ShaderMaterial_nainl")
 layout_direction = 1
@@ -102,177 +259,201 @@ vertical_alignment = 1
 
 [node name="Traces" type="Node2D" parent="Mesas/KC-001" unique_id=2093152641]
 
-[node name="Line2D" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=123332868]
+[node name="Line2D" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=123332868 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_vta1v")
 position = Vector2(70, 232)
 points = PackedVector2Array(122, 77, 122, 177, 221, 177)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D2" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=1778316045]
+[node name="Line2D2" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=1778316045 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_4eb58")
 position = Vector2(49, 233)
 points = PackedVector2Array(122, 77, 122, 192, 263, 192, 263, 320)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D4" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=394840654]
+[node name="Line2D4" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=394840654 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_rfvg2")
 position = Vector2(-12, 234)
 points = PackedVector2Array(122, 77, 122, 192)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D12" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=618201778]
+[node name="Line2D12" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=618201778 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_i4ey4")
 position = Vector2(125, 168)
 points = PackedVector2Array(122, 77, 122, 192)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D5" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=1072259706]
+[node name="Line2D5" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=1072259706 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_1fkst")
 position = Vector2(-12, 395)
 points = PackedVector2Array(143, 77, 284, 77)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D11" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=731136430]
+[node name="Line2D11" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=731136430 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_wmi0o")
 position = Vector2(23, 176)
 points = PackedVector2Array(143, 77, 172, 77)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D10" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=370551247]
+[node name="Line2D10" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=370551247 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_oye3f")
 position = Vector2(-245, 386)
 points = PackedVector2Array(207.39998, 77.19998, 284, 77)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D9" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=928430652]
+[node name="Line2D9" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=928430652 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_qkssk")
 position = Vector2(-173, 177)
 points = PackedVector2Array(145, 286, 181.98706, 285.77466, 181.74275, 205.92334, 223, 205.25668, 223, 77, 284, 77)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D3" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=322055414]
+[node name="Line2D3" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=322055414 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_76iqt")
 position = Vector2(28, 251)
 points = PackedVector2Array(122, 59, 122, 192, 263, 192, 263, 261)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D8" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=836014921]
+[node name="Line2D8" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=836014921 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_iau2r")
 position = Vector2(-58, 357)
 points = PackedVector2Array(122, 59, 122, 192, -11, 192)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D6" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=932913463]
+[node name="Line2D6" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=932913463 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_tdk5n")
 position = Vector2(-39.699997, 250)
 points = PackedVector2Array(122, 59, 121.71141, 151.34688, 77.7, 151)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D7" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=111599987]
+[node name="Line2D7" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=111599987 groups=["kc001_traces", "kc002_pads", "kc002_traces"]]
+material = SubResource("ShaderMaterial_x5nks")
 position = Vector2(11, 204)
 points = PackedVector2Array(122, 59, 121.999985, 72.13296, 54, 72, 54, 186)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="SolderPad12" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=677774758]
-position = Vector2(291, 410)
+[node name="SolderPad12" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=677774758 groups=["kc001_pads"]]
+position = Vector2(291, 410.8)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-587, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad15" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1611636413]
+[node name="SolderPad15" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1611636413 groups=["kc001_pads"]]
 position = Vector2(109, 427)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad21" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=396420245]
+[node name="SolderPad21" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=396420245 groups=["kc001_pads"]]
 position = Vector2(37, 463)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad25" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1260588440]
+[node name="SolderPad25" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1260588440 groups=["kc001_pads"]]
 position = Vector2(-35.999992, 464)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad16" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1047117664]
+[node name="SolderPad16" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1047117664 groups=["kc001_pads"]]
 position = Vector2(130, 472)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad22" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1822735950]
+[node name="SolderPad22" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1822735950 groups=["kc001_pads"]]
 position = Vector2(194, 254)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad23" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1887607630]
+[node name="SolderPad23" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1887607630 groups=["kc001_pads"]]
 position = Vector2(246, 361)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad24" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1236643668]
+[node name="SolderPad24" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1236643668 groups=["kc001_pads"]]
 position = Vector2(246, 244)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad17" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1379884017]
+[node name="SolderPad17" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1379884017 groups=["kc001_pads"]]
 position = Vector2(271, 472)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad13" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=311887924]
+[node name="SolderPad13" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=311887924 groups=["kc001_pads"]]
 position = Vector2(311, 559)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad14" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=2094266571]
+[node name="SolderPad14" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=2094266571 groups=["kc001_pads"]]
 position = Vector2(290, 514)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad19" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=135980474]
+[node name="SolderPad19" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=135980474 groups=["kc001_pads"]]
 position = Vector2(64, 391)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad20" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1295590289]
+[node name="SolderPad20" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1295590289 groups=["kc001_pads"]]
 position = Vector2(63, 416)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad26" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1192722028]
+[node name="SolderPad26" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1192722028 groups=["kc001_pads"]]
 position = Vector2(-69.59999, 548.8)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad18" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=285809825]
+[node name="SolderPad18" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=285809825 groups=["kc001_pads"]]
 position = Vector2(35, 401)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
@@ -307,121 +488,141 @@ polygon = PackedVector2Array(406, 562, 432, 554, 486, 546, 544, 537, 618, 529, 6
 [node name="Traces" type="Node2D" parent="Mesas/KC-002" unique_id=1834280821]
 position = Vector2(8, 6)
 
-[node name="Chipline" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1189377542]
+[node name="Chipline" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1189377542 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 points = PackedVector2Array(959, 394, 1011, 394, 1011, 497, 1142, 498)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline2" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1206393255]
+[node name="Chipline2" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1206393255 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 points = PackedVector2Array(1011, 395, 1011, 375, 1017, 375, 1018, 375)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline3" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=2103566762]
+[node name="Chipline3" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=2103566762 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(-22, 92)
 points = PackedVector2Array(1181.9999, 459.59998, 1181.5021, 419.62552, 1010, 420, 1010, 360)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline4" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1194844570]
+[node name="Chipline4" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1194844570 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(-48, 95)
 points = PackedVector2Array(1153, 434, 1010, 434, 1010, 358)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline8" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=892023786]
+[node name="Chipline8" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=892023786 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(-144.29999, 94)
 points = PackedVector2Array(958.3, 452, 957.8084, 434, 1010, 434, 1010, 357)
 width = 3.5
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline9" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=182245421]
+[node name="Chipline9" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=182245421 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(-89.29999, 49)
 points = PackedVector2Array(941.3, 448, 941.3, 371, 1010, 371, 1010, 357)
 width = 3.5
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline6" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1449687101]
+[node name="Chipline6" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=1449687101 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(-71, 96)
 points = PackedVector2Array(1010, 491, 1010, 356)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline10" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=756496174]
+[node name="Chipline10" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=756496174 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(-180, 21)
 points = PackedVector2Array(895, 486, 1011.0001, 486.59506, 1011, 355, 1086, 355, 1086, 362)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline7" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=276888725]
+[node name="Chipline7" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=276888725 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(-114, 95)
 points = PackedVector2Array(1010, 438, 1010, 358)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Chipline5" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=759366393]
+[node name="Chipline5" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=759366393 groups=["kc002_traces"]]
+material = SubResource("ShaderMaterial_ipb6n")
 position = Vector2(1, 2)
 points = PackedVector2Array(1090, 373, 1094, 373, 1094, 414)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="SolderPad" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1335874909]
+[node name="SolderPad" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1335874909 groups=["kc002_pads"]]
 position = Vector2(1094, 419)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad2" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=949061959]
+[node name="SolderPad2" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=949061959 groups=["kc002_pads"]]
 position = Vector2(1141, 498.00003)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-587, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad3" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1438276399]
+[node name="SolderPad3" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1438276399 groups=["kc002_pads"]]
 position = Vector2(1105, 529)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-587, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad4" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1734904359]
+[node name="SolderPad4" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1734904359 groups=["kc002_pads"]]
 position = Vector2(938, 588)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad8" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=2082037321]
+[node name="SolderPad8" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=2082037321 groups=["kc002_pads"]]
 position = Vector2(715, 508)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad6" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1582702796]
+[node name="SolderPad6" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1582702796 groups=["kc002_pads"]]
 position = Vector2(813, 549)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad7" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=787521510]
+[node name="SolderPad7" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=787521510 groups=["kc002_pads"]]
 position = Vector2(851, 500)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad9" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1464637590]
+[node name="SolderPad9" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1464637590 groups=["kc002_pads"]]
 position = Vector2(1159.2001, 548.4)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad5" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=2098654085]
+[node name="SolderPad5" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=2098654085 groups=["kc002_pads"]]
 position = Vector2(895, 536)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
@@ -493,69 +694,83 @@ vertical_alignment = 1
 
 [node name="Traces" type="Node2D" parent="Mesas/KC-003" unique_id=358675754]
 
-[node name="SolderPad9" type="Polygon2D" parent="Mesas/KC-003/Traces" unique_id=195622944]
+[node name="SolderPad9" type="Polygon2D" parent="Mesas/KC-003/Traces" unique_id=195622944 groups=["kc003_pads"]]
 position = Vector2(450, 425)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-587, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad10" type="Polygon2D" parent="Mesas/KC-003/Traces" unique_id=1432990226]
+[node name="SolderPad10" type="Polygon2D" parent="Mesas/KC-003/Traces" unique_id=1432990226 groups=["kc003_pads"]]
 position = Vector2(467, 446)
 scale = Vector2(0.08, 0.08)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-587, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad11" type="Polygon2D" parent="Mesas/KC-003/Traces" unique_id=212492605]
+[node name="SolderPad11" type="Polygon2D" parent="Mesas/KC-003/Traces" unique_id=212492605 groups=["kc003_pads"]]
 position = Vector2(454, 542)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="ChipLine" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=2009431999]
+[node name="ChipLine" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=2009431999 groups=["kc003_traces"]]
+material = SubResource("ShaderMaterial_btddj")
 position = Vector2(271, 305)
 points = PackedVector2Array(78, 15, 136, 15, 136, 120, 182, 120)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="ChipLine3" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=74222521]
+[node name="ChipLine3" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=74222521 groups=["kc003_traces"]]
+material = SubResource("ShaderMaterial_btddj")
 position = Vector2(217, 361)
 points = PackedVector2Array(136, 13, 136, 104, 238, 104, 238, 177)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="ChipLine5" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=1520474093]
+[node name="ChipLine5" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=1520474093 groups=["kc003_traces"]]
+material = SubResource("ShaderMaterial_btddj")
 position = Vector2(163, 361)
 points = PackedVector2Array(136, 13, 136, 104)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="ChipLine7" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=1255404363]
+[node name="ChipLine7" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=1255404363 groups=["kc003_traces"]]
+material = SubResource("ShaderMaterial_btddj")
 position = Vector2(314, 188)
 rotation = 1.5719447
 points = PackedVector2Array(136, 13, 136, 104)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="ChipLine2" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=1215548431]
+[node name="ChipLine2" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=1215548431 groups=["kc003_traces"]]
+material = SubResource("ShaderMaterial_btddj")
 position = Vector2(236, 359)
 points = PackedVector2Array(136, 15, 136, 87, 229, 87)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="ChipLine4" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=571845108]
+[node name="ChipLine4" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=571845108 groups=["kc003_traces"]]
+material = SubResource("ShaderMaterial_btddj")
 position = Vector2(198, 359)
 points = PackedVector2Array(136, 15, 136, 87)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="ChipLine6" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=978431426]
+[node name="ChipLine6" type="Line2D" parent="Mesas/KC-003/Traces" unique_id=978431426 groups=["kc003_traces"]]
+material = SubResource("ShaderMaterial_btddj")
 position = Vector2(183.8, 318)
 points = PackedVector2Array(136, 15, 136.19014, 25.457165, 64.2, 25)
 width = 2.8
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
 [node name="Ground" type="Node2D" parent="." unique_id=500793560]
 z_index = 4
@@ -619,219 +834,251 @@ default_color = Color(0.98039216, 0.78039217, 0.45882353, 1)
 
 [node name="Traces" type="Node2D" parent="Ground/StaticBody2D" unique_id=463251348]
 
-[node name="SolderPad25" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=669952423]
+[node name="SolderPad25" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=669952423 groups=["ground_pads"]]
 position = Vector2(-141, 579)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad27" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=654870901]
+[node name="SolderPad27" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=654870901 groups=["ground_pads"]]
 position = Vector2(-28, 519)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad28" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1467335183]
+[node name="SolderPad28" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1467335183 groups=["ground_pads"]]
 position = Vector2(15, 587)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad29" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1547798473]
+[node name="SolderPad29" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1547798473 groups=["ground_pads"]]
 position = Vector2(52, 610)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad30" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1387696156]
+[node name="SolderPad30" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1387696156 groups=["ground_pads"]]
 position = Vector2(199, 574.99994)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad31" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1260644115]
+[node name="SolderPad31" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1260644115 groups=["ground_pads"]]
 position = Vector2(295, 612)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad32" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1620270570]
+[node name="SolderPad32" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1620270570 groups=["ground_pads"]]
 position = Vector2(424, 524)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad26" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=33129911]
+[node name="SolderPad26" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=33129911 groups=["ground_pads"]]
 position = Vector2(-70, 522)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-579, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="Line2D" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1737204584]
+[node name="Line2D" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1737204584 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_ejw6o")
 points = PackedVector2Array(-347, 522, -183, 522, -183, 579, -139, 579)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D2" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1929941188]
+[node name="Line2D2" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1929941188 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_ejw6o")
 position = Vector2(165, 38)
 points = PackedVector2Array(-347, 522, -234, 522, -234, 484)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="SolderPad39" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1208278683]
+[node name="SolderPad39" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1208278683 groups=["ground_pads"]]
 position = Vector2(1259, 667.22)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad41" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1943631296]
+[node name="SolderPad41" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1943631296 groups=["ground_pads"]]
 position = Vector2(1052, 610)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad40" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1251151237]
+[node name="SolderPad40" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1251151237 groups=["ground_pads"]]
 position = Vector2(1330, 610.22)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-579, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="Line2D15" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1595219751]
+[node name="Line2D15" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1595219751 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_8ma33")
 position = Vector2(1400, 88.21997)
 points = PackedVector2Array(-347, 522, -183, 522, -183, 579, -139, 579)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D16" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=221181250]
+[node name="Line2D16" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=221181250 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_8ma33")
 position = Vector2(1565, 126.21997)
 points = PackedVector2Array(-347, 522, -234, 522, -234, 484)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D6" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1115631674]
+[node name="Line2D6" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1115631674 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_8ma33")
 position = Vector2(433, 52)
 points = PackedVector2Array(-234, 522, -234, 484)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="SolderPad33" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=31624565]
+[node name="SolderPad33" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=31624565 groups=["ground_pads"]]
 position = Vector2(394.73, 604.99994)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="Line2D8" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=133634264]
+[node name="Line2D8" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=133634264 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_2uqam")
 position = Vector2(628.73, 82)
 points = PackedVector2Array(-234, 522, -234, 484)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D5" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1417966935]
+[node name="Line2D5" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1417966935 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_2uqam")
 position = Vector2(384, 13)
 points = PackedVector2Array(-347, 522, -88, 522, -88, 599)
 width = 4.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D7" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=688140933]
+[node name="Line2D7" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=688140933 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_2uqam")
 position = Vector2(512, 43)
 points = PackedVector2Array(-216, 522, -88, 522, -88, 480)
 width = 4.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D4" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=2054754738]
+[node name="Line2D4" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=2054754738 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_2uqam")
 position = Vector2(249, 30)
 points = PackedVector2Array(-234, 522, -234, 556)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D3" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=215870455]
+[node name="Line2D3" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=215870455 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_2uqam")
 position = Vector2(270, 30)
 points = PackedVector2Array(-218, 580, -291, 580.0651, -291, 522, -267.21265, 522, -234, 522, -234, 489, -296, 489)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="SolderPad34" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=43776309]
+[node name="SolderPad34" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=43776309 groups=["ground_pads"]]
 position = Vector2(460.72998, 607.22)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad35" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1668106820]
+[node name="SolderPad35" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1668106820 groups=["ground_pads"]]
 position = Vector2(503.72998, 675.22)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad36" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=2080540347]
+[node name="SolderPad36" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=2080540347 groups=["ground_pads"]]
 position = Vector2(783.73, 700.22)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SolderPad37" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=2005395221]
+[node name="SolderPad37" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=2005395221 groups=["ground_pads"]]
 position = Vector2(912.73, 612.22)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="Line2D9" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=139511155]
+[node name="Line2D9" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=139511155 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_7vuhl")
 position = Vector2(921.73, 140.21997)
 points = PackedVector2Array(-234, 522, -234, 484)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="SolderPad38" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=72614507]
+[node name="SolderPad38" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=72614507 groups=["ground_pads"]]
 position = Vector2(883.45996, 693.2199)
 scale = Vector2(0.07, 0.07)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="Line2D10" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1685291778]
+[node name="Line2D10" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1685291778 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_7vuhl")
 position = Vector2(1117.46, 170.21997)
 points = PackedVector2Array(-234, 522, -234, 484)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D11" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=720389699]
+[node name="Line2D11" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=720389699 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_7vuhl")
 position = Vector2(872.73, 101.21997)
 points = PackedVector2Array(-347, 522, -88, 522, -88, 599)
 width = 4.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D12" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1211691660]
+[node name="Line2D12" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1211691660 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_7vuhl")
 position = Vector2(1000.73, 131.21997)
 points = PackedVector2Array(-216, 522, -88, 522, -88, 480)
 width = 4.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D13" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=381459423]
+[node name="Line2D13" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=381459423 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_7vuhl")
 position = Vector2(737.73, 118.21997)
 points = PackedVector2Array(-234, 522, -234, 556)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
-[node name="Line2D14" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1467256246]
+[node name="Line2D14" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1467256246 groups=["ground_traces"]]
+material = SubResource("ShaderMaterial_7vuhl")
 position = Vector2(758.73, 118.21997)
 points = PackedVector2Array(-218, 580, -291, 580.0651, -291, 522, -267.21265, 522, -234, 522, -234, 489, -296, 489)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
+texture_mode = 2
 
 [node name="Cracks" type="Node2D" parent="Ground/StaticBody2D" unique_id=1428065070]
 
@@ -1132,9 +1379,8 @@ default_color = Color(0, 0, 0, 1)
 [node name="KernelCowboy" parent="Ground" unique_id=156738427 instance=ExtResource("4_ecyni")]
 position = Vector2(1152, 364)
 
-[node name="SteampunkAi" parent="Ground" unique_id=1806914756 node_paths=PackedStringArray("Target") groups=["characters"] instance=ExtResource("6_2im1a")]
+[node name="SteampunkAi" parent="Ground" unique_id=1806914756 groups=["characters"] instance=ExtResource("6_2im1a")]
 position = Vector2(106, 455)
-Target = NodePath("../KernelCowboy")
 
 [node name="KillZones" type="Node2D" parent="." unique_id=2123798175]
 
@@ -1154,3 +1400,6 @@ ZoomSpreadRange = 100.0
 ZoomSpeed = 6.0
 DeathZoomClose = 2.5
 DeathZoomSpeed = 15.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1680606971]
+environment = SubResource("Environment_wmi0o")
