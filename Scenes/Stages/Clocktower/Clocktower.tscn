@@ -2,8 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="1_48itk"]
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="2_3dkk4"]
+[ext_resource type="Script" uid="uid://r25k0b4ox7o1" path="res://Scripts/Stages/Clocktower/HourHand.cs" id="2_6ihs2"]
 [ext_resource type="Shader" uid="uid://djggkv35w5mhf" path="res://Scenes/Stages/Clocktower/light.gdshader" id="3_3dkk4"]
 [ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_hfokt"]
+[ext_resource type="Script" uid="uid://cb6qnptmsslb6" path="res://Scripts/Stages/Clocktower/MinuteHand.cs" id="3_p8rdk"]
 [ext_resource type="PackedScene" uid="uid://fxc4l4jksmnf" path="res://Scenes/Stages/Utility/gear6.tscn" id="4_4l0pb"]
 [ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="4_lbcms"]
 [ext_resource type="Script" uid="uid://cvviey1ruv8nb" path="res://Scripts/Stages/Utility/GearPlatform.cs" id="5_gearplat"]
@@ -72,6 +74,32 @@ offset_right = -11.000244
 offset_bottom = -321.99997
 scale = Vector2(20, 20)
 color = Color(0.546786, 0.50053024, 0.3581443, 1)
+
+[node name="HHand" type="ColorRect" parent="." unique_id=284966678]
+offset_left = 789.0
+offset_top = 328.0
+offset_right = 1289.0
+offset_bottom = 361.0
+rotation = -1.5707964
+pivot_offset = Vector2(0, 16.5)
+color = Color(0.12005129, 0.12005126, 0.12005121, 0.2784314)
+script = ExtResource("2_6ihs2")
+SecondsPerTick = 3.0
+
+[node name="Polygon2D" type="Polygon2D" parent="HHand" unique_id=33599871]
+position = Vector2(-665, -341)
+color = Color(0.12156863, 0.12156863, 0.12156863, 0.2784314)
+polygon = PackedVector2Array(1343, 358, 1318, 356, 1297, 353, 1274, 343, 1253, 331, 1238, 316, 1215, 298, 1191, 295, 1175, 300, 1165, 319, 1165, 395, 1171, 415, 1185, 423, 1209, 421, 1230, 407, 1250, 390, 1274, 375, 1297, 363, 1318, 360)
+
+[node name="Mhand2" type="ColorRect" parent="." unique_id=18182394]
+offset_left = 789.0
+offset_top = 328.0
+offset_right = 1840.0
+offset_bottom = 361.0
+rotation = -1.5707964
+pivot_offset = Vector2(0, 16.5)
+color = Color(0.12005129, 0.12005126, 0.12005121, 0.2784314)
+script = ExtResource("3_p8rdk")
 
 [node name="SpawnPoint" type="Node2D" parent="." unique_id=1387874827]
 
@@ -316,6 +344,7 @@ position = Vector2(43, 0)
 material = SubResource("ShaderMaterial_3dkk4")
 position = Vector2(746, 602)
 script = ExtResource("5_gearplat")
+RotateClockwise = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3" unique_id=1698050436]
 visible = false
@@ -347,10 +376,10 @@ occluder = SubResource("OccluderPolygon2D_3dkk4")
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
 material = SubResource("ShaderMaterial_ss6kr")
 layout_direction = 1
-offset_left = -30.999512
-offset_top = -59.99999
-offset_right = 69.00049
-offset_bottom = 40.000042
+offset_left = -106.0
+offset_top = -69.99997
+offset_right = -6.0
+offset_bottom = 30.000061
 scale = Vector2(20, 20)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1847418280]

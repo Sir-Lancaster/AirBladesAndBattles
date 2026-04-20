@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public partial class GearPlatform : Node2D
 {
     [Export] public int   ProngCount       = 16;
-    [Export] public float StepPauseSeconds = 0.25f;
+    [Export] public float StepPauseSeconds = 0.26f;
     [Export] public bool  RotateClockwise  = true;
 
     [Export] public Color FaceColor = new Color(0.708496f,   0.5126037f,  0.08798642f);
