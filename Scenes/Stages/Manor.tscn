@@ -5,7 +5,7 @@
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="3_rsone"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pr151"]
-size = Vector2(351, 30)
+size = Vector2(354.5, 30)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_slysq"]
 size = Vector2(351, 30)
@@ -35,6 +35,82 @@ position = Vector2(392, 656)
 [node name="Spawn4" type="Marker2D" parent="SpawnPoints" unique_id=670009721]
 position = Vector2(1248, 456)
 
+[node name="Railings" type="Node2D" parent="." unique_id=1476991874]
+position = Vector2(1494, 496)
+
+[node name="Railing1" type="StaticBody2D" parent="Railings" unique_id=299303052]
+position = Vector2(-5, 140)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Railings/Railing1" unique_id=676756618]
+position = Vector2(51.75, -83)
+scale = Vector2(0.025146827, 2.246737)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="ColorRect" type="ColorRect" parent="Railings/Railing1" unique_id=1964522087]
+offset_left = 49.0
+offset_top = -115.0
+offset_right = 89.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+
+[node name="Railing2" type="StaticBody2D" parent="Railings" unique_id=562787255]
+position = Vector2(-10, -488)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Railings/Railing2" unique_id=520908244]
+position = Vector2(-124.25, -10.999996)
+scale = Vector2(0.025146827, 2.246737)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="ColorRect" type="ColorRect" parent="Railings/Railing2" unique_id=1212689629]
+offset_left = -127.0
+offset_top = -43.0
+offset_right = -87.0
+offset_bottom = -3.0
+scale = Vector2(0.12667681, 1.1996557)
+
+[node name="Railing3" type="StaticBody2D" parent="Railings" unique_id=950805461]
+position = Vector2(-5, -244)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Railings/Railing3" unique_id=203831246]
+position = Vector2(51.75, -83)
+scale = Vector2(0.025146827, 2.246737)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="ColorRect" type="ColorRect" parent="Railings/Railing3" unique_id=1478016526]
+offset_left = 49.0
+offset_top = -115.0
+offset_right = 89.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+
+[node name="Chandelier" type="Node2D" parent="." unique_id=79277936]
+position = Vector2(-5, 140)
+
+[node name="Platform2" type="StaticBody2D" parent="Chandelier" unique_id=277399649]
+
+[node name="Polygon2D4" type="Polygon2D" parent="Chandelier/Platform2" unique_id=2018781439]
+position = Vector2(177.00003, -21)
+scale = Vector2(1.2800012, 1)
+polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chandelier/Platform2" unique_id=1209818511]
+position = Vector2(780.5, 251)
+scale = Vector2(1.2800012, 1)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="Platform6" type="StaticBody2D" parent="Chandelier" unique_id=341096344]
+position = Vector2(-366, -173)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Chandelier/Platform6" unique_id=190823936]
+position = Vector2(945.8226, -14)
+scale = Vector2(0.4209404, 1)
+polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chandelier/Platform6" unique_id=2087028629]
+position = Vector2(1146.3225, 258)
+scale = Vector2(0.4209404, 1)
+shape = SubResource("RectangleShape2D_pr151")
+
 [node name="Platform1" type="StaticBody2D" parent="." unique_id=248309987]
 position = Vector2(-5, 140)
 
@@ -44,19 +120,6 @@ polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1" unique_id=453756407]
 position = Vector2(1373.5, 439)
-shape = SubResource("RectangleShape2D_pr151")
-
-[node name="Platform2" type="StaticBody2D" parent="." unique_id=277399649]
-position = Vector2(-5, 140)
-
-[node name="Polygon2D4" type="Polygon2D" parent="Platform2" unique_id=2018781439]
-position = Vector2(177.00003, -21)
-scale = Vector2(1.2800012, 1)
-polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2" unique_id=1209818511]
-position = Vector2(780.5, 251)
-scale = Vector2(1.2800012, 1)
 shape = SubResource("RectangleShape2D_pr151")
 
 [node name="Platform3" type="StaticBody2D" parent="." unique_id=79718456]
@@ -93,19 +156,6 @@ polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5" unique_id=128829866]
 position = Vector2(432.5, 394)
-scale = Vector2(0.4209404, 1)
-shape = SubResource("RectangleShape2D_pr151")
-
-[node name="Platform6" type="StaticBody2D" parent="." unique_id=341096344]
-position = Vector2(-371, -33)
-
-[node name="Polygon2D4" type="Polygon2D" parent="Platform6" unique_id=190823936]
-position = Vector2(945.8226, -14)
-scale = Vector2(0.4209404, 1)
-polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform6" unique_id=2087028629]
-position = Vector2(1146.3225, 258)
 scale = Vector2(0.4209404, 1)
 shape = SubResource("RectangleShape2D_pr151")
 
@@ -192,10 +242,10 @@ shape = SubResource("RectangleShape2D_niasw")
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1787882924]
 material = SubResource("ShaderMaterial_vvus4")
 layout_direction = 1
-offset_left = -362.0
-offset_top = -835.0
-offset_right = -262.0
-offset_bottom = -735.0
+offset_left = -337.0
+offset_top = -901.0
+offset_right = -237.0
+offset_bottom = -801.0
 scale = Vector2(20, 20)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1031939648]
@@ -206,4 +256,4 @@ scale = Vector2(26.505554, 0.8646544)
 script = ExtResource("1_xs8my")
 
 [node name="Vampire" parent="." unique_id=23730063 instance=ExtResource("2_ql4x0")]
-position = Vector2(989, 668)
+position = Vector2(1507, 499)
