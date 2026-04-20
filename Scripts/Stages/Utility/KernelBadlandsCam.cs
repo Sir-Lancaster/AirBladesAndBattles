@@ -8,11 +8,21 @@ public partial class KernelBadlandsCam : Camera2D
     [Export] private float MinY = 0f;
     [Export] private float MaxY = 850f;
 
-    /// <summary>
-    /// Offsets the camera vertically. Negative = camera moves up = less void visible below the stage.
-    /// Tune this in the Inspector until the platform sits where you want it on screen.
-    /// </summary>
+    /// <summary>Negative = camera moves up = less void visible below the stage.</summary>
     [Export] private float YOffset = -200f;
+
+    /// <summary>Zoom when all players are on top of each other.</summary>
+    [Export] private float ZoomClose = 1.0f;
+    /// <summary>Zoom when players are at maximum spread.</summary>
+    [Export] private float ZoomFar = 0.5f;
+    /// <summary>Player spread in pixels that maps to ZoomFar.</summary>
+    [Export] private float ZoomSpreadRange = 600f;
+    /// <summary>How fast zoom lerps to its target each second during normal play.</summary>
+    [Export] private float ZoomSpeed = 3f;
+    /// <summary>Zoom level when only one player remains.</summary>
+    [Export] private float DeathZoomClose = 1.5f;
+    /// <summary>How fast the camera zooms in on the last survivor.</summary>
+    [Export] private float DeathZoomSpeed = 6f;
 
     public override void _Process(double delta)
     {
@@ -32,9 +42,32 @@ public partial class KernelBadlandsCam : Camera2D
         foreach (Vector2 pos in targets) center += pos;
         center /= targets.Count;
 
-        GlobalPosition = new Vector2(
-            Mathf.Clamp(center.X, MinX, MaxX),
-            Mathf.Clamp(center.Y + YOffset, MinY, MaxY)
-        );
+        float targetZoom;
+
+        if (targets.Count == 1)
+        {
+            // Last player alive — follow them directly, no stage boundary clamp.
+            GlobalPosition = center;
+            targetZoom = DeathZoomClose;
+        }
+        else
+        {
+            // Multiple players — clamp to stage bounds and zoom out by spread.
+            GlobalPosition = new Vector2(
+                Mathf.Clamp(center.X, MinX, MaxX),
+                Mathf.Clamp(center.Y + YOffset, MinY, MaxY)
+            );
+
+            float spread = 0f;
+            foreach (Vector2 pos in targets)
+                spread = Mathf.Max(spread, center.DistanceTo(pos));
+
+            float t = Mathf.Clamp(spread / (ZoomSpreadRange * 0.5f), 0f, 1f);
+            targetZoom = Mathf.Lerp(ZoomClose, ZoomFar, t);
+        }
+
+        float speed    = targets.Count == 1 ? DeathZoomSpeed : ZoomSpeed;
+        float smoothed = Mathf.Lerp(Zoom.X, targetZoom, speed * (float)delta);
+        Zoom = new Vector2(smoothed, smoothed);
     }
 }

@@ -15,10 +15,6 @@ run/main_scene="uid://bjjsty7l6h2n8"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
-[audio]
-
-buses/default_bus_layout="uid://mjdevysjfnxi"
-
 [autoload]
 
 NetworkManager="*res://Scripts/Multiplayer/NetworkManager.cs"

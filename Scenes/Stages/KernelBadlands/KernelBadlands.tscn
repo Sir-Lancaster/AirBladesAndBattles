@@ -2,8 +2,8 @@
 
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d36ga"]
 [ext_resource type="FontFile" uid="uid://baxoray2nhnnw" path="res://Assets/Levels/KernelBadlands/GoogleSansCode-VariableFont_MONO,wght.ttf" id="1_lttus"]
-[ext_resource type="Shader" path="res://Scripts/Stages/KernelBadlands/DaySky.gdshader" id="1_y2tob"]
-[ext_resource type="Shader" path="res://Scripts/Stages/KernelBadlands/DaySun.gdshader" id="3_ecyni"]
+[ext_resource type="Shader" uid="uid://bb1rrryl42wh6" path="res://Scripts/Stages/KernelBadlands/DaySky.gdshader" id="1_y2tob"]
+[ext_resource type="Shader" uid="uid://bn2h7vlb08kuo" path="res://Scripts/Stages/KernelBadlands/DaySun.gdshader" id="3_ecyni"]
 [ext_resource type="PackedScene" uid="uid://cs7qyghscvvuf" path="res://Scenes/KernelCowboy/KernelCowboy.tscn" id="4_ecyni"]
 [ext_resource type="PackedScene" uid="uid://cihlovf1i7kp2" path="res://Scenes/Steampunk/AiSteampunk.tscn" id="6_2im1a"]
 [ext_resource type="Script" uid="uid://be56f8ystbquh" path="res://Scripts/Stages/Utility/KernelBadlandsCam.cs" id="6_d36ga"]
@@ -140,7 +140,7 @@ default_color = Color(0, 1, 0.53333336, 1)
 
 [node name="Line2D10" type="Line2D" parent="Mesas/KC-001/Traces" unique_id=370551247]
 position = Vector2(-245, 386)
-points = PackedVector2Array(143, 77, 284, 77)
+points = PackedVector2Array(207.39998, 77.19998, 284, 77)
 width = 5.0
 default_color = Color(0, 1, 0.53333336, 1)
 
@@ -190,6 +190,13 @@ polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 5
 
 [node name="SolderPad21" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=396420245]
 position = Vector2(37, 463)
+scale = Vector2(0.15, 0.15)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad25" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1260588440]
+position = Vector2(-35.999992, 464)
 scale = Vector2(0.15, 0.15)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-585, -270)
@@ -258,6 +265,13 @@ color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
 polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
+[node name="SolderPad26" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=1192722028]
+position = Vector2(-69.59999, 548.8)
+scale = Vector2(0.08, 0.08)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
 [node name="SolderPad18" type="Polygon2D" parent="Mesas/KC-001/Traces" unique_id=285809825]
 position = Vector2(35, 401)
 scale = Vector2(0.08, 0.08)
@@ -283,6 +297,7 @@ polygon = PackedVector2Array(354, 387, 343, 368, 325, 219, 323, 214, 321, 211, 3
 
 [node name="KC-002" type="Node2D" parent="Mesas" unique_id=1949393584]
 z_index = 2
+position = Vector2(170.40001, 22.399986)
 
 [node name="Mesa2" type="Polygon2D" parent="Mesas/KC-002" unique_id=691314163]
 position = Vector2(8, 6)
@@ -304,7 +319,7 @@ default_color = Color(0, 1, 0.53333336, 1)
 
 [node name="Chipline3" type="Line2D" parent="Mesas/KC-002/Traces" unique_id=2103566762]
 position = Vector2(-22, 92)
-points = PackedVector2Array(1170, 420, 1010, 420, 1010, 360)
+points = PackedVector2Array(1181.9999, 459.59998, 1181.5021, 419.62552, 1010, 420, 1010, 360)
 width = 3.0
 default_color = Color(0, 1, 0.53333336, 1)
 
@@ -394,6 +409,13 @@ polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 5
 
 [node name="SolderPad7" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=787521510]
 position = Vector2(851, 500)
+scale = Vector2(0.1, 0.1)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-580, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad9" type="Polygon2D" parent="Mesas/KC-002/Traces" unique_id=1464637590]
+position = Vector2(1159.2001, 548.4)
 scale = Vector2(0.1, 0.1)
 color = Color(0, 1, 0.53333336, 1)
 offset = Vector2(-580, -270)
@@ -548,28 +570,52 @@ shape = SubResource("RectangleShape2D_d36ga")
 position = Vector2(1335.25, 625)
 shape = SubResource("RectangleShape2D_7pl6s")
 
+[node name="groundcollision2" type="CollisionShape2D" parent="Ground/StaticBody2D" unique_id=1115621965]
+position = Vector2(1544, 625)
+shape = SubResource("RectangleShape2D_7pl6s")
+
 [node name="QuicksandCollision" type="CollisionShape2D" parent="Ground/StaticBody2D" unique_id=256116034]
-visible = false
 position = Vector2(742, 625)
 shape = SubResource("RectangleShape2D_7pl6s")
 
 [node name="MesaOutcropping" type="Polygon2D" parent="Ground/StaticBody2D" unique_id=2027597480]
-position = Vector2(452.00003, -1320.9081)
-scale = Vector2(12.938462, 3.0399804)
+position = Vector2(452.00003, -1679.7117)
+scale = Vector2(12.938462, 3.639987)
 color = Color(0.18039216, 0.08627451, 0.03137255, 1)
 polygon = PackedVector2Array(-65, 648, -65, 598, 0, 598, 0, 648)
 
 [node name="GroundBase" type="Polygon2D" parent="Ground/StaticBody2D" unique_id=874175855]
-position = Vector2(1039, -12.960022)
-scale = Vector2(0.51733094, 1.02)
+position = Vector2(453.00006, -323.9139)
+scale = Vector2(1.2071056, 1.5399904)
 color = Color(0.18039216, 0.08627451, 0.03137255, 1)
 polygon = PackedVector2Array(0, 648, 0, 598, 1154, 598, 1154, 648)
 
-[node name="Quicksand" type="Polygon2D" parent="Ground/StaticBody2D" unique_id=1379063442]
-position = Vector2(439.00006, -2010.2788)
-scale = Vector2(0.5199307, 4.359998)
-color = Color(0.18039216, 0.08627451, 0.03137255, 1)
+[node name="topsoil" type="Node2D" parent="Ground/StaticBody2D" unique_id=1178400872]
+
+[node name="Line2D" type="Line2D" parent="Ground/StaticBody2D/topsoil" unique_id=1415195389]
+points = PackedVector2Array(-389, 498, 452, 498)
+width = 4.0
+default_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
+
+[node name="Line2D2" type="Line2D" parent="Ground/StaticBody2D/topsoil" unique_id=32619253]
+position = Vector2(1428, 101)
+points = PackedVector2Array(-975, 498, 452, 498)
+width = 4.0
+default_color = Color(0.9372549, 0.62352943, 0.15294118, 1)
+
+[node name="Quicksand" type="Node2D" parent="Ground/StaticBody2D" unique_id=1103990555]
+
+[node name="Quicksand" type="Polygon2D" parent="Ground/StaticBody2D/Quicksand" unique_id=1379063442]
+position = Vector2(452, -311.95428)
+scale = Vector2(0.50866556, 1.5199913)
+color = Color(0.9372549, 0.62352943, 0.15294118, 1)
 polygon = PackedVector2Array(0, 648, 0, 598, 1154, 598, 1154, 648)
+
+[node name="QuicksandHighlight" type="Line2D" parent="Ground/StaticBody2D/Quicksand" unique_id=296102371]
+position = Vector2(586, 101.00003)
+points = PackedVector2Array(-134, 498, 453, 498)
+width = 4.0
+default_color = Color(0.98039216, 0.78039217, 0.45882353, 1)
 
 [node name="Traces" type="Node2D" parent="Ground/StaticBody2D" unique_id=463251348]
 
@@ -640,6 +686,39 @@ points = PackedVector2Array(-347, 522, -234, 522, -234, 484)
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
 
+[node name="SolderPad39" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1208278683]
+position = Vector2(1259, 667.22)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad41" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1943631296]
+position = Vector2(1052, 610)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad40" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1251151237]
+position = Vector2(1330, 610.22)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-579, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="Line2D15" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1595219751]
+position = Vector2(1400, 88.21997)
+points = PackedVector2Array(-347, 522, -183, 522, -183, 579, -139, 579)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D16" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=221181250]
+position = Vector2(1565, 126.21997)
+points = PackedVector2Array(-347, 522, -234, 522, -234, 484)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
 [node name="Line2D6" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1115631674]
 position = Vector2(433, 52)
 points = PackedVector2Array(-234, 522, -234, 484)
@@ -683,11 +762,379 @@ points = PackedVector2Array(-218, 580, -291, 580.0651, -291, 522, -267.21265, 52
 width = 2.0
 default_color = Color(0, 1, 0.53333336, 1)
 
-[node name="KernelCowboy" parent="Ground" unique_id=156738427 instance=ExtResource("4_ecyni")]
-position = Vector2(1158, 499)
+[node name="SolderPad34" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=43776309]
+position = Vector2(460.72998, 607.22)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
 
-[node name="SteampunkAi" parent="Ground" unique_id=1806914756 instance=ExtResource("6_2im1a")]
-position = Vector2(134, 427)
+[node name="SolderPad35" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=1668106820]
+position = Vector2(503.72998, 675.22)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad36" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=2080540347]
+position = Vector2(783.73, 700.22)
+scale = Vector2(0.1, 0.1)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="SolderPad37" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=2005395221]
+position = Vector2(912.73, 612.22)
+scale = Vector2(0.1, 0.1)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="Line2D9" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=139511155]
+position = Vector2(921.73, 140.21997)
+points = PackedVector2Array(-234, 522, -234, 484)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="SolderPad38" type="Polygon2D" parent="Ground/StaticBody2D/Traces" unique_id=72614507]
+position = Vector2(883.45996, 693.2199)
+scale = Vector2(0.07, 0.07)
+color = Color(0, 1, 0.53333336, 1)
+offset = Vector2(-585, -270)
+polygon = PackedVector2Array(546, 268, 548, 257, 552, 246, 559, 237, 568, 230, 579, 226, 590, 224, 601, 225, 612, 230, 621, 237, 628, 246, 632, 257, 634, 268, 633, 280, 628, 290, 621, 299, 612, 306, 601, 310, 590, 312, 579, 311, 568, 306, 559, 299, 552, 290, 548, 279)
+
+[node name="Line2D10" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1685291778]
+position = Vector2(1117.46, 170.21997)
+points = PackedVector2Array(-234, 522, -234, 484)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D11" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=720389699]
+position = Vector2(872.73, 101.21997)
+points = PackedVector2Array(-347, 522, -88, 522, -88, 599)
+width = 4.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D12" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1211691660]
+position = Vector2(1000.73, 131.21997)
+points = PackedVector2Array(-216, 522, -88, 522, -88, 480)
+width = 4.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D13" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=381459423]
+position = Vector2(737.73, 118.21997)
+points = PackedVector2Array(-234, 522, -234, 556)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Line2D14" type="Line2D" parent="Ground/StaticBody2D/Traces" unique_id=1467256246]
+position = Vector2(758.73, 118.21997)
+points = PackedVector2Array(-218, 580, -291, 580.0651, -291, 522, -267.21265, 522, -234, 522, -234, 489, -296, 489)
+width = 2.0
+default_color = Color(0, 1, 0.53333336, 1)
+
+[node name="Cracks" type="Node2D" parent="Ground/StaticBody2D" unique_id=1428065070]
+
+[node name="Line2D" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1798983043]
+position = Vector2(-12, 19)
+points = PackedVector2Array(1062, 600, 1065, 606, 1070, 607, 1069, 612)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D2" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1608358409]
+position = Vector2(-18, 4)
+points = PackedVector2Array(1062, 600, 1066, 595, 1071, 599, 1078, 595, 1082, 594)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D4" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=686495038]
+position = Vector2(-35, 22)
+points = PackedVector2Array(1077, 597, 1082, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D5" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=333132506]
+position = Vector2(-19, 28)
+points = PackedVector2Array(1077, 598, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D7" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1021554998]
+position = Vector2(-36, 45)
+points = PackedVector2Array(1082, 603, 1079.2716, 597.0914, 1082, 596, 1078, 590)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D8" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=612244711]
+position = Vector2(-33, 44)
+points = PackedVector2Array(1083, 600, 1079.2716, 597.0914, 1083, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D6" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1429020255]
+position = Vector2(-18, 8)
+points = PackedVector2Array(1083, 597, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D3" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1697709571]
+position = Vector2(2101, 1296.0001)
+rotation = -3.106981
+points = PackedVector2Array(1089.481, 659.6941, 1086.3444, 655.8003, 1081.2782, 653.97455, 1082.1046, 648.94293, 1073.7633, 639.2257, 1078.5526, 633.0563, 1081.1703, 621.9591)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D9" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=390896310]
+position = Vector2(311.40784, 24.10199)
+points = PackedVector2Array(1062, 600, 1065, 606, 1070, 607, 1069, 612)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D10" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=343646032]
+position = Vector2(305.40784, 9.10199)
+points = PackedVector2Array(1062, 600, 1066, 595, 1071, 599, 1078, 595, 1082, 594)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D11" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1076404249]
+position = Vector2(288.40784, 27.10199)
+points = PackedVector2Array(1077, 597, 1082, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D12" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1405048064]
+position = Vector2(304.40784, 33.10199)
+points = PackedVector2Array(1077, 598, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D13" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=390925091]
+position = Vector2(287.40784, 50.10199)
+points = PackedVector2Array(1082, 603, 1079.2716, 597.0914, 1082, 596, 1078, 590)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D14" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1812457524]
+position = Vector2(290.40784, 49.10199)
+points = PackedVector2Array(1083, 600, 1079.2716, 597.0914, 1083, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D15" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1646506836]
+position = Vector2(305.40784, 13.10199)
+points = PackedVector2Array(1083, 597, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D16" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1430412076]
+position = Vector2(2424.4077, 1301.102)
+rotation = -3.106981
+points = PackedVector2Array(1089.481, 659.6941, 1086.3444, 655.8003, 1081.2782, 653.97455, 1082.1046, 648.94293, 1073.7633, 639.2257, 1078.5526, 633.0563, 1081.1703, 621.9591)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D17" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=132249572]
+position = Vector2(-625.59204, -2.8978882)
+points = PackedVector2Array(1062, 600, 1065, 606, 1070, 607, 1069, 612)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D18" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=585068841]
+position = Vector2(-631.59204, -17.897888)
+points = PackedVector2Array(1062, 600, 1066, 595, 1071, 599, 1078, 595, 1082, 594)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D19" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1215551251]
+position = Vector2(-648.59204, 0.10211182)
+points = PackedVector2Array(1077, 597, 1082, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D20" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=808433882]
+position = Vector2(-632.59204, 6.102112)
+points = PackedVector2Array(1077, 598, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D21" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1753640272]
+position = Vector2(-649.59204, 23.102112)
+points = PackedVector2Array(1082, 603, 1079.2716, 597.0914, 1082, 596, 1078, 590)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D22" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1039752585]
+position = Vector2(-646.59204, 22.102112)
+points = PackedVector2Array(1083, 600, 1079.2716, 597.0914, 1083, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D23" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=658446323]
+position = Vector2(-631.59204, -13.897888)
+points = PackedVector2Array(1083, 597, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D24" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=120771125]
+position = Vector2(1487.4078, 1274.102)
+rotation = -3.106981
+points = PackedVector2Array(1089.481, 659.6941, 1086.3444, 655.8003, 1081.2782, 653.97455, 1082.1046, 648.94293, 1073.7633, 639.2257, 1078.5526, 633.0563, 1081.1703, 621.9591)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D25" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=548846389]
+position = Vector2(-685.59204, -79.89783)
+points = PackedVector2Array(1062, 600, 1065, 606, 1070, 607, 1069, 612)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D26" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=957055272]
+position = Vector2(-691.59204, -94.89783)
+points = PackedVector2Array(1062, 600, 1066, 595, 1071, 599, 1078, 595, 1082, 594)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D27" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=120219129]
+position = Vector2(-708.59204, -76.89783)
+points = PackedVector2Array(1077, 597, 1082, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D28" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1847576053]
+position = Vector2(-692.59204, -70.89783)
+points = PackedVector2Array(1077, 598, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D29" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1745640866]
+position = Vector2(-709.59204, -53.897827)
+points = PackedVector2Array(1082, 603, 1079.2716, 597.0914, 1082, 596, 1078, 590)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D30" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=787360265]
+position = Vector2(-706.59204, -54.897827)
+points = PackedVector2Array(1083, 600, 1079.2716, 597.0914, 1083, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D31" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1726121518]
+position = Vector2(-691.59204, -90.89783)
+points = PackedVector2Array(1083, 597, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D32" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1105067597]
+position = Vector2(1427.4078, 1197.102)
+rotation = -3.106981
+points = PackedVector2Array(1089.481, 659.6941, 1086.3444, 655.8003, 1081.2782, 653.97455, 1082.1046, 648.94293, 1073.7633, 639.2257, 1078.5526, 633.0563, 1081.1703, 621.9591)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D33" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1894112911]
+position = Vector2(-1108.592, -76.897705)
+points = PackedVector2Array(1062, 600, 1065, 606, 1070, 607, 1069, 612)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D34" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=633179070]
+position = Vector2(-1114.592, -91.897705)
+points = PackedVector2Array(1062, 600, 1066, 595, 1071, 599, 1078, 595, 1082, 594)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D35" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1103333965]
+position = Vector2(-1131.592, -73.897705)
+points = PackedVector2Array(1077, 597, 1082, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D36" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=923645771]
+position = Vector2(-1115.592, -67.897705)
+points = PackedVector2Array(1077, 598, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D37" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1333991142]
+position = Vector2(-1132.592, -50.897705)
+points = PackedVector2Array(1082, 603, 1079.2716, 597.0914, 1082, 596, 1078, 590)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D38" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=2118495478]
+position = Vector2(-1129.592, -51.897705)
+points = PackedVector2Array(1083, 600, 1079.2716, 597.0914, 1083, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D39" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1534814351]
+position = Vector2(-1114.592, -87.897705)
+points = PackedVector2Array(1083, 597, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D40" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1346983839]
+position = Vector2(1004.40784, 1200.102)
+rotation = -3.106981
+points = PackedVector2Array(1089.481, 659.6941, 1086.3444, 655.8003, 1081.2782, 653.97455, 1082.1046, 648.94293, 1073.7633, 639.2257, 1078.5526, 633.0563, 1081.1703, 621.9591)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D41" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=2023412198]
+position = Vector2(-811.59204, -30.897644)
+points = PackedVector2Array(1062, 600, 1065, 606, 1070, 607, 1069, 612)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D42" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1745389083]
+position = Vector2(-817.59204, -45.897644)
+points = PackedVector2Array(1062, 600, 1066, 595, 1071, 599, 1078, 595, 1082, 594)
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D43" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1140859865]
+position = Vector2(-834.59204, -27.897644)
+points = PackedVector2Array(1077, 597, 1082, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D44" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=605731373]
+position = Vector2(-818.59204, -21.897644)
+points = PackedVector2Array(1077, 598, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D45" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1975971187]
+position = Vector2(-835.59204, -4.897644)
+points = PackedVector2Array(1082, 603, 1079.2716, 597.0914, 1082, 596, 1078, 590)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D46" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=606738169]
+position = Vector2(-832.59204, -5.897644)
+points = PackedVector2Array(1083, 600, 1079.2716, 597.0914, 1083, 594)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D47" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1908768320]
+position = Vector2(-817.59204, -41.897644)
+points = PackedVector2Array(1083, 597, 1080, 594, 1080, 591)
+width = 1.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="Line2D48" type="Line2D" parent="Ground/StaticBody2D/Cracks" unique_id=1280940067]
+position = Vector2(1301.4078, 1246.102)
+rotation = -3.106981
+points = PackedVector2Array(1089.481, 659.6941, 1086.3444, 655.8003, 1081.2782, 653.97455, 1082.1046, 648.94293, 1073.7633, 639.2257, 1078.5526, 633.0563, 1081.1703, 621.9591)
+width = 3.0
+default_color = Color(0, 0, 0, 1)
+
+[node name="KernelCowboy" parent="Ground" unique_id=156738427 instance=ExtResource("4_ecyni")]
+position = Vector2(1152, 364)
+
+[node name="SteampunkAi" parent="Ground" unique_id=1806914756 node_paths=PackedStringArray("Target") groups=["characters"] instance=ExtResource("6_2im1a")]
+position = Vector2(106, 455)
+Target = NodePath("../KernelCowboy")
 
 [node name="KillZones" type="Node2D" parent="." unique_id=2123798175]
 
@@ -697,4 +1144,13 @@ use_parent_material = true
 position = Vector2(655, 219)
 scale = Vector2(1.5, 1.5)
 script = ExtResource("6_d36ga")
-YOffset = -150.0
+MinX = 700.0
+MaxX = 1050.0
+MaxY = 500.0
+YOffset = 0.0
+ZoomClose = 1.5
+ZoomFar = 0.8
+ZoomSpreadRange = 100.0
+ZoomSpeed = 6.0
+DeathZoomClose = 2.5
+DeathZoomSpeed = 15.0
