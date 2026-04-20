@@ -317,7 +317,78 @@ position = Vector2(788, 661)
 
 [node name="Gear2" parent="." unique_id=545824321 instance=ExtResource("1_48itk")]
 material = null
-position = Vector2(590, 890)
+position = Vector2(556, 863)
+
+[node name="Gear6" parent="." unique_id=449388826 instance=ExtResource("1_48itk")]
+position = Vector2(345, 1033)
+
+[node name="Gear5" parent="." unique_id=795714353 instance=ExtResource("1_48itk")]
+position = Vector2(287, 871)
+RotateClockwise = false
+
+[node name="Gear4" parent="." unique_id=1637367437 instance=ExtResource("4_4l0pb")]
+position = Vector2(440, 928)
+RotateClockwise = false
+
+[node name="Gear7" parent="." unique_id=265198112 instance=ExtResource("4_4l0pb")]
+position = Vector2(1264, 825)
+
+[node name="Gear8" parent="." unique_id=1968314744 instance=ExtResource("4_4l0pb")]
+position = Vector2(1166, 850)
+RotateClockwise = false
+
+[node name="Gear9" parent="." unique_id=1087817339 instance=ExtResource("1_48itk")]
+position = Vector2(1043, 914)
+
+[node name="Gear10" parent="." unique_id=1753334401 instance=ExtResource("1_48itk")]
+position = Vector2(979, 751)
+RotateClockwise = false
+
+[node name="Gear11" parent="." unique_id=72994810 instance=ExtResource("4_4l0pb")]
+position = Vector2(905, 933)
+RotateClockwise = false
+
+[node name="Gear12" parent="." unique_id=2107764234 instance=ExtResource("1_48itk")]
+position = Vector2(1519, 374)
+RotateClockwise = false
+
+[node name="Gear13" parent="." unique_id=38308863 instance=ExtResource("4_4l0pb")]
+position = Vector2(1608, 480)
+
+[node name="Gear14" parent="." unique_id=1102751719 instance=ExtResource("4_4l0pb")]
+position = Vector2(1631, 575)
+RotateClockwise = false
+
+[node name="Gear15" parent="." unique_id=101149611 instance=ExtResource("1_48itk")]
+position = Vector2(1538, 679)
+
+[node name="Gear16" parent="." unique_id=1964665844 instance=ExtResource("4_4l0pb")]
+position = Vector2(1585, 809)
+RotateClockwise = false
+
+[node name="Gear17" parent="." unique_id=450958282 instance=ExtResource("1_48itk")]
+position = Vector2(1745, 647)
+
+[node name="Gear18" parent="." unique_id=1137406905 instance=ExtResource("4_4l0pb")]
+position = Vector2(72, 449)
+
+[node name="Gear19" parent="." unique_id=331480185 instance=ExtResource("1_48itk")]
+position = Vector2(-20, 548)
+RotateClockwise = false
+
+[node name="Gear20" parent="." unique_id=1534874152 instance=ExtResource("1_48itk")]
+position = Vector2(-12, 341)
+RotateClockwise = false
+
+[node name="Gear21" parent="." unique_id=1178880343 instance=ExtResource("1_48itk")]
+position = Vector2(-90, 707)
+
+[node name="Gear22" parent="." unique_id=498466416 instance=ExtResource("4_4l0pb")]
+position = Vector2(110, 274)
+
+[node name="Gear23" parent="." unique_id=724854079 instance=ExtResource("1_48itk")]
+position = Vector2(1380, 897)
+RotateClockwise = false
 
 [node name="Platform2" type="StaticBody2D" parent="." unique_id=1088427752]
 position = Vector2(43, -39)
@@ -362,7 +433,6 @@ position = Vector2(43, -11)
 material = SubResource("ShaderMaterial_3dkk4")
 position = Vector2(248, 788)
 script = ExtResource("5_gearplat")
-RotateClockwise = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5" unique_id=1232989311]
 visible = false
@@ -376,10 +446,10 @@ occluder = SubResource("OccluderPolygon2D_3dkk4")
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
 material = SubResource("ShaderMaterial_ss6kr")
 layout_direction = 1
-offset_left = -106.0
-offset_top = -69.99997
-offset_right = -6.0
-offset_bottom = 30.000061
+offset_left = -105.0
+offset_top = -76.00001
+offset_right = -5.0
+offset_bottom = 24.000023
 scale = Vector2(20, 20)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1847418280]
