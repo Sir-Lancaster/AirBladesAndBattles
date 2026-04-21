@@ -4,6 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://bsl2awvp7ono0" path="res://Scenes/Vampire/Vampire.tscn" id="2_ql4x0"]
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="3_rsone"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xs8my"]
+size = Vector2(20, 768)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pr151"]
 size = Vector2(354.5, 30)
 
@@ -34,6 +37,14 @@ position = Vector2(392, 656)
 
 [node name="Spawn4" type="Marker2D" parent="SpawnPoints" unique_id=670009721]
 position = Vector2(1248, 456)
+
+[node name="DeathZone" type="Area2D" parent="." unique_id=2102002048]
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=2058179135]
+position = Vector2(1807.0001, 380.00003)
+scale = Vector2(3.005817, -2.8982425)
+shape = SubResource("RectangleShape2D_xs8my")
 
 [node name="Railings" type="Node2D" parent="." unique_id=1476991874]
 position = Vector2(1494, 496)
