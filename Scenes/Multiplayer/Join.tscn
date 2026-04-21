@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://31y0n8ityo06"]
+
+[ext_resource type="Texture2D" uid="uid://by01u7ctxpxa1" path="res://Assets/Icons/Halberd_Crossed.png" id="1_dpowv"]
+[ext_resource type="Script" uid="uid://di70eh4bwvpan" path="res://Scripts/Multiplayer/Join.cs" id="1_yui1h"]
+
+[node name="Join" type="Control" unique_id=1896761032]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_yui1h")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1059253763]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1405960122]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="Header" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=342619303]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Enter the IP address to join!"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=1368759846]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer" unique_id=1348900544]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IP Address: "
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/VBoxContainer/HBoxContainer" unique_id=498223506]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "00.00.00.000"
+
+[node name="Button" type="Button" parent="CanvasLayer/VBoxContainer" unique_id=1397021313]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Connect!"
+icon = ExtResource("1_dpowv")

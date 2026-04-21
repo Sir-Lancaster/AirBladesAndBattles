@@ -1,0 +1,208 @@
+[gd_scene format=3 uid="uid://xfheol2gx14k"]
+
+[ext_resource type="Script" uid="uid://cwqs6xhkn5mch" path="res://Scripts/Pages/CharacterSelect.cs" id="1_ud5kc"]
+[ext_resource type="Texture2D" uid="uid://bubab35tmtews" path="res://Assets/Icons/Arrow.png" id="2_lr6k0"]
+[ext_resource type="PackedScene" uid="uid://dnck31hi7mucy" path="res://Scenes/Pages/CharacterSelect/PlayerSlot.tscn" id="2_luqvi"]
+[ext_resource type="Texture2D" uid="uid://bkp0j0tgyjdc1" path="res://Assets/Icons/Down.png" id="3_oolbc"]
+[ext_resource type="Texture2D" uid="uid://coyve02ynppah" path="res://Assets/Characters/KernelCowboy/KCFace.png" id="3_q3j8y"]
+[ext_resource type="Texture2D" uid="uid://d3f3g4803afjp" path="res://Assets/Characters/SirEdward/Headshot.png" id="4_asw60"]
+[ext_resource type="Texture2D" uid="uid://bg0ngcrps2mr8" path="res://Assets/Characters/steampunk/portrait_steampunk.png" id="5_ohyu7"]
+[ext_resource type="Texture2D" uid="uid://c5yih53bdif0c" path="res://Assets/Characters/Vampire/VampireHeadSprite.png" id="6_kxbv1"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_srw28"]
+load_path = "res://.godot/imported/Arrow.png-a641c21e7fa74c1f44a1eda108f8400b.ctex"
+
+[node name="CharacterSelect" type="Control" unique_id=1540081624 node_paths=PackedStringArray("_character1Button", "_character2Button", "_character3Button", "_character4Button", "_backButton", "_continueButton", "_titleLabel", "_stocksLabel", "_stocksUpButton", "_stocksDownButton", "_aiCountLabel", "_aiCountUpButton", "_aiCountDownButton", "_slotsContainer")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ud5kc")
+_character1Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/TopRowHbox/Character1")
+_character2Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/TopRowHbox/Character2")
+_character3Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/BottomRowHbox/Character3")
+_character4Button = NodePath("MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/BottomRowHbox/Character4")
+_backButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/BackBtn")
+_continueButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/ContinueBtn")
+_titleLabel = NodePath("MarginContainer/HBoxContainer/VBoxContainer/Label")
+_stocksLabel = NodePath("MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/StockHbox/Stock Label")
+_stocksUpButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/StockHbox/VBoxContainer/StockUp")
+_stocksDownButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/StockHbox/VBoxContainer/StockDown")
+_aiCountLabel = NodePath("MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/OponenentsHbox/OpponentsLabel")
+_aiCountUpButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/OponenentsHbox/VBoxContainer/OpponenentsUp")
+_aiCountDownButton = NodePath("MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/OponenentsHbox/VBoxContainer/OpponenentsDown")
+_slotsContainer = NodePath("MarginContainer/HBoxContainer/VBoxContainer/PlayerSlot")
+_playerSlotScene = ExtResource("2_luqvi")
+_kernelCowboyPortrait = ExtResource("3_q3j8y")
+_sirEdwardPortrait = ExtResource("4_asw60")
+_steampunkPortrait = ExtResource("5_ohyu7")
+_vampirePortrait = ExtResource("6_kxbv1")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1789256607]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -10.5
+offset_top = -1.0
+offset_right = 10.5
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1380232356]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer" unique_id=1074449055]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1699543512]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "Character Selection"
+horizontal_alignment = 1
+
+[node name="OptionsHbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=1950328335]
+layout_mode = 2
+theme_override_constants/separation = 80
+alignment = 1
+
+[node name="StockHbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox" unique_id=318031416]
+layout_mode = 2
+alignment = 1
+
+[node name="Stock Label" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/StockHbox" unique_id=234056006]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Stock: "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/StockHbox" unique_id=239605293]
+layout_mode = 2
+
+[node name="StockUp" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/StockHbox/VBoxContainer" unique_id=2027080465]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_constants/icon_max_width = 30
+icon = SubResource("CompressedTexture2D_srw28")
+icon_alignment = 1
+expand_icon = true
+
+[node name="StockDown" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/StockHbox/VBoxContainer" unique_id=2050685782]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_constants/icon_max_width = 30
+icon = ExtResource("3_oolbc")
+icon_alignment = 1
+expand_icon = true
+
+[node name="OponenentsHbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox" unique_id=1920495322]
+layout_mode = 2
+
+[node name="OpponentsLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/OponenentsHbox" unique_id=370355059]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Oponents: "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/OponenentsHbox" unique_id=506794951]
+layout_mode = 2
+
+[node name="OpponenentsUp" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/OponenentsHbox/VBoxContainer" unique_id=1483990568]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/icon_max_width = 30
+icon = ExtResource("2_lr6k0")
+icon_alignment = 1
+expand_icon = true
+
+[node name="OpponenentsDown" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/OptionsHbox/OponenentsHbox/VBoxContainer" unique_id=1914916491]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_constants/icon_max_width = 30
+icon = ExtResource("3_oolbc")
+icon_alignment = 1
+expand_icon = true
+
+[node name="characterHbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=873188231]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="characterVbox" type="VBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/characterHbox" unique_id=1194683949]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TopRowHbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox" unique_id=583055476]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Character1" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/TopRowHbox" unique_id=2021801483]
+texture_filter = 1
+custom_minimum_size = Vector2(250, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Kernel Cowboy
+"
+icon = ExtResource("3_q3j8y")
+expand_icon = true
+
+[node name="Character2" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/TopRowHbox" unique_id=1166176764]
+texture_filter = 1
+custom_minimum_size = Vector2(250, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Sir Edward
+"
+icon = ExtResource("4_asw60")
+expand_icon = true
+
+[node name="BottomRowHbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox" unique_id=136107352]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Character3" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/BottomRowHbox" unique_id=445154238]
+texture_filter = 1
+custom_minimum_size = Vector2(250, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Cecillia"
+icon = ExtResource("5_ohyu7")
+expand_icon = true
+
+[node name="Character4" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/characterHbox/characterVbox/BottomRowHbox" unique_id=1973231377]
+texture_filter = 1
+custom_minimum_size = Vector2(250, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Mr. Unkown
+"
+icon = ExtResource("6_kxbv1")
+expand_icon = true
+
+[node name="PlayerSlot" type="Control" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=217235530]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=878764787]
+layout_mode = 2
+theme_override_constants/separation = 800
+alignment = 1
+
+[node name="BackBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1842980054]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Back "
+
+[node name="ContinueBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=2043850402]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Continue "

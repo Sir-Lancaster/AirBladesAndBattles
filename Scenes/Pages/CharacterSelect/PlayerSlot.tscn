@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://dnck31hi7mucy"]
+
+[ext_resource type="Script" uid="uid://gsxq1f0rxade" path="res://Scripts/Pages/PlayerSlot.cs" id="1_ovny8"]
+[ext_resource type="Texture2D" uid="uid://coyve02ynppah" path="res://Assets/Characters/KernelCowboy/KCFace.png" id="2_b3eno"]
+
+[node name="PlayerSlot" type="Control" unique_id=50197823 node_paths=PackedStringArray("_portraitRect", "_playerLabel", "_characterNameLabel")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ovny8")
+_portraitRect = NodePath("MarginContainer/VBoxContainer/HBoxContainer/characterImage")
+_playerLabel = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/PlayerLabel")
+_characterNameLabel = NodePath("MarginContainer/VBoxContainer/HBoxContainer2/CharacterNameLabel")
+
+[node name="Background Color" type="ColorRect" parent="." unique_id=1658406254]
+custom_minimum_size = Vector2(175, 175)
+layout_mode = 0
+offset_right = 175.0
+offset_bottom = 175.0
+color = Color(0.13725491, 0.49019608, 0, 0.5529412)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1029412467]
+custom_minimum_size = Vector2(175, 175)
+layout_mode = 0
+offset_right = 175.0
+offset_bottom = 175.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=274678738]
+layout_mode = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=535957294]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+alignment = 1
+
+[node name="characterImage" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1959726657]
+texture_filter = 1
+layout_mode = 2
+texture = ExtResource("2_b3eno")
+expand_mode = 2
+
+[node name="HBoxContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1693408392]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="PlayerLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=551158452]
+layout_mode = 2
+text = "Player 1"
+horizontal_alignment = 1
+
+[node name="CharacterNameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer2" unique_id=165239898]
+layout_mode = 2
+theme_override_font_sizes/font_size = 19
+text = "Kernel Cowboy"
+horizontal_alignment = 1

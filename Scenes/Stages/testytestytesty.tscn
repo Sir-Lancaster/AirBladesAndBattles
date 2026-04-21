@@ -20,6 +20,20 @@ size = Vector2(0.52812576, 1069)
 
 [node name="Clocktower" type="Node2D" unique_id=1738674402]
 
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=1154924217]
+
+[node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=1475519633]
+position = Vector2(285, 323)
+
+[node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1353731479]
+position = Vector2(392, 296)
+
+[node name="Spawn3" type="Marker2D" parent="SpawnPoints" unique_id=1706966464]
+position = Vector2(288, 696)
+
+[node name="Spawn4" type="Marker2D" parent="SpawnPoints" unique_id=2116061116]
+position = Vector2(1264, 688)
+
 [node name="Platform1" type="StaticBody2D" parent="." unique_id=1225677018]
 
 [node name="Polygon2D4" type="Polygon2D" parent="Platform1" unique_id=1555043319]

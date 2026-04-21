@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c5dnyaij1mbkn"]
+
+[ext_resource type="Script" uid="uid://brv0wt6gy4sw5" path="res://Scripts/Multiplayer/BattleManager.cs" id="1_ei3p6"]
+
+[node name="BattleScene" type="Node2D" unique_id=1083902639]
+script = ExtResource("1_ei3p6")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1854415273]
+_spawnable_scenes = PackedStringArray("uid://hq871q66ehp1", "uid://criaf3khhjvxf", "uid://cs7qyghscvvuf", "uid://btfcbuwxkk2ur", "uid://b2jnpel0uhjvw", "uid://bsl2awvp7ono0")
+spawn_path = NodePath(".")

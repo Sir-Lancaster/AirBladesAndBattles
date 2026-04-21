@@ -1,0 +1,153 @@
+[gd_scene format=3 uid="uid://d1ltgmx4ooj3l"]
+
+[ext_resource type="Script" uid="uid://5ocfviaemcdq" path="res://Scripts/Pages/MultiplayerCharacterSelect.cs" id="1_ur2b2"]
+[ext_resource type="PackedScene" uid="uid://dnck31hi7mucy" path="res://Scenes/Pages/CharacterSelect/PlayerSlot.tscn" id="2_btatq"]
+[ext_resource type="Texture2D" uid="uid://coyve02ynppah" path="res://Assets/Characters/KernelCowboy/KCFace.png" id="3_3kspl"]
+[ext_resource type="Texture2D" uid="uid://d3f3g4803afjp" path="res://Assets/Characters/SirEdward/Headshot.png" id="4_kfnka"]
+[ext_resource type="Texture2D" uid="uid://bg0ngcrps2mr8" path="res://Assets/Characters/steampunk/portrait_steampunk.png" id="5_wcsnc"]
+[ext_resource type="Texture2D" uid="uid://bkp0j0tgyjdc1" path="res://Assets/Icons/Down.png" id="6_7vbyb"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_bxq2a"]
+load_path = "res://.godot/imported/Arrow.png-a641c21e7fa74c1f44a1eda108f8400b.ctex"
+
+[node name="MulCharSelect" type="Control" unique_id=1540081624 node_paths=PackedStringArray("_character1Button", "_character2Button", "_character3Button", "_character4Button", "_backButton", "_startMatchButton", "_stocksLabel", "_stocksUpButton", "_stocksDownButton", "_slotsContainer")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ur2b2")
+_character1Button = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer/Character1")
+_character2Button = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer/Character2")
+_character3Button = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer2/Character3")
+_character4Button = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer2/character4")
+_backButton = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2/BackBtn")
+_startMatchButton = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2/ContinueBtn")
+_stocksLabel = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox/HBoxContainer/Stock Label")
+_stocksUpButton = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox/HBoxContainer/VBoxContainer/StockUp")
+_stocksDownButton = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox/HBoxContainer/VBoxContainer/StockDown")
+_slotsContainer = NodePath("MarginContainer/HBoxContainer2/VBoxContainer/PlayerSlotHbox")
+_playerSlotScene = ExtResource("2_btatq")
+_kernelCowboyPortrait = ExtResource("3_3kspl")
+_sirEdwardPortrait = ExtResource("4_kfnka")
+_steampunkPortrait = ExtResource("5_wcsnc")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1789256607]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer" unique_id=1001528176]
+layout_mode = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2" unique_id=98156043]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer" unique_id=1827981044]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "Character Selection"
+horizontal_alignment = 1
+
+[node name="stock Hbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer" unique_id=1797846265]
+layout_mode = 2
+theme_override_constants/separation = 80
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox" unique_id=647832596]
+layout_mode = 2
+alignment = 1
+
+[node name="Stock Label" type="Label" parent="MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox/HBoxContainer" unique_id=608086857]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Stock: "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox/HBoxContainer" unique_id=592470860]
+layout_mode = 2
+
+[node name="StockUp" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox/HBoxContainer/VBoxContainer" unique_id=296586717]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_constants/icon_max_width = 30
+icon = SubResource("CompressedTexture2D_bxq2a")
+icon_alignment = 1
+expand_icon = true
+
+[node name="StockDown" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/stock Hbox/HBoxContainer/VBoxContainer" unique_id=800558013]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+theme_override_constants/icon_max_width = 30
+icon = ExtResource("6_7vbyb")
+icon_alignment = 1
+expand_icon = true
+
+[node name="characterHbox" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer" unique_id=852126842]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="characterVbox" type="VBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer/characterHbox" unique_id=1605040047]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox" unique_id=751740442]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Character1" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer" unique_id=1561441763]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Kernel Cowboy
+"
+
+[node name="Character2" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer" unique_id=1685129824]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Kernel Cowboy
+"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox" unique_id=1959707650]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Character3" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer2" unique_id=797600530]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Kernel Cowboy
+"
+
+[node name="character4" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/characterHbox/characterVbox/HBoxContainer2" unique_id=1921466473]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Kernel Cowboy
+"
+
+[node name="PlayerSlotHbox" type="Control" parent="MarginContainer/HBoxContainer2/VBoxContainer" unique_id=142247914]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer2/VBoxContainer" unique_id=893658471]
+layout_mode = 2
+theme_override_constants/separation = 900
+alignment = 1
+
+[node name="BackBtn" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2" unique_id=1720247076]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Back "
+
+[node name="ContinueBtn" type="Button" parent="MarginContainer/HBoxContainer2/VBoxContainer/HBoxContainer2" unique_id=1273022558]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Continue "
