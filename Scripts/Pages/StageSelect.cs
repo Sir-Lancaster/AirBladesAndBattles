@@ -24,6 +24,8 @@ public partial class StageSelect : Control
     private const string Stage1Path = "res://Scenes/Stages/Clocktower/Clocktower.tscn";
     private const string Stage2Path = "res://Scenes/Stages/Testing/Testing.tscn";
 
+    private const string Stage4Path = "res://Scenes/Stages/Manor/Manor.tscn";
+
     // ── Exports ───────────────────────────────────────────────────────────────
 
     [Export] private Button _stage1Button;
@@ -50,7 +52,7 @@ public partial class StageSelect : Control
         _stage1Button.Pressed += () => SelectStage(_stage1Button, Stage1Path);
         _stage2Button.Pressed += () => SelectStage(_stage2Button, Stage2Path);
         _stage3Button.Pressed += () => SelectStage(_stage3Button, Stage1Path);
-        _stage4Button.Pressed += () => SelectStage(_stage4Button, Stage1Path);
+        _stage4Button.Pressed += () => SelectStage(_stage4Button, Stage4Path);
 
         _backButton.Pressed     += OnBackPressed;
         _continueButton.Pressed += OnContinuePressed;

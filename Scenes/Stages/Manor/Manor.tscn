@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dgcng01h2pxn3"]
 
-[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="1_xs8my"]
-[ext_resource type="PackedScene" uid="uid://bsl2awvp7ono0" path="res://Scenes/Vampire/Vampire.tscn" id="2_ql4x0"]
-[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="3_rsone"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d8qje"]
+[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_ba1s0"]
+[ext_resource type="PackedScene" uid="uid://bsl2awvp7ono0" path="res://Scenes/Vampire/Vampire.tscn" id="3_7virt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xs8my"]
 size = Vector2(20, 768)
@@ -17,7 +17,7 @@ size = Vector2(351, 30)
 size = Vector2(351, 30)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vvus4"]
-shader = ExtResource("3_rsone")
+shader = ExtResource("1_d8qje")
 shader_parameter/pixel_size = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pr151"]
@@ -39,10 +39,11 @@ position = Vector2(392, 656)
 position = Vector2(1248, 456)
 
 [node name="DeathZone" type="Area2D" parent="." unique_id=2102002048]
-collision_layer = 3
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=2058179135]
-position = Vector2(1807.0001, 380.00003)
+position = Vector2(1951.0001, 380.00003)
 scale = Vector2(3.005817, -2.8982425)
 shape = SubResource("RectangleShape2D_xs8my")
 
@@ -223,6 +224,13 @@ shape = SubResource("RectangleShape2D_niasw")
 [node name="Roof" type="StaticBody2D" parent="." unique_id=1726620006]
 position = Vector2(110, 140)
 
+[node name="ColorRect2" type="ColorRect" parent="Roof" unique_id=942883840]
+offset_left = -143.0
+offset_top = -481.00003
+offset_right = -109.00852
+offset_bottom = -141.4584
+scale = Vector2(34.82279, 1.0866648)
+
 [node name="ColorRect" type="ColorRect" parent="Roof" unique_id=1794226094]
 offset_left = -143.0
 offset_top = -135.0
@@ -233,6 +241,11 @@ scale = Vector2(34.920498, 0.8646544)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Roof" unique_id=310539684]
 position = Vector2(550.99994, -117.000015)
 scale = Vector2(4.0086575, 1.1911094)
+shape = SubResource("RectangleShape2D_niasw")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Roof" unique_id=1427606497]
+position = Vector2(447, -301)
+scale = Vector2(3.3831158, 12.087892)
 shape = SubResource("RectangleShape2D_niasw")
 
 [node name="Floor" type="StaticBody2D" parent="." unique_id=809799900]
@@ -253,10 +266,10 @@ shape = SubResource("RectangleShape2D_niasw")
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1787882924]
 material = SubResource("ShaderMaterial_vvus4")
 layout_direction = 1
-offset_left = -337.0
-offset_top = -901.0
-offset_right = -237.0
-offset_bottom = -801.0
+offset_left = -220.0
+offset_top = -805.99994
+offset_right = -93.15001
+offset_bottom = -675.89996
 scale = Vector2(20, 20)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1031939648]
@@ -264,7 +277,7 @@ material = SubResource("ShaderMaterial_pr151")
 use_parent_material = true
 position = Vector2(25038.209, 1090.7478)
 scale = Vector2(26.505554, 0.8646544)
-script = ExtResource("1_xs8my")
+script = ExtResource("2_ba1s0")
 
-[node name="Vampire" parent="." unique_id=23730063 instance=ExtResource("2_ql4x0")]
+[node name="Vampire" parent="." unique_id=23730063 instance=ExtResource("3_7virt")]
 position = Vector2(1507, 499)
