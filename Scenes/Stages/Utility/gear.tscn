@@ -1,17 +1,45 @@
 [gd_scene format=3 uid="uid://j6muiu81ag7e"]
 
-[ext_resource type="Script" path="res://Scripts/Stages/Utility/Gears.cs" id="1_mscjj"]
-[ext_resource type="Script" path="res://Scripts/Stages/Utility/Gear.cs" id="1_vafe5"]
+[ext_resource type="Script" uid="uid://dq4ob5fqupji6" path="res://Scripts/Stages/Utility/Gears.cs" id="1_mscjj"]
+[ext_resource type="Script" uid="uid://43epun68m0ut" path="res://Scripts/Stages/Utility/Gear.cs" id="1_vafe5"]
+[ext_resource type="Shader" uid="uid://dc8ft5270pjbl" path="res://Scenes/Stages/Clocktower/gear_world_light.gdshader" id="2_gearshr"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_mscjj"]
-blend_mode = 4
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wo0bc"]
+shader = ExtResource("2_gearshr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 2000.0000949525
+shader_parameter/ambient = 0.03
+shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
 
-[sub_resource type="SphereMesh" id="SphereMesh_h55ne"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gear"]
+shader = ExtResource("2_gearshr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
+shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hub"]
+shader = ExtResource("2_gearshr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 700.0
+shader_parameter/ambient = 0.05
+shader_parameter/radius = 50.0
+shader_parameter/sphere_mix = 0.5
 
 [node name="Gear" type="Node2D" unique_id=1061900053]
+material = SubResource("ShaderMaterial_wo0bc")
 script = ExtResource("1_mscjj")
 
 [node name="gearinside1" type="Polygon2D" parent="." unique_id=1240222685]
+material = SubResource("ShaderMaterial_gear")
 position = Vector2(7, -2)
 scale = Vector2(0.5, 0.5)
 color = Color(0.35050318, 0.24686277, 0.02450895, 1)
@@ -21,6 +49,7 @@ uv = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 6
 script = ExtResource("1_vafe5")
 
 [node name="gear1" type="Polygon2D" parent="." unique_id=197407924]
+material = SubResource("ShaderMaterial_gear")
 position = Vector2(1, -3)
 scale = Vector2(0.5, 0.5)
 color = Color(0.708496, 0.5126037, 0.08798642, 1)
@@ -28,10 +57,5 @@ offset = Vector2(-540, 320)
 polygon = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
 uv = PackedVector2Array(524, -501, 567, -501, 569, -469, 602, -458, 619, -484, 656, -462, 642, -434, 665, -408, 693, -421, 714, -384, 688, -365, 696, -334, 725, -331, 725, -288, 695, -287, 682, -253, 707, -236, 686, -198, 660, -213, 632, -189, 644, -163, 608, -141, 591, -167, 557, -161, 555, -130, 511, -129, 509, -159, 478, -171, 458, -147, 423, -166, 438, -196, 412, -224, 385, -209, 365, -247, 393, -264, 385, -300, 352, -300, 352, -344, 387, -345, 397, -378, 370, -395, 390, -433, 420, -418, 447, -441, 432, -469, 469, -491, 489, -462, 523, -471)
 script = ExtResource("1_vafe5")
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="gear1" unique_id=862629105]
-modulate = Color(0.29954746, 0.29954746, 0.29954743, 1)
-material = SubResource("CanvasItemMaterial_mscjj")
-position = Vector2(-0.26391602, 6.2735596)
-scale = Vector2(200, 200)
-mesh = SubResource("SphereMesh_h55ne")
+HoleColor = Color(0.3417166, 0.31091017, 0.20724851, 1)
+HoleMaterial = SubResource("ShaderMaterial_hub")

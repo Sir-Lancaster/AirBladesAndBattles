@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://fxc4l4jksmnf"]
+
+[ext_resource type="Script" uid="uid://43epun68m0ut" path="res://Scripts/Stages/Utility/Gear.cs" id="1_gear6"]
+[ext_resource type="Script" uid="uid://dq4ob5fqupji6" path="res://Scripts/Stages/Utility/Gears.cs" id="1_gear6grs"]
+[ext_resource type="Shader" uid="uid://dc8ft5270pjbl" path="res://Scenes/Stages/Clocktower/gear_world_light.gdshader" id="2_gear6shr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_febxd"]
+shader = ExtResource("2_gear6shr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
+shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gear6"]
+shader = ExtResource("2_gear6shr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
+shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wn1sy"]
+shader = ExtResource("2_gear6shr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 500.0
+shader_parameter/ambient = 0.1
+shader_parameter/radius = 186.0
+shader_parameter/sphere_mix = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hub6"]
+shader = ExtResource("2_gear6shr")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 700.0
+shader_parameter/ambient = 0.05
+shader_parameter/radius = 20.0
+shader_parameter/sphere_mix = 0.5
+
+[node name="Gear2" type="Node2D" unique_id=500000001]
+material = SubResource("ShaderMaterial_febxd")
+script = ExtResource("1_gear6grs")
+
+[node name="gearinside1" type="Polygon2D" parent="." unique_id=601810439]
+material = SubResource("ShaderMaterial_gear6")
+position = Vector2(5, 2)
+scale = Vector2(0.5, 0.5)
+color = Color(0.35050318, 0.24686277, 0.02450895, 1)
+polygon = PackedVector2Array(76, -25, 118, -23, 118, 23, 76, 25, 69, 40, 59, 54, 79, 91, 39, 113, 17, 78, 0, 80, -17, 78, -39, 113, -79, 91, -59, 54, -69, 40, -76, 25, -118, 23, -118, -23, -76, -25, -69, -40, -59, -54, -79, -91, -39, -113, -17, -78, 0, -80, 17, -78, 39, -113, 79, -91, 59, -54, 69, -40)
+script = ExtResource("1_gear6")
+ProngCount = 6
+HoleRadius = 70.0
+
+[node name="gear1" type="Polygon2D" parent="." unique_id=500000003]
+material = SubResource("ShaderMaterial_wn1sy")
+scale = Vector2(0.5, 0.5)
+color = Color(0.708496, 0.5126037, 0.08798642, 1)
+polygon = PackedVector2Array(76, -25, 118, -23, 118, 23, 76, 25, 69, 40, 59, 54, 79, 91, 39, 113, 17, 78, 0, 80, -17, 78, -39, 113, -79, 91, -59, 54, -69, 40, -76, 25, -118, 23, -118, -23, -76, -25, -69, -40, -59, -54, -79, -91, -39, -113, -17, -78, 0, -80, 17, -78, 39, -113, 79, -91, 59, -54, 69, -40)
+script = ExtResource("1_gear6")
+ProngCount = 6
+HoleRadius = 50.0
+HoleColor = Color(0.34117648, 0.30980393, 0.20784314, 1)
+HoleMaterial = SubResource("ShaderMaterial_hub6")

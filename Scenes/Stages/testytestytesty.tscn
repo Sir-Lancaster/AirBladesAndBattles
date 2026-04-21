@@ -1,0 +1,134 @@
+[gd_scene format=3 uid="uid://kefvt72a1ftk"]
+
+[ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="1_bjqe5"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="2_6icdk"]
+[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_4265q"]
+[ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="4_bjqe5"]
+[ext_resource type="PackedScene" uid="uid://cw8tfl5dgdg7f" path="res://Scenes/KernelCowboy/AiKernelCowboy.tscn" id="5_bjqe5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5lg6u"]
+size = Vector2(1947.5, 30)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ss6kr"]
+shader = ExtResource("2_6icdk")
+shader_parameter/pixel_size = 5.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iukx0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i5jib"]
+size = Vector2(0.52812576, 1069)
+
+[node name="Clocktower" type="Node2D" unique_id=1738674402]
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=1154924217]
+
+[node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=1475519633]
+position = Vector2(285, 323)
+
+[node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1353731479]
+position = Vector2(392, 296)
+
+[node name="Spawn3" type="Marker2D" parent="SpawnPoints" unique_id=1706966464]
+position = Vector2(288, 696)
+
+[node name="Spawn4" type="Marker2D" parent="SpawnPoints" unique_id=2116061116]
+position = Vector2(1264, 688)
+
+[node name="Platform1" type="StaticBody2D" parent="." unique_id=1225677018]
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform1" unique_id=1555043319]
+position = Vector2(788, 166)
+polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1" unique_id=2093310671]
+position = Vector2(755, 428)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="Platform2" type="StaticBody2D" parent="." unique_id=1088427752]
+position = Vector2(43, -39)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform2" unique_id=1202718601]
+position = Vector2(750, 533)
+polygon = PackedVector2Array(295, 257, 511.95996, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2" unique_id=312182793]
+position = Vector2(1224, 807)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="Platform3" type="StaticBody2D" parent="." unique_id=1099601096]
+position = Vector2(43, 0)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform3" unique_id=1257790482]
+position = Vector2(268, 330)
+polygon = PackedVector2Array(295, 257, 511.95996, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3" unique_id=1698050436]
+position = Vector2(746, 602)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="Platform4" type="StaticBody2D" parent="." unique_id=1564981826]
+position = Vector2(43, 18)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform4" unique_id=45182501]
+position = Vector2(-232, 142)
+polygon = PackedVector2Array(295, 257, 511.95996, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4" unique_id=642167586]
+position = Vector2(242, 413)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="Platform5" type="StaticBody2D" parent="." unique_id=259165589]
+position = Vector2(43, -11)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform5" unique_id=1769595716]
+position = Vector2(-225, 517)
+polygon = PackedVector2Array(295, 257, 511.95996, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5" unique_id=1232989311]
+position = Vector2(248, 788)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="Gear2" parent="." unique_id=545824321 instance=ExtResource("1_bjqe5")]
+position = Vector2(607, 662)
+
+[node name="Gear" parent="." unique_id=1061900053 instance=ExtResource("1_bjqe5")]
+position = Vector2(683, 500)
+RotateClockwise = false
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
+material = SubResource("ShaderMaterial_ss6kr")
+layout_direction = 1
+offset_left = 139.99998
+offset_top = 608.99994
+offset_right = 239.99998
+offset_bottom = 708.99994
+scale = Vector2(20, 20)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1847418280]
+material = SubResource("ShaderMaterial_iukx0")
+use_parent_material = true
+position = Vector2(938, 556)
+zoom = Vector2(2, 2)
+script = ExtResource("3_4265q")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=960764150]
+position = Vector2(0, 130)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2" unique_id=118613146]
+position = Vector2(1528.0001, 408)
+scale = Vector2(80, 1)
+shape = SubResource("RectangleShape2D_i5jib")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="." unique_id=364077808]
+position = Vector2(0, 130)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3" unique_id=1554585937]
+position = Vector2(-21.999878, 79)
+scale = Vector2(80, 1)
+shape = SubResource("RectangleShape2D_i5jib")
+
+[node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("4_bjqe5")]
+position = Vector2(1156, 303)
+
+[node name="KernelCowboy" parent="." unique_id=156738427 instance=ExtResource("5_bjqe5")]
+position = Vector2(314, 286)

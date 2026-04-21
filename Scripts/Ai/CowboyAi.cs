@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class KernelCowboy : CharacterBase
+public partial class CowboyAi : AiBaseClass
 {
     private AnimatedSprite2D _KernelCowboy; //replace "KernelCowboy" node name below in _Ready()
     private AttackDirection _currentAttackDirection;
@@ -9,6 +9,8 @@ public partial class KernelCowboy : CharacterBase
     private Area2D _currentHitbox;
     private LassoHandler _lassoHandler;
     private bool _waitingForLassoPause;
+    private bool _hasUsedAirUpAttack;
+    private bool _wasOnFloor = true;
     private Hitbox _stompHitbox;
 
     [Export] public string CharacterLabel = "KernelCowboy";
@@ -23,6 +25,14 @@ public partial class KernelCowboy : CharacterBase
 
     public override void _Ready()
     {
+        RegisterAttack(0f, 360f, 0f, 50f, AttackHorizontal);                                                          // any direction when very close
+        RegisterAttack(245f, 295f, 0f, 120f, AttackUp);                                                               // above
+        RegisterAttack(315f, 45f, 50f, 100f, AttackHorizontal);                                                       // right, close
+        RegisterAttack(135f, 225f, 50f, 100f, AttackHorizontal);                                                      // left, close
+        RegisterAttack(315f, 45f, 100f, 250f, SpecialHorizontal, () => !_lassoHandler.IsLassoing, isSpecial: true);  // right, lasso
+        RegisterAttack(135f, 225f, 100f, 250f, SpecialHorizontal, () => !_lassoHandler.IsLassoing, isSpecial: true); // left, lasso
+        RegisterAttack(65f, 115f, 50f, 300f, AttackDown, () => !IsOnFloor());                                         // below, down air
+
         _KernelCowboy = GetNode<AnimatedSprite2D>("KernelCowboy"); //use the actual node name from your scene
         GD.Print("Animations: ", string.Join(", ", _KernelCowboy.SpriteFrames.GetAnimationNames()));
 
@@ -30,9 +40,9 @@ public partial class KernelCowboy : CharacterBase
 
         // Neutral special: pause animation at throw frame, resume on connect or miss
         _lassoHandler.OnLassoConnected = () => _KernelCowboy.SpeedScale = 1.0f;
-        _lassoHandler.OnLassoMissed    = () => { _KernelCowboy.SpeedScale = 1.0f; _KernelCowboy.Stop(); EndAttackAfter(SpecialAttackRecovery); };
-        _lassoHandler.OnSlamComplete   = () => { _KernelCowboy.SpeedScale = 1.0f; EndAttackAfter(SpecialAttackRecovery); };
-        _lassoHandler.OnSlamSplash     = SpawnSlamSplashHitbox;
+        _lassoHandler.OnLassoMissed = () => { _KernelCowboy.SpeedScale = 1.0f; _KernelCowboy.Stop(); EndAttackAfter(SpecialAttackRecovery); };
+        _lassoHandler.OnSlamComplete = () => { _KernelCowboy.SpeedScale = 1.0f; EndAttackAfter(SpecialAttackRecovery); };
+        _lassoHandler.OnSlamSplash = SpawnSlamSplashHitbox;
 
         // Pause the Special animation only during a neutral special throw, and only once.
         _KernelCowboy.FrameChanged += () =>
@@ -62,12 +72,60 @@ public partial class KernelCowboy : CharacterBase
         base._Ready();
     }
 
+    protected override void AggressiveFallbackAttack()
+    {
+        if (_target == null) return;
+        Vector2 toTarget = _target.GlobalPosition - GlobalPosition;
+        if (IsInAttackRange(toTarget))
+            AttackHorizontal();
+        else
+            MoveTowardTarget(toTarget);
+    }
+
+    protected override bool TryRecoveryMove()
+    {
+        if (_hasUsedAirUpAttack) return false;
+        _hasUsedAirUpAttack = true;
+        SpecialUp();
+        return true;
+    }
+
+    private void AttackHorizontal() => AiInput.AttackJustPressed = true;
+    private void SpecialHorizontal() => AiInput.SpecialJustPressed = true;
+
+    private void AttackDown()
+    {
+        AiInput.AttackJustPressed = true;
+        AiInput.MoveDirection = new Vector2(AiInput.MoveDirection.X, 1f);
+    }
+
+    private void AttackUp()
+    {
+        AiInput.AttackJustPressed = true;
+        AiInput.MoveDirection = new Vector2(AiInput.MoveDirection.X, -1f);
+    }
+
+    private void SpecialUp()
+    {
+        AiInput.SpecialJustPressed = true;
+        AiInput.MoveDirection = new Vector2(AiInput.MoveDirection.X, -1f);
+    }
+
+
+
     public override void _PhysicsProcess(double delta)
     {
+        AiInput = default;
+        RunAiBehavior();
         base._PhysicsProcess(delta);
 
-        if (Velocity.X != 0)
-            _KernelCowboy.FlipH = Velocity.X < 0;
+        bool onFloor = IsOnFloor();
+        if (onFloor && !_wasOnFloor)
+            _hasUsedAirUpAttack = false;
+        _wasOnFloor = onFloor;
+
+        if (_target != null)
+            _KernelCowboy.FlipH = _target.GlobalPosition.X < GlobalPosition.X;
 
         // Debug: press 'delete' to take 10 damage
         if (Input.IsPhysicalKeyPressed(Key.Delete))
@@ -86,11 +144,13 @@ public partial class KernelCowboy : CharacterBase
     {
         string anim = state switch
         {
-            CharacterState.Idle     => "Idle",      
-            CharacterState.Run      => "Run",        
-            CharacterState.Jump     => "Jump",      
-            CharacterState.Dodge    => "Dodge",
-            CharacterState.HitStun  => "Hurt",               CharacterState.Dead     => "dead",                   _                       => "Idle"
+            CharacterState.Idle => "Idle",
+            CharacterState.Run => "Run",
+            CharacterState.Jump => "Jump",
+            CharacterState.Dodge => "Dodge",
+            CharacterState.HitStun => "Hurt",
+            CharacterState.Dead => "dead",
+            _ => "Idle"
         };
 
         _KernelCowboy.Play(anim);
@@ -121,9 +181,9 @@ public partial class KernelCowboy : CharacterBase
 
         string attackAnim = direction switch
         {
-            AttackDirection.Up      => "Up",
+            AttackDirection.Up => "Up",
             AttackDirection.DownAir => "Down",
-            _                       => "Horizontal"
+            _ => "Horizontal"
         };
         _KernelCowboy.Play(attackAnim);
         GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");

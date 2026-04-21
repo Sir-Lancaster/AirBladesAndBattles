@@ -1,0 +1,463 @@
+[gd_scene format=3 uid="uid://dk13b8nao4v4o"]
+
+[ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="1_48itk"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="2_3dkk4"]
+[ext_resource type="Script" uid="uid://r25k0b4ox7o1" path="res://Scripts/Stages/Clocktower/HourHand.cs" id="2_6ihs2"]
+[ext_resource type="Shader" uid="uid://djggkv35w5mhf" path="res://Scenes/Stages/Clocktower/light.gdshader" id="3_3dkk4"]
+[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_hfokt"]
+[ext_resource type="Script" uid="uid://cb6qnptmsslb6" path="res://Scripts/Stages/Clocktower/MinuteHand.cs" id="3_p8rdk"]
+[ext_resource type="PackedScene" uid="uid://fxc4l4jksmnf" path="res://Scenes/Stages/Utility/gear6.tscn" id="4_4l0pb"]
+[ext_resource type="PackedScene" uid="uid://btfcbuwxkk2ur" path="res://Scenes/Steampunk/Steampunk.tscn" id="4_lbcms"]
+[ext_resource type="Script" uid="uid://cvviey1ruv8nb" path="res://Scripts/Stages/Utility/GearPlatform.cs" id="5_gearplat"]
+[ext_resource type="Shader" uid="uid://tseoi3w7opql" path="res://Scenes/Stages/Clocktower/window_glass.gdshader" id="6_glass"]
+[ext_resource type="Shader" uid="uid://qc7pfdakjs51" path="res://Scenes/Stages/Clocktower/window_glass_offset.gdshader" id="7_glass_offset"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hfokt"]
+shader = ExtResource("3_3dkk4")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 700.0
+shader_parameter/ambient = 0.05
+shader_parameter/radius = 228.40401037419
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glass"]
+shader = ExtResource("6_glass")
+shader_parameter/sheen_intensity = 0.18
+shader_parameter/blue_tint = Color(0.72, 0.88, 1, 1)
+
+[sub_resource type="Gradient" id="Gradient_win"]
+offsets = PackedFloat32Array(0, 0.15, 0.25, 0.35, 0.45, 0.55, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.75, 1, 1, 1, 0.46, 1, 1, 1, 0.22, 1, 1, 1, 0.08, 1, 1, 1, 0.02, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradTex_win"]
+gradient = SubResource("Gradient_win")
+width = 512
+height = 512
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_glass_offset"]
+shader = ExtResource("7_glass_offset")
+shader_parameter/sheen_intensity = 0.18
+shader_parameter/blue_tint = Color(0.72, 0.88, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3dkk4"]
+shader = ExtResource("3_3dkk4")
+shader_parameter/light1_pos = Vector2(291, 560)
+shader_parameter/light2_pos = Vector2(789, 380)
+shader_parameter/light3_pos = Vector2(1267, 550)
+shader_parameter/falloff = 700.0
+shader_parameter/ambient = 0.05
+shader_parameter/radius = 186.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5lg6u"]
+size = Vector2(351, 30)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_3dkk4"]
+polygon = PackedVector2Array(2324, 602, 2644, 602, 2637, 610, 2333, 611)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ss6kr"]
+shader = ExtResource("2_3dkk4")
+shader_parameter/pixel_size = 5.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iukx0"]
+
+[node name="Clocktower" type="Node2D" unique_id=1738674402]
+
+[node name="ColorRect2" type="ColorRect" parent="." unique_id=432958992]
+material = SubResource("ShaderMaterial_hfokt")
+layout_direction = 1
+offset_left = -111.000244
+offset_top = -421.99997
+offset_right = -11.000244
+offset_bottom = -321.99997
+scale = Vector2(20, 20)
+color = Color(0.546786, 0.50053024, 0.3581443, 1)
+
+[node name="HHand" type="ColorRect" parent="." unique_id=284966678]
+offset_left = 789.0
+offset_top = 328.0
+offset_right = 1289.0
+offset_bottom = 361.0
+rotation = -1.5707964
+pivot_offset = Vector2(0, 16.5)
+color = Color(0.12005129, 0.12005126, 0.12005121, 0.2784314)
+script = ExtResource("2_6ihs2")
+SecondsPerTick = 3.0
+
+[node name="Polygon2D" type="Polygon2D" parent="HHand" unique_id=33599871]
+position = Vector2(-665, -341)
+color = Color(0.12156863, 0.12156863, 0.12156863, 0.2784314)
+polygon = PackedVector2Array(1343, 358, 1318, 356, 1297, 353, 1274, 343, 1253, 331, 1238, 316, 1215, 298, 1191, 295, 1175, 300, 1165, 319, 1165, 395, 1171, 415, 1185, 423, 1209, 421, 1230, 407, 1250, 390, 1274, 375, 1297, 363, 1318, 360)
+
+[node name="Mhand2" type="ColorRect" parent="." unique_id=18182394]
+offset_left = 789.0
+offset_top = 328.0
+offset_right = 1840.0
+offset_bottom = 361.0
+rotation = -1.5707964
+pivot_offset = Vector2(0, 16.5)
+color = Color(0.12005129, 0.12005126, 0.12005121, 0.2784314)
+script = ExtResource("3_p8rdk")
+
+[node name="SpawnPoint" type="Node2D" parent="." unique_id=1387874827]
+
+[node name="Spawn1" type="Marker2D" parent="SpawnPoint" unique_id=961600511]
+position = Vector2(1255, 610)
+
+[node name="Spawn2" type="Marker2D" parent="SpawnPoint" unique_id=1128914651]
+position = Vector2(802, 447)
+
+[node name="Spawn3" type="Marker2D" parent="SpawnPoint" unique_id=1704299376]
+position = Vector2(287, 658)
+
+[node name="Windows" type="Node2D" parent="." unique_id=111111001]
+
+[node name="Window1" type="Node2D" parent="Windows" unique_id=111111002]
+position = Vector2(291, 570)
+
+[node name="Arch" type="Polygon2D" parent="Windows/Window1" unique_id=111111003]
+light_mask = 0
+material = SubResource("ShaderMaterial_glass")
+position = Vector2(0, -302)
+color = Color(0.4448816, 0.54664993, 0.77842206, 0.8509804)
+polygon = PackedVector2Array(-50, 400, 50, 400, 50, -20, 0, -80, -50, -20)
+
+[node name="VBar" type="Polygon2D" parent="Windows/Window1" unique_id=111111004]
+position = Vector2(0, -318)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 420, 2, 420, 2, -65, -2, -65)
+
+[node name="LBar" type="Polygon2D" parent="Windows/Window1" unique_id=1536528930]
+position = Vector2(-50, -256)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 360, 2, 360, 2, -65, -2, -65)
+
+[node name="RBar" type="Polygon2D" parent="Windows/Window1" unique_id=676563126]
+position = Vector2(50, -256)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 360, 2, 360, 2, -65, -2, -65)
+
+[node name="HBar" type="Polygon2D" parent="Windows/Window1" unique_id=111111005]
+position = Vector2(0, -45)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-50, 3, 50, 3, 50, -3, -50, -3)
+
+[node name="BBar" type="Polygon2D" parent="Windows/Window1" unique_id=779216785]
+position = Vector2(0, 104)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-50, 7, 50, 7, 75, -7, -75, -7)
+
+[node name="RDBar" type="Polygon2D" parent="Windows/Window1" unique_id=1294293374]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(2, -383, 52, -321, 48, -321, 2, -378)
+
+[node name="LDBar" type="Polygon2D" parent="Windows/Window1" unique_id=266829928]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-2, -383, -52, -321, -48, -321, -2, -378)
+
+[node name="Light" type="PointLight2D" parent="Windows/Window1" unique_id=111111006]
+position = Vector2(0, -260)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="LightMid" type="PointLight2D" parent="Windows/Window1" unique_id=444444001]
+position = Vector2(0, -90)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="LightBot" type="PointLight2D" parent="Windows/Window1" unique_id=444444002]
+position = Vector2(0, 65)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="Window2" type="Node2D" parent="Windows" unique_id=111111007]
+position = Vector2(789, 390)
+
+[node name="Arch" type="Polygon2D" parent="Windows/Window2" unique_id=111111008]
+light_mask = 0
+material = SubResource("ShaderMaterial_glass_offset")
+position = Vector2(0, -302)
+color = Color(0.4448816, 0.54664993, 0.77842206, 0.8509804)
+polygon = PackedVector2Array(-50, 400, 50, 400, 50, -20, 0, -80, -50, -20)
+
+[node name="VBar" type="Polygon2D" parent="Windows/Window2" unique_id=111111009]
+position = Vector2(0, -318)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 420, 2, 420, 2, -65, -2, -65)
+
+[node name="LBar" type="Polygon2D" parent="Windows/Window2" unique_id=222222001]
+position = Vector2(-50, -256)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 360, 2, 360, 2, -65, -2, -65)
+
+[node name="RBar" type="Polygon2D" parent="Windows/Window2" unique_id=222222002]
+position = Vector2(50, -256)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 360, 2, 360, 2, -65, -2, -65)
+
+[node name="HBar" type="Polygon2D" parent="Windows/Window2" unique_id=111111010]
+position = Vector2(0, -45)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-50, 3, 50, 3, 50, -3, -50, -3)
+
+[node name="BBar" type="Polygon2D" parent="Windows/Window2" unique_id=222222003]
+position = Vector2(0, 104)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-50, 7, 50, 7, 75, -7, -75, -7)
+
+[node name="RDBar" type="Polygon2D" parent="Windows/Window2" unique_id=222222004]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(2, -383, 52, -321, 48, -321, 2, -378)
+
+[node name="LDBar" type="Polygon2D" parent="Windows/Window2" unique_id=222222005]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-2, -383, -52, -321, -48, -321, -2, -378)
+
+[node name="Light" type="PointLight2D" parent="Windows/Window2" unique_id=111111011]
+position = Vector2(0, -260)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="LightMid" type="PointLight2D" parent="Windows/Window2" unique_id=444444003]
+position = Vector2(0, -90)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="LightBot" type="PointLight2D" parent="Windows/Window2" unique_id=444444004]
+position = Vector2(0, 65)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="Window3" type="Node2D" parent="Windows" unique_id=111111012]
+position = Vector2(1267, 560)
+
+[node name="Arch" type="Polygon2D" parent="Windows/Window3" unique_id=111111013]
+light_mask = 0
+material = SubResource("ShaderMaterial_glass_offset")
+position = Vector2(0, -302)
+color = Color(0.4448816, 0.54664993, 0.77842206, 0.8509804)
+polygon = PackedVector2Array(-50, 400, 50, 400, 50, -20, 0, -80, -50, -20)
+
+[node name="VBar" type="Polygon2D" parent="Windows/Window3" unique_id=111111014]
+position = Vector2(0, -318)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 420, 2, 420, 2, -65, -2, -65)
+
+[node name="LBar" type="Polygon2D" parent="Windows/Window3" unique_id=333333001]
+position = Vector2(-50, -256)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 360, 2, 360, 2, -65, -2, -65)
+
+[node name="RBar" type="Polygon2D" parent="Windows/Window3" unique_id=333333002]
+position = Vector2(50, -256)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-2, 360, 2, 360, 2, -65, -2, -65)
+
+[node name="HBar" type="Polygon2D" parent="Windows/Window3" unique_id=111111015]
+position = Vector2(0, -45)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-50, 3, 50, 3, 50, -3, -50, -3)
+
+[node name="BBar" type="Polygon2D" parent="Windows/Window3" unique_id=333333003]
+position = Vector2(0, 104)
+color = Color(0.1, 0.1, 0.12, 1)
+polygon = PackedVector2Array(-50, 7, 50, 7, 75, -7, -75, -7)
+
+[node name="RDBar" type="Polygon2D" parent="Windows/Window3" unique_id=333333004]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(2, -383, 52, -321, 48, -321, 2, -378)
+
+[node name="LDBar" type="Polygon2D" parent="Windows/Window3" unique_id=333333005]
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-2, -383, -52, -321, -48, -321, -2, -378)
+
+[node name="Light" type="PointLight2D" parent="Windows/Window3" unique_id=111111016]
+position = Vector2(0, -260)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="LightMid" type="PointLight2D" parent="Windows/Window3" unique_id=444444005]
+position = Vector2(0, -90)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="LightBot" type="PointLight2D" parent="Windows/Window3" unique_id=444444006]
+position = Vector2(0, 54)
+energy = 0.2
+shadow_enabled = true
+texture = SubResource("GradTex_win")
+texture_scale = 2.5
+
+[node name="Gear" parent="." unique_id=1061900053 instance=ExtResource("1_48itk")]
+material = null
+position = Vector2(667, 730)
+RotateClockwise = false
+
+[node name="Gear3" parent="." unique_id=500000001 instance=ExtResource("4_4l0pb")]
+material = null
+position = Vector2(788, 661)
+
+[node name="Gear2" parent="." unique_id=545824321 instance=ExtResource("1_48itk")]
+material = null
+position = Vector2(556, 863)
+
+[node name="Gear6" parent="." unique_id=449388826 instance=ExtResource("1_48itk")]
+position = Vector2(345, 1033)
+
+[node name="Gear5" parent="." unique_id=795714353 instance=ExtResource("1_48itk")]
+position = Vector2(287, 871)
+RotateClockwise = false
+
+[node name="Gear4" parent="." unique_id=1637367437 instance=ExtResource("4_4l0pb")]
+position = Vector2(440, 928)
+RotateClockwise = false
+
+[node name="Gear7" parent="." unique_id=265198112 instance=ExtResource("4_4l0pb")]
+position = Vector2(1264, 825)
+
+[node name="Gear8" parent="." unique_id=1968314744 instance=ExtResource("4_4l0pb")]
+position = Vector2(1166, 850)
+RotateClockwise = false
+
+[node name="Gear9" parent="." unique_id=1087817339 instance=ExtResource("1_48itk")]
+position = Vector2(1043, 914)
+
+[node name="Gear10" parent="." unique_id=1753334401 instance=ExtResource("1_48itk")]
+position = Vector2(979, 751)
+RotateClockwise = false
+
+[node name="Gear11" parent="." unique_id=72994810 instance=ExtResource("4_4l0pb")]
+position = Vector2(905, 933)
+RotateClockwise = false
+
+[node name="Gear12" parent="." unique_id=2107764234 instance=ExtResource("1_48itk")]
+position = Vector2(1519, 374)
+RotateClockwise = false
+
+[node name="Gear13" parent="." unique_id=38308863 instance=ExtResource("4_4l0pb")]
+position = Vector2(1608, 480)
+
+[node name="Gear14" parent="." unique_id=1102751719 instance=ExtResource("4_4l0pb")]
+position = Vector2(1631, 575)
+RotateClockwise = false
+
+[node name="Gear15" parent="." unique_id=101149611 instance=ExtResource("1_48itk")]
+position = Vector2(1538, 679)
+
+[node name="Gear16" parent="." unique_id=1964665844 instance=ExtResource("4_4l0pb")]
+position = Vector2(1585, 809)
+RotateClockwise = false
+
+[node name="Gear17" parent="." unique_id=450958282 instance=ExtResource("1_48itk")]
+position = Vector2(1745, 647)
+
+[node name="Gear18" parent="." unique_id=1137406905 instance=ExtResource("4_4l0pb")]
+position = Vector2(72, 449)
+
+[node name="Gear19" parent="." unique_id=331480185 instance=ExtResource("1_48itk")]
+position = Vector2(-20, 548)
+RotateClockwise = false
+
+[node name="Gear20" parent="." unique_id=1534874152 instance=ExtResource("1_48itk")]
+position = Vector2(-12, 341)
+RotateClockwise = false
+
+[node name="Gear21" parent="." unique_id=1178880343 instance=ExtResource("1_48itk")]
+position = Vector2(-90, 707)
+
+[node name="Gear22" parent="." unique_id=498466416 instance=ExtResource("4_4l0pb")]
+position = Vector2(110, 274)
+
+[node name="Gear23" parent="." unique_id=724854079 instance=ExtResource("1_48itk")]
+position = Vector2(1380, 897)
+RotateClockwise = false
+
+[node name="Platform2" type="StaticBody2D" parent="." unique_id=1088427752]
+position = Vector2(43, -39)
+
+[node name="GearVisual" type="Node2D" parent="Platform2" unique_id=1202718601]
+material = SubResource("ShaderMaterial_3dkk4")
+position = Vector2(1224, 807)
+script = ExtResource("5_gearplat")
+RotateClockwise = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2" unique_id=312182793]
+visible = false
+position = Vector2(1224, 807)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Platform2" unique_id=719946697]
+position = Vector2(-1260, 211)
+occluder = SubResource("OccluderPolygon2D_3dkk4")
+
+[node name="Platform3" type="StaticBody2D" parent="." unique_id=1099601096]
+position = Vector2(43, 0)
+
+[node name="GearVisual" type="Node2D" parent="Platform3" unique_id=1257790482]
+material = SubResource("ShaderMaterial_3dkk4")
+position = Vector2(746, 602)
+script = ExtResource("5_gearplat")
+RotateClockwise = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3" unique_id=1698050436]
+visible = false
+position = Vector2(746, 602)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Platform3" unique_id=522616972]
+position = Vector2(-1741, 6)
+occluder = SubResource("OccluderPolygon2D_3dkk4")
+
+[node name="Platform5" type="StaticBody2D" parent="." unique_id=259165589]
+position = Vector2(43, -11)
+
+[node name="GearVisual" type="Node2D" parent="Platform5" unique_id=1769595716]
+material = SubResource("ShaderMaterial_3dkk4")
+position = Vector2(248, 788)
+script = ExtResource("5_gearplat")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5" unique_id=1232989311]
+visible = false
+position = Vector2(248, 788)
+shape = SubResource("RectangleShape2D_5lg6u")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Platform5" unique_id=298120299]
+position = Vector2(-2235, 194)
+occluder = SubResource("OccluderPolygon2D_3dkk4")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1878898280]
+material = SubResource("ShaderMaterial_ss6kr")
+layout_direction = 1
+offset_left = -105.0
+offset_top = -76.00001
+offset_right = -5.0
+offset_bottom = 24.000023
+scale = Vector2(20, 20)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1847418280]
+material = SubResource("ShaderMaterial_iukx0")
+use_parent_material = true
+position = Vector2(938, 556)
+zoom = Vector2(2, 2)
+script = ExtResource("3_hfokt")
+
+[node name="Steampunk" parent="." unique_id=1806914756 instance=ExtResource("4_lbcms")]
+position = Vector2(1237, 651)

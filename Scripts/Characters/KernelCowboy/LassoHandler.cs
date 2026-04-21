@@ -155,7 +155,7 @@ public partial class LassoHandler : Node
 
     // ── Private state ─────────────────────────────────────────────────────────
 
-    private CharacterBase _owner;
+    private CharacterBody2D _owner;
 
     // Neutral special
     private bool _lassoActive;
@@ -194,7 +194,7 @@ public partial class LassoHandler : Node
 
     public override void _Ready()
     {
-        _owner = GetParent<CharacterBase>();
+        _owner = GetParent<CharacterBody2D>();
 
         // Ensure the Line2D has exactly 3 points so we can index them directly.
         if (LassoRope != null)
@@ -445,8 +445,8 @@ public partial class LassoHandler : Node
         GD.Print($"DownAir: body entered — {body.Name} ({body.GetType().Name})");
         if (!_downAirActive || body == _owner) return;
 
-        // Ignore CharacterBase bodies — we only hook the floor/terrain.
-        if (body is CharacterBase) return;
+        // Ignore character bodies — we only hook the floor/terrain.
+        if (body is IDamageable) return;
 
         // Use the lasso tip's current position (at the floor surface), not the body center.
         // body.GlobalPosition is the center of the floor tile which can be far underground.
