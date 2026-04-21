@@ -466,6 +466,7 @@ script = ExtResource("3_hfokt")
 [node name="DeathZone" type="Area2D" parent="." unique_id=999000001]
 position = Vector2(780, 1200)
 collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=999000002]
 position = Vector2(169.5, 0)
