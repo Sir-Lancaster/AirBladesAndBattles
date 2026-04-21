@@ -49,7 +49,7 @@ public partial class GameManager : Node
     private const string StageSelectScene               = "res://Scenes/Pages/StageSelect/StageSelect.tscn";
     private const string CharacterSelectScene = "res://Scenes/Pages/CharacterSelect/CharacterSelect.tscn";
     private const string GameScene                      = "res://Scenes/Stages/Utility/Game.tscn";
-    private const string MultiplayerBattleScene         = "res://Scenes/Multiplayer/BattleScene.tscn"; // TODO: verify path
+    private const string MultiplayerBattleScene         = "res://Scenes/Multiplayer/BattleScene.tscn"; 
 
     // -------------------------------------------------------------------------
     // State

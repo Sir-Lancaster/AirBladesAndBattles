@@ -33,8 +33,10 @@ public partial class StageManager : Node2D
 
     private static readonly Dictionary<string, string> AiScenePaths = new()
     {
+        { "KernelCowboy", "res://Scenes/KernelCowboy/AiKernelCowboy.tscn"},
+        { "SirEdward", "res://Scenes/Edward/EvilEdward.tscn"},
         { "Steampunk", "res://Scenes/Steampunk/AiSteampunk.tscn" },
-        // Add AI scenes for other characters here as they are created.
+        { "Vampire", "res://Scenes/Vampire/VampireAi.tscn"}
     };
 
     // ── Exports ───────────────────────────────────────────────────────────────
@@ -207,8 +209,6 @@ public partial class StageManager : Node2D
         for (int i = 0; i < _slots.Length; i++)
             SpawnCharacter(i);
 
-        // Wire AI targets after all nodes are in the tree.
-        CallDeferred(nameof(WireAiTargets));
     }
 
     private void SpawnCharacter(int slotIndex)
@@ -240,19 +240,6 @@ public partial class StageManager : Node2D
         slot.ActiveCharacter = character;
 
         GD.Print($"[StageManager] Spawned {charKey} (slot {slotIndex}, AI={isAi}).");
-    }
-
-    private void WireAiTargets()
-    {
-        if (_slots.Length == 0) return;
-        CharacterBase human = _slots[0].ActiveCharacter as CharacterBase;
-        if (human == null) return;
-
-        for (int i = 1; i < _slots.Length; i++)
-        {
-            if (_slots[i].ActiveCharacter is AiBaseClass ai)
-                ai.Target = human;
-        }
     }
 
     // ── Death polling ─────────────────────────────────────────────────────────
@@ -304,7 +291,6 @@ public partial class StageManager : Node2D
                 _deathHandled.Remove(dying);
                 dying?.QueueFree();
                 SpawnCharacter(slotIndex);
-                CallDeferred(nameof(WireAiTargets));
                 _gameHUD?.UpdateHealth(slotIndex, GetMaxHp(slotIndex));
             };
         }

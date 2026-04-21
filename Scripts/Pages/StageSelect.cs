@@ -21,7 +21,7 @@ public partial class StageSelect : Control
     // ── Stage scene path constants ────────────────────────────────────────────
     // Use the full res:// path — both GameManager and NetworkManager need it.
 
-    private const string Stage1Path = "res://Scenes/Stages/Clocktower.tscn";
+    private const string Stage1Path = "res://Scenes/Stages/Clocktower/Clocktower.tscn";
     private const string Stage2Path = "res://Scenes/Stages/Testing/Testing.tscn";
 
     // ── Exports ───────────────────────────────────────────────────────────────
