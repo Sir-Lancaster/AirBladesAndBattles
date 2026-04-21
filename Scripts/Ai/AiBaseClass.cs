@@ -161,7 +161,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
             IsDead = true;
             SetState(CharacterState.Dead);
             OnDied();
-            GetTree().CreateTimer(1.5f).Timeout += QueueFree;
             return;
         }
 
@@ -305,13 +304,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     public override void _PhysicsProcess(double delta)
     {
         if (IsDead) return;
-
-        if (GlobalPosition.Y > 1100f)
-        {
-            IsDead = true;
-            QueueFree();
-            return;
-        }
 
         if (!IsOnFloor())
             Velocity += new Vector2(0, Gravity * (float)delta);
