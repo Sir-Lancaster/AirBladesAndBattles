@@ -1,3 +1,69 @@
 [gd_scene format=3 uid="uid://rbowfddj7rhg"]
 
+[ext_resource type="Shader" uid="uid://b0tsluylw1qjw" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
+[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3rsef"]
+size = Vector2(2894, 79)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2iiqq"]
+size = Vector2(698, 1617)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2iiqq"]
+shader = ExtResource("1_2iiqq")
+shader_parameter/brick_color = Color(0.5866749, 0.5866749, 0.5866748, 1)
+shader_parameter/mortar_color = Color(1, 1, 1, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 32.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cg4hr"]
+size = Vector2(2255, 105)
+
 [node name="Castle" type="Node2D" unique_id=1202184694]
+
+[node name="Background" type="Control" parent="." unique_id=65025957]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="ColorRect" type="ColorRect" parent="Background" unique_id=752596749]
+layout_mode = 0
+offset_left = -118.0
+offset_top = -819.99994
+offset_right = 2.149994
+offset_bottom = -700.1
+scale = Vector2(20, 20)
+color = Color(0, 0.6509804, 1, 1)
+
+[node name="Ground" type="Area2D" parent="." unique_id=1732715812]
+position = Vector2(1067, 1498)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1460815677]
+position = Vector2(2, 40.5)
+shape = SubResource("RectangleShape2D_3rsef")
+debug_color = Color(1, 1, 1, 1)
+
+[node name="Tower" type="StaticBody2D" parent="." unique_id=255941224]
+position = Vector2(142, 277)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tower" unique_id=1132639000]
+position = Vector2(89, 492.5)
+shape = SubResource("RectangleShape2D_2iiqq")
+
+[node name="Polygon2D" type="Polygon2D" parent="Tower" unique_id=1734651818]
+z_index = 1
+material = SubResource("ShaderMaterial_2iiqq")
+polygon = PackedVector2Array(-260, -316, -260, -363, -143, -363, -143, -316, -39, -316, -39, -364, 78, -364, 78, -316, 201, -316, 201, -367, 330, -367, 330, -315, 403, -315, 403, -369, 439, -369, 439, -316, 439, 1301, -260, 1301)
+
+[node name="Battlements" type="Area2D" parent="." unique_id=35243636]
+position = Vector2(1543, 832)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Battlements" unique_id=476485683]
+position = Vector2(165.5, 0.5)
+shape = SubResource("RectangleShape2D_cg4hr")
+debug_color = Color(1, 1, 1, 1)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1862920484]
+position = Vector2(581, 323)
+script = ExtResource("2_js386")
