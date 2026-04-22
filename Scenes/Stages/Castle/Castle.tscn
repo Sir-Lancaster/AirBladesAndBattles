@@ -114,7 +114,6 @@ shape = SubResource("RectangleShape2D_2iiqq")
 one_way_collision = true
 
 [node name="Exterior" type="Polygon2D" parent="TowerLeft" unique_id=1734651818]
-visible = false
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
 position = Vector2(0.37197876, 0)
@@ -145,7 +144,6 @@ position = Vector2(435.5, 923.5)
 shape = SubResource("RectangleShape2D_f15jd")
 
 [node name="Interior" type="Polygon2D" parent="TowerLeft" unique_id=1199392561]
-visible = false
 z_as_relative = false
 material = SubResource("ShaderMaterial_sn43w")
 polygon = PackedVector2Array(-252, -277, 438, -278, 436, 1302, -260, 1302, -260, -277)
@@ -178,9 +176,10 @@ one_way_collision = true
 one_way_collision_margin = 18.5
 debug_color = Color(0.9784612, 0, 0.39977136, 0.41960785)
 
-[node name="Node" type="Node" parent="TowerLeft" unique_id=941316445 node_paths=PackedStringArray("_exterior")]
+[node name="Node" type="Node" parent="TowerLeft" unique_id=941316445 node_paths=PackedStringArray("_exterior", "_trigger")]
 script = ExtResource("3_fbqer")
 _exterior = NodePath("../Exterior")
+_trigger = NodePath("../Area2D")
 
 [node name="Battlements" type="StaticBody2D" parent="." unique_id=1839737624]
 position = Vector2(1543, 911)
@@ -243,4 +242,4 @@ shadow_filter = 1
 shadow_item_cull_mask = 3
 
 [node name="Edward" parent="." unique_id=565846511 instance=ExtResource("3_js386")]
-position = Vector2(736, 799)
+position = Vector2(490, 749)
