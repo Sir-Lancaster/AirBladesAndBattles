@@ -252,8 +252,10 @@ public partial class StageManager : Node2D
             if (slot.Eliminated || slot.ActiveCharacter == null) continue;
             if (_deathHandled.Contains(slot.ActiveCharacter)) continue;
 
+            if (!IsInstanceValid(slot.ActiveCharacter)) continue;
+
             bool dead = (slot.ActiveCharacter is CharacterBase cb && cb.IsDead)
-                     || (slot.ActiveCharacter is AiBaseClass ai  && ai.IsDead);
+                     || (slot.ActiveCharacter is AiBaseClass   ai && ai.IsDead);
 
             if (!dead) continue;
 
@@ -299,9 +301,8 @@ public partial class StageManager : Node2D
             GetTree().CreateTimer(2.0).Timeout += () =>
             {
                 _deathHandled.Remove(dying);
-                dying?.QueueFree();
+                if (IsInstanceValid(dying)) dying.QueueFree();
                 SpawnCharacter(slotIndex);
-                CallDeferred(nameof(WireAiTargets));
                 // Defer by one frame so the new character's _Ready runs first
                 // and CurrentHP is fully initialised before we read MaxHP.
                 CallDeferred(nameof(RefreshRespawnHUD), slotIndex);
