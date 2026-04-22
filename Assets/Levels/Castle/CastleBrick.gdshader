@@ -4,7 +4,7 @@ shader_type canvas_item;
 uniform vec4 brick_color : source_color = vec4(0.45, 0.22, 0.15, 1.0);
 uniform vec4 mortar_color : source_color = vec4(0.75, 0.72, 0.68, 1.0);
 uniform float brick_width = 80.0;
-uniform float brick_height = 32.0;
+uniform float brick_height = 64.0;
 uniform float mortar_thickness = 4.0;
 uniform float ambient_light : hint_range(0.0, 1.0) = 1.0;
 
