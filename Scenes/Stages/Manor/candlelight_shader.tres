@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cqi7uywjvi6fo"]
+
+[ext_resource type="Shader" uid="uid://4dsifqfhjvxh" path="res://Scenes/Stages/Manor/candlelight.gdshader" id="1_aogpy"]
+
+[resource]
+shader = ExtResource("1_aogpy")
+shader_parameter/flame_brightness = 0.6
+shader_parameter/pulse_speed = 1.2
+shader_parameter/flicker_amount = 0.3
+shader_parameter/flame_color = Color(1, 0.6, 0.27, 1)
+shader_parameter/glow_color = Color(1, 0.84, 0, 1)
