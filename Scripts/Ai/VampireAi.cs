@@ -28,7 +28,7 @@ public partial class VampireAi : AiBaseClass
 	[Export] public float DownAttackRecovery = 0.45f;
 	[Export] public float NeutralSpecialRecovery = 1.5f;
 	[Export] public float UpSpecialDelay = 0.9167f;
-	[Export] public float UpSpecialDuration = 2.0f;
+	[Export] public float UpSpecialRecovery = 2.0f;
 	[Export] public float UpSpecialVelocity = 150f;
 	[Export] public float UpSpecialCooldown = 3.0f;
 	[Export] public float AttackHitboxDelay = 0.2046f;
@@ -36,6 +36,10 @@ public partial class VampireAi : AiBaseClass
 	[Export] public float DownAttackHitboxDelay = 0.1f;
 	[Export] public float NeutralSpecialHitboxDelay = 1.111f;
 	[Export] public float DownVelocityBoost = 400f;
+	[Export] public float NeutralSpecialHitboxLifetime = 0.3f;
+	[Export] public float AttackHitboxLifetime = 0.3f;
+	[Export] public float UpAttackHitboxLifetime = 0.3f;
+	[Export] public float DownAttackHitboxLifetime = 0.3f;
 	private Hitbox _currentHitbox;
 	private bool _holdingSpecialUp;
 	private float _specialUpChargeTime;
@@ -137,7 +141,7 @@ public partial class VampireAi : AiBaseClass
 			{
 				bool isEarlyRelease = _specialUpChargeTime < UpSpecialDelay;
 				_specialUpEffectActive = true;
-				_specialUpEffectDuration = UpSpecialDuration;
+				_specialUpEffectDuration = UpSpecialRecovery;
 				_specialUpCooldownRemaining = UpSpecialCooldown;
 				SpawnSpecialHitbox(SpecialDirection.Up, SpecialDamage);
 
@@ -153,7 +157,7 @@ public partial class VampireAi : AiBaseClass
 			if (_specialUpChargeTime >= UpSpecialDelay && !_specialUpEffectActive)
 			{
 				_specialUpEffectActive = true;
-				_specialUpEffectDuration = UpSpecialDuration;
+				_specialUpEffectDuration = UpSpecialRecovery;
 				_specialUpCooldownRemaining = UpSpecialCooldown;
 				SpawnSpecialHitbox(SpecialDirection.Up, SpecialDamage);
 			}
@@ -314,18 +318,23 @@ public partial class VampireAi : AiBaseClass
 		if (_currentHitbox != null && IsInstanceValid(_currentHitbox))
 			_currentHitbox.QueueFree();
 
-		PackedScene scene = dir == AttackDirection.Up ? UpboxScene : HitboxScene;
+		PackedScene scene = dir switch
+		{
+			AttackDirection.Up => UpboxScene,
+			AttackDirection.DownAir => DownboxScene,
+			_ => HitboxScene
+		};
 		var hitbox = scene.Instantiate<Hitbox>();
 		AddChild(hitbox);
 
-		float recoveryDuration = dir switch
+		float hitboxLifetime = dir switch
 		{
-			AttackDirection.Up => UpAttackRecovery,
-			AttackDirection.DownAir => DownAttackRecovery,
-			_ => BasicAttackRecovery
+			AttackDirection.Up => UpAttackHitboxLifetime,
+			AttackDirection.DownAir => DownAttackHitboxLifetime,
+			_ => AttackHitboxLifetime
 		};
 
-		hitbox.Activate(this, damage, recoveryDuration);
+		hitbox.Activate(this, damage, hitboxLifetime);
 		switch (dir)
 		{
 			case AttackDirection.Horizontal:
@@ -359,16 +368,23 @@ public partial class VampireAi : AiBaseClass
 		var hitbox = sceneToUse.Instantiate<Hitbox>();
 		AddChild(hitbox);
 
+		float duration = dir switch
+		{
+			SpecialDirection.Up => UpSpecialRecovery,
+			SpecialDirection.Neutral => NeutralSpecialHitboxLifetime,
+			_ => 0f
+		};
+
 		switch (dir)
 		{
 			case SpecialDirection.Up:
-				hitbox.Activate(this, damage, UpSpecialDuration);
+				hitbox.Activate(this, damage, duration);
 				hitbox.Position = new Vector2(0f, 0f);
 				_currentHitbox = hitbox;
 				break;
 
 			case SpecialDirection.Neutral:
-				hitbox.Activate(this, damage, NeutralSpecialRecovery);
+				hitbox.Activate(this, damage, duration);
 				float facing = _sprite.FlipH ? -1f : 1f;
 				hitbox.Position = new Vector2(facing > 0f ? 112f : -112f, -12f);
 				_currentHitbox = hitbox;
