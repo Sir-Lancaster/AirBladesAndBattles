@@ -48,7 +48,7 @@ shader_parameter/pixel_size = 5.0
 [sub_resource type="Environment" id="Environment_7virt"]
 glow_enabled = true
 glow_intensity = 0.8
-glow_bloom = 0.3
+glow_strength = 2.0
 
 [node name="GregStage" type="Node2D" unique_id=1403897259]
 
@@ -288,6 +288,7 @@ scale = Vector2(3.3831158, 12.087892)
 shape = SubResource("RectangleShape2D_niasw")
 
 [node name="Pixelator" type="ColorRect" parent="." unique_id=1787882924]
+visible = false
 material = SubResource("ShaderMaterial_vvus4")
 layout_direction = 1
 offset_left = -220.0
