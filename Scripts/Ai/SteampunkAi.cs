@@ -7,7 +7,7 @@ public partial class SteampunkAi : AiBaseClass
 	private string _activeAnimation = "idle";
 	[Export] public string CharacterLabel = "Steampunk";
 	[Export] public float BasicAttackRecovery = 0.40f;
-	[Export] public float SpecialAttackRecovery = 0.35f;
+	[Export] public float SpecialAttackRecovery = 2f;
 	[Export] public float AttackHitboxDelay = 0.12f;
 	[Export] public float AttackAnimOffset = 80f;
 	[Export] public float UpAttackLaunchSpeed = 800f;
@@ -253,7 +253,7 @@ public partial class SteampunkAi : AiBaseClass
 		}
 		SetAnimation(GetSpecialAnim(direction));
 		if (direction != SpecialDirection.Up)
-			EndAttackAfter(SpecialAttackRecovery);
+			EndAttackAfter(BasicAttackRecovery);
 		SpawnSpecialHitbox(direction, damage);
 	}
 

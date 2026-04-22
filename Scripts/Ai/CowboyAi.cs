@@ -15,7 +15,7 @@ public partial class CowboyAi : AiBaseClass
 
     [Export] public string CharacterLabel = "KernelCowboy";
     [Export] public float AttackRecovery = 0.30f;       //tune to match attack animation length
-    [Export] public float SpecialAttackRecovery = 0.40f; //tune to match special animation length
+    [Export] public float SpecialAttackRecovery = 2f; //tune to match special animation length
 
     /// <summary>Frame of the Special animation to pause on while waiting for a lasso hit.</summary>
     [Export] public int LassoPauseFrame = 3; //set to the frame where the throw is released
@@ -231,7 +231,7 @@ public partial class CowboyAi : AiBaseClass
                 return;
         }
 
-        EndAttackAfter(SpecialAttackRecovery);
+        EndAttackAfter(AttackRecovery);
     }
 
     protected override void OnDodgeStarted(DodgeDirection direction, float dodgeDuration, float iFrameDuration)

@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://dk13b8nao4v4o"]
 
 [ext_resource type="PackedScene" uid="uid://j6muiu81ag7e" path="res://Scenes/Stages/Utility/gear.tscn" id="1_48itk"]
-[ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="2_3dkk4"]
-[ext_resource type="Script" uid="uid://dtriprx7gplw" path="res://Scripts/Stages/Clocktower/HourHand.cs" id="2_6ihs2"]
-[ext_resource type="Shader" uid="uid://drc2hnxgbckxk" path="res://Scenes/Stages/Clocktower/light.gdshader" id="3_3dkk4"]
-[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_hfokt"]
-[ext_resource type="Script" uid="uid://bk0b0db86n73e" path="res://Scripts/Stages/Clocktower/MinuteHand.cs" id="3_p8rdk"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="2_3dkk4"]
+[ext_resource type="Script" uid="uid://r25k0b4ox7o1" path="res://Scripts/Stages/Clocktower/HourHand.cs" id="2_6ihs2"]
+[ext_resource type="Shader" uid="uid://djggkv35w5mhf" path="res://Scenes/Stages/Clocktower/light.gdshader" id="3_3dkk4"]
+[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="3_hfokt"]
+[ext_resource type="Script" uid="uid://cb6qnptmsslb6" path="res://Scripts/Stages/Clocktower/MinuteHand.cs" id="3_p8rdk"]
 [ext_resource type="PackedScene" uid="uid://fxc4l4jksmnf" path="res://Scenes/Stages/Utility/gear6.tscn" id="4_4l0pb"]
-[ext_resource type="Script" uid="uid://ddialmqnjmtxk" path="res://Scripts/Stages/Utility/GearPlatform.cs" id="5_gearplat"]
-[ext_resource type="Shader" uid="uid://drwwcnvx5k5b3" path="res://Scenes/Stages/Clocktower/window_glass.gdshader" id="6_glass"]
-[ext_resource type="Shader" uid="uid://6asnv6q7ak28" path="res://Scenes/Stages/Clocktower/window_glass_offset.gdshader" id="7_glass_offset"]
+[ext_resource type="Script" uid="uid://cvviey1ruv8nb" path="res://Scripts/Stages/Utility/GearPlatform.cs" id="5_gearplat"]
+[ext_resource type="Shader" uid="uid://tseoi3w7opql" path="res://Scenes/Stages/Clocktower/window_glass.gdshader" id="6_glass"]
+[ext_resource type="Shader" uid="uid://qc7pfdakjs51" path="res://Scenes/Stages/Clocktower/window_glass_offset.gdshader" id="7_glass_offset"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hfokt"]
 shader = ExtResource("3_3dkk4")
@@ -61,6 +61,9 @@ shader = ExtResource("2_3dkk4")
 shader_parameter/pixel_size = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iukx0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dz"]
+size = Vector2(4809, 200)
 
 [node name="Clocktower" type="Node2D" unique_id=1738674402]
 
@@ -459,3 +462,12 @@ material = SubResource("ShaderMaterial_iukx0")
 use_parent_material = true
 position = Vector2(938, 556)
 script = ExtResource("3_hfokt")
+
+[node name="DeathZone" type="Area2D" parent="." unique_id=999000001]
+position = Vector2(780, 1200)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=999000002]
+position = Vector2(169.5, 0)
+shape = SubResource("RectangleShape2D_dz")

@@ -161,7 +161,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
             IsDead = true;
             SetState(CharacterState.Dead);
             OnDied();
-            GetTree().CreateTimer(1.5f).Timeout += QueueFree;
             return;
         }
 
@@ -306,13 +305,6 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     {
         if (IsDead) return;
 
-        if (GlobalPosition.Y > 1100f)
-        {
-            IsDead = true;
-            QueueFree();
-            return;
-        }
-
         if (!IsOnFloor())
             Velocity += new Vector2(0, Gravity * (float)delta);
 
@@ -443,10 +435,14 @@ public abstract partial class AiBaseClass : CharacterBody2D, IDamageable
     private void RunAggressiveBehavior()
     {
         Vector2 toTarget = _target.GlobalPosition - GlobalPosition;
-        if (!TrySelectAttackAggressive(toTarget) && _aiAttackCooldownRemaining <= 0)
+        if (!TrySelectAttackAggressive(toTarget))
         {
-            AggressiveFallbackAttack();
-            _aiAttackCooldownRemaining = AiAttackCooldown;
+            if (_aiAttackCooldownRemaining <= 0)
+            {
+                AggressiveFallbackAttack();
+                _aiAttackCooldownRemaining = AiAttackCooldown;
+            }
+            MoveTowardTarget(toTarget);
         }
     }
 
