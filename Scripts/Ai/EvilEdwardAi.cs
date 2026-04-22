@@ -36,7 +36,7 @@ public partial class EvilEdwardAi : AiBaseClass
     /// <summary>
     /// The time that passes after a special attack has completed before you can use it again. 
     /// </summary>
-    [Export] public float SpecialAttackRecovery = 1.35f;
+    [Export] public float SpecialAttackRecovery = 2f;
 
     /// <summary>
     /// Get the hitbox scene so it can be spawned in when attacking.
@@ -274,7 +274,7 @@ public partial class EvilEdwardAi : AiBaseClass
                 break;
         }
 
-        EndAttackAfter(SpecialAttackRecovery);
+        EndAttackAfter(AttackRecovery);
         _isSpecial = false;
     }
 

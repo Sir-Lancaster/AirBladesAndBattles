@@ -24,7 +24,7 @@ public partial class VampireAi : AiBaseClass
 	[Export] public string CharacterLabel = "Vampire";
 	[Export] public float BasicAttackRecovery = 0.68f;
 	[Export] public float UpAttackRecovery = 0.5f;
-	[Export] public float SpecialAttackRecovery = 0.35f;
+	[Export] public float SpecialAttackRecovery = 2f;
 	[Export] public float DownAttackRecovery = 0.45f;
 	[Export] public float NeutralSpecialRecovery = 1.5f;
 	[Export] public float UpSpecialDelay = 0.9167f;
@@ -164,7 +164,9 @@ public partial class VampireAi : AiBaseClass
 			_specialUpEffectDuration -= (float)delta;
 			float chargeProgress = Mathf.Clamp(_specialUpChargeTime / UpSpecialDelay, 0f, 1f);
 			float scaledVelocity = UpSpecialVelocity * chargeProgress;
-			Velocity = new Vector2(Velocity.X, -scaledVelocity);
+			float angleRad = Mathf.DegToRad(70f);
+			float facing = _sprite.FlipH ? -1f : 1f;
+			Velocity = new Vector2(facing * scaledVelocity * Mathf.Cos(angleRad), -scaledVelocity * Mathf.Sin(angleRad));
 
 			if (_specialUpEffectDuration <= 0)
 			{
@@ -293,7 +295,7 @@ public partial class VampireAi : AiBaseClass
 
 		if (direction == SpecialDirection.Neutral)
 		{
-			EndAttackAfter(NeutralSpecialRecovery);
+			EndAttackAfter(BasicAttackRecovery);
 			SpawnSpecialHitboxAfter(NeutralSpecialHitboxDelay, direction, damage);
 		}
 		else if (direction == SpecialDirection.Up)
