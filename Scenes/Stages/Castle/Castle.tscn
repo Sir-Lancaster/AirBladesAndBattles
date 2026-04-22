@@ -1,10 +1,23 @@
 [gd_scene format=3 uid="uid://rbowfddj7rhg"]
 
 [ext_resource type="Shader" uid="uid://b0tsluylw1qjw" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
+[ext_resource type="Shader" uid="uid://bu7ohra2p6i7q" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
 [ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
+[ext_resource type="PackedScene" uid="uid://hq871q66ehp1" path="res://Scenes/Edward/EvilEdward.tscn" id="3_js386"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7w41v"]
+shader = ExtResource("1_7w41v")
+shader_parameter/sky_top_color = Color(0.08, 0.18, 0.45, 1)
+shader_parameter/sky_horizon_color = Color(0.55, 0.72, 0.95, 1)
+shader_parameter/cloud_dark_color = Color(0.06, 0.06, 0.1, 1)
+shader_parameter/cloud_light_color = Color(0.28, 0.26, 0.34, 1)
+shader_parameter/cloud_speed = 1.775
+shader_parameter/cloud_scale = 169.125
+shader_parameter/storm_intensity = 0.6490000308275
+shader_parameter/lightning_frequency = 0.3850000182875
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3rsef"]
-size = Vector2(2894, 79)
+size = Vector2(3653, 79)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2iiqq"]
 size = Vector2(698, 1617)
@@ -12,14 +25,32 @@ size = Vector2(698, 1617)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2iiqq"]
 shader = ExtResource("1_2iiqq")
 shader_parameter/brick_color = Color(0.5866749, 0.5866749, 0.5866748, 1)
-shader_parameter/mortar_color = Color(1, 1, 1, 1)
+shader_parameter/mortar_color = Color(0.7490196, 0.72156864, 0.6784314, 1)
 shader_parameter/brick_width = 80.0
 shader_parameter/brick_height = 32.0
 shader_parameter/mortar_thickness = 4.0
-shader_parameter/ambient_light = 1.0
+shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cg4hr"]
 size = Vector2(2255, 105)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cg4hr"]
+shader = ExtResource("1_2iiqq")
+shader_parameter/brick_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 32.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 0.550000026125
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_js386"]
+shader = ExtResource("1_2iiqq")
+shader_parameter/brick_color = Color(0.5882353, 0.5882353, 0.5882353, 1)
+shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 64.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 0.550000026125
 
 [node name="Castle" type="Node2D" unique_id=1202184694]
 
@@ -28,42 +59,68 @@ layout_mode = 3
 anchors_preset = 0
 
 [node name="ColorRect" type="ColorRect" parent="Background" unique_id=752596749]
+material = SubResource("ShaderMaterial_7w41v")
 layout_mode = 0
 offset_left = -118.0
 offset_top = -819.99994
-offset_right = 2.149994
+offset_right = 64.64998
 offset_bottom = -700.1
 scale = Vector2(20, 20)
 color = Color(0, 0.6509804, 1, 1)
 
-[node name="Ground" type="Area2D" parent="." unique_id=1732715812]
+[node name="Ground" type="StaticBody2D" parent="." unique_id=321402204]
 position = Vector2(1067, 1498)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1460815677]
-position = Vector2(2, 40.5)
+position = Vector2(641.5, 40.5)
 shape = SubResource("RectangleShape2D_3rsef")
-debug_color = Color(1, 1, 1, 1)
 
-[node name="Tower" type="StaticBody2D" parent="." unique_id=255941224]
+[node name="TowerLeft" type="StaticBody2D" parent="." unique_id=255941224]
 position = Vector2(142, 277)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Tower" unique_id=1132639000]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TowerLeft" unique_id=1132639000]
 position = Vector2(89, 492.5)
 shape = SubResource("RectangleShape2D_2iiqq")
 
-[node name="Polygon2D" type="Polygon2D" parent="Tower" unique_id=1734651818]
+[node name="Polygon2D" type="Polygon2D" parent="TowerLeft" unique_id=1734651818]
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
+position = Vector2(1, 0)
 polygon = PackedVector2Array(-260, -316, -260, -363, -143, -363, -143, -316, -39, -316, -39, -364, 78, -364, 78, -316, 201, -316, 201, -367, 330, -367, 330, -315, 403, -315, 403, -369, 439, -369, 439, -316, 439, 1301, -260, 1301)
 
-[node name="Battlements" type="Area2D" parent="." unique_id=35243636]
-position = Vector2(1543, 832)
+[node name="Battlements" type="StaticBody2D" parent="." unique_id=1839737624]
+position = Vector2(1543, 911)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Battlements" unique_id=476485683]
 position = Vector2(165.5, 0.5)
 shape = SubResource("RectangleShape2D_cg4hr")
-debug_color = Color(1, 1, 1, 1)
+one_way_collision = true
+
+[node name="Rampart" type="Polygon2D" parent="Battlements" unique_id=2029591891]
+z_index = 1
+material = SubResource("ShaderMaterial_cg4hr")
+polygon = PackedVector2Array(-962, 53, -962, -53, -962, -112, -567, -112, -567, -52, -55, -52, -55, -112, 326, -112, 326, -53, 742, -54, 742, -112, 1087, -112, 1085, -52, 1293, -52, 1293, 53)
+
+[node name="Polygon2D" type="Polygon2D" parent="Battlements" unique_id=600361816]
+material = SubResource("ShaderMaterial_js386")
+polygon = PackedVector2Array(-962, 53, 962.8086, 52.99994, 1293, 53, 1293, 667, -962, 667)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1862920484]
 position = Vector2(581, 323)
 script = ExtResource("2_js386")
+
+[node name="Edward" parent="." unique_id=565846511 instance=ExtResource("3_js386")]
+position = Vector2(831, 770)
+
+[node name="TowerRight" type="StaticBody2D" parent="." unique_id=140048406]
+position = Vector2(3096, 277)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TowerRight" unique_id=1617514697]
+position = Vector2(89, 492.5)
+shape = SubResource("RectangleShape2D_2iiqq")
+
+[node name="Polygon2D" type="Polygon2D" parent="TowerRight" unique_id=1160140967]
+z_index = 1
+material = SubResource("ShaderMaterial_2iiqq")
+position = Vector2(-1, 0)
+polygon = PackedVector2Array(-260, -316, -260, -363, -143, -363, -143, -316, -39, -316, -39, -364, 78, -364, 78, -316, 201, -316, 201, -367, 330, -367, 330, -315, 403, -315, 403, -369, 439, -369, 439, -316, 439, 1301, -260, 1301)
