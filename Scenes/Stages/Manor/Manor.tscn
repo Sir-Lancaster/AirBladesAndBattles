@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://dgcng01h2pxn3"]
 
-[ext_resource type="Shader" uid="uid://dwecftg7yfgpi" path="res://Scenes/Stages/Manor/dusk.gdshader" id="1_7virt"]
+[ext_resource type="Shader" uid="uid://dwecftg7yfgpi" path="res://Scenes/Stages/Manor/Shaders/dusk.gdshader" id="1_7virt"]
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d8qje"]
 [ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_ba1s0"]
-[ext_resource type="Shader" uid="uid://4gnba0a2dtcg" path="res://Scenes/Stages/Manor/InteriorBrick.gdshader" id="2_tob7e"]
-[ext_resource type="Material" uid="uid://b1t4ps2guh3d0" path="res://Scenes/Stages/Manor/exterior_brick.tres" id="3_tob7e"]
+[ext_resource type="Shader" uid="uid://4gnba0a2dtcg" path="res://Scenes/Stages/Manor/Shaders/InteriorBrick.gdshader" id="2_tob7e"]
+[ext_resource type="PackedScene" uid="uid://cbh3qyifh3ij0" path="res://Scenes/Stages/Manor/Railing.tscn" id="3_2xjp8"]
+[ext_resource type="Material" uid="uid://b1t4ps2guh3d0" path="res://Scenes/Stages/Manor/Shaders/exterior_brick.tres" id="3_tob7e"]
 [ext_resource type="PackedScene" uid="uid://cwbfyq0ua8kfw" path="res://Scenes/Stages/Manor/Chandelier.tscn" id="3_vhx7h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vhx7h"]
@@ -17,18 +18,18 @@ shader_parameter/flash_duration = 0.27300001226897996
 shader_parameter/atmosphere_intensity = 1.0
 shader_parameter/cloud_speed = 0.3
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xs8my"]
+size = Vector2(20, 768)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2xjp8"]
 shader = ExtResource("2_tob7e")
-shader_parameter/brick_color = Color(0.45, 0.22, 0.15, 1)
+shader_parameter/brick_color = Color(0.34901962, 0.18039216, 0.11764706, 1)
 shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
 shader_parameter/brick_width = 80.0
 shader_parameter/brick_height = 32.0
 shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 1.0
 shader_parameter/weathering = 0.0
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xs8my"]
-size = Vector2(20, 768)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pr151"]
 size = Vector2(354.5, 30)
@@ -59,12 +60,6 @@ offset_top = -343.0
 offset_right = 1978.0
 offset_bottom = 779.0
 
-[node name="InteriorWall" type="ColorRect" parent="." unique_id=527671529]
-material = SubResource("ShaderMaterial_2xjp8")
-offset_top = 36.0
-offset_right = 1348.0
-offset_bottom = 766.0
-
 [node name="SpawnPoints" type="Node2D" parent="." unique_id=2131201603]
 
 [node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=347092435]
@@ -91,50 +86,19 @@ shape = SubResource("RectangleShape2D_xs8my")
 [node name="Railings" type="Node2D" parent="." unique_id=1476991874]
 position = Vector2(1494, 496)
 
-[node name="Railing1" type="StaticBody2D" parent="Railings" unique_id=299303052]
-position = Vector2(-5, 140)
+[node name="Railing" parent="Railings" unique_id=2087253541 instance=ExtResource("3_2xjp8")]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Railings/Railing1" unique_id=676756618]
-position = Vector2(51.75, -83)
-scale = Vector2(0.025146827, 2.246737)
-shape = SubResource("RectangleShape2D_pr151")
+[node name="Railing2" parent="Railings" unique_id=577034601 instance=ExtResource("3_2xjp8")]
+position = Vector2(-181, -556)
 
-[node name="ColorRect" type="ColorRect" parent="Railings/Railing1" unique_id=1964522087]
-offset_left = 49.0
-offset_top = -115.0
-offset_right = 89.0
-offset_bottom = -75.0
-scale = Vector2(0.12667681, 1.1996557)
+[node name="Railing3" parent="Railings" unique_id=2042302792 instance=ExtResource("3_2xjp8")]
+position = Vector2(0, -384)
 
-[node name="Railing2" type="StaticBody2D" parent="Railings" unique_id=562787255]
-position = Vector2(-10, -488)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Railings/Railing2" unique_id=520908244]
-position = Vector2(-124.25, -10.999996)
-scale = Vector2(0.025146827, 2.246737)
-shape = SubResource("RectangleShape2D_pr151")
-
-[node name="ColorRect" type="ColorRect" parent="Railings/Railing2" unique_id=1212689629]
-offset_left = -127.0
-offset_top = -43.0
-offset_right = -87.0
-offset_bottom = -3.0
-scale = Vector2(0.12667681, 1.1996557)
-
-[node name="Railing3" type="StaticBody2D" parent="Railings" unique_id=950805461]
-position = Vector2(-5, -244)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Railings/Railing3" unique_id=203831246]
-position = Vector2(51.75, -83)
-scale = Vector2(0.025146827, 2.246737)
-shape = SubResource("RectangleShape2D_pr151")
-
-[node name="ColorRect" type="ColorRect" parent="Railings/Railing3" unique_id=1478016526]
-offset_left = 49.0
-offset_top = -115.0
-offset_right = 89.0
-offset_bottom = -75.0
-scale = Vector2(0.12667681, 1.1996557)
+[node name="InteriorWall" type="ColorRect" parent="." unique_id=527671529]
+material = SubResource("ShaderMaterial_2xjp8")
+offset_top = 36.0
+offset_right = 1348.0
+offset_bottom = 766.0
 
 [node name="Chandelier" parent="." unique_id=1095443742 instance=ExtResource("3_vhx7h")]
 

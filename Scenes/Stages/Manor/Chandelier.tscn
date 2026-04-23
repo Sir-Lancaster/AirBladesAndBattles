@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cwbfyq0ua8kfw"]
 
-[ext_resource type="Material" uid="uid://cqi7uywjvi6fo" path="res://Scenes/Stages/Manor/candlelight_shader.tres" id="1_svf0k"]
+[ext_resource type="Material" uid="uid://cqi7uywjvi6fo" path="res://Scenes/Stages/Manor/Shaders/candlelight_shader.tres" id="1_svf0k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rlqsa"]
 size = Vector2(354.5, 30)
