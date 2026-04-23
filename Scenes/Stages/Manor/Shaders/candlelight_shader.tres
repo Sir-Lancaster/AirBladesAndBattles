@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://cqi7uywjvi6fo"]
 
-[ext_resource type="Shader" uid="uid://4dsifqfhjvxh" path="res://Scenes/Stages/Manor/candlelight.gdshader" id="1_aogpy"]
+[ext_resource type="Shader" uid="uid://4dsifqfhjvxh" path="res://Scenes/Stages/Manor/Shaders/candlelight.gdshader" id="1_aogpy"]
 
 [resource]
 shader = ExtResource("1_aogpy")
