@@ -113,6 +113,8 @@ public partial class Steampunk : CharacterBase
 		UpdateFacing(_sprite.FlipH);
 	}
 
+	protected override void PlayAnimationByName(string animName) => SetAnimation(animName);
+
 	// Attack state animations are deferred to OnAttackPerformed/OnSpecialPerformed so we
 	// know the direction before choosing a clip. All other states map directly to name.
 	protected override void PlayAnimationForState(CharacterState state)
@@ -171,7 +173,7 @@ public partial class Steampunk : CharacterBase
 			if (!IsOnFloor() && _hasUsedAirUpAttack) { SetState(CharacterState.Idle); return; }
 			_hasUsedAirUpAttack = true;
 		}
-		SetAnimation(GetAttackAnim(direction));
+		BroadcastAnimation(GetAttackAnim(direction));
 		if (direction == AttackDirection.Up)
 		{
 			float angleRad = Mathf.DegToRad(70f);
@@ -197,7 +199,7 @@ public partial class Steampunk : CharacterBase
 			SetState(CharacterState.Idle);
 			return;
 		}
-		SetAnimation(GetSpecialAnim(direction));
+		BroadcastAnimation(GetSpecialAnim(direction));
 		if (direction != SpecialDirection.Up)
 			EndAttackAfter(BasicAttackRecovery);
 		SpawnSpecialHitbox(direction, damage);

@@ -210,11 +210,26 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         _lastReplicatedState = CurrentState;
     }
 
+    // Plays an animation by name locally and sends it reliably to all remote peers.
+    // Call this from OnAttackPerformed/OnSpecialPerformed instead of SetAnimation/AnimationPlayer.Play.
+    protected void BroadcastAnimation(string animName)
+    {
+        PlayAnimationByName(animName);
+        if (_multiplayerReady && Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+            Rpc(nameof(ReceiveAnimSync), animName);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void ReceiveAnimSync(string animName) => PlayAnimationByName(animName);
+
     // Virtual hooks to be overridden in individual characters.
 
     // Lifecycle/State
     protected virtual void OnStateChanged(CharacterState currentState, CharacterState newState) { }
     protected virtual void PlayAnimationForState(CharacterState state) { }
+    // Override to delegate to each character's internal SetAnimation / AnimationPlayer.Play.
+    protected virtual void PlayAnimationByName(string animName) { }
 
     // Health
     protected virtual void OnHealthChanged(int oldHp, int newHp) { }
