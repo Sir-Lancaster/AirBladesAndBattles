@@ -44,6 +44,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
 
     private int _jumpsRemaining;
     private CharacterState _lastReplicatedState;
+    private bool _multiplayerReady;
 
     // Base methods, owned by the core class.
 
@@ -194,7 +195,8 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         PlayAnimationForState(newState);
 
         // Notify remote peers reliably so fast states like Attack are never dropped.
-        if (Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+        // _multiplayerReady guards against RPCs during _Ready() initialization.
+        if (_multiplayerReady && Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
             Rpc(nameof(SyncStateChange), (int)newState);
     }
 
@@ -244,12 +246,16 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         IsDead = false;
         _jumpsRemaining = MaxJumps;
         CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
-        SetState(CharacterState.Idle);
+        SetState(CharacterState.Idle);     // _multiplayerReady is false here, so no RPC is sent.
 
         // Layer 2 = characters; mask 1 = world only.
         // Characters pass through each other and through themselves (multi-player safe).
         CollisionLayer = 2;
         CollisionMask = 1;
+
+        // Allow SyncStateChange RPCs only after initialization is complete and the node
+        // is fully registered in the scene tree with the multiplayer system.
+        _multiplayerReady = true;
     }
 
     /// <summary>
