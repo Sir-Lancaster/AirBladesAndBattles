@@ -232,10 +232,25 @@ public partial class Steampunk : CharacterBase
 				downProjectile.LaunchDown(this, damage);
 				_activeProjectile = downProjectile;
 				downProjectile.TreeExiting += () => _activeProjectile = null;
+				if (Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+					Rpc(nameof(SpawnProjectileRpc), downProjectile.GlobalPosition, false, true, damage);
 				return;
 		}
 
 		_currentHitbox = hitbox;
+	}
+
+	[Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+	     TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+	private void SpawnProjectileRpc(Vector2 position, bool facingLeft, bool isDown, int damage)
+	{
+		var projectile = ProjectileScene.Instantiate<SteampunkProjectile>();
+		GetParent().AddChild(projectile);
+		projectile.GlobalPosition = position;
+		if (isDown)
+			projectile.LaunchDown(this, damage);
+		else
+			projectile.Launch(this, damage, facingLeft);
 	}
 
 	private void SpawnSpecialHitbox(SpecialDirection? dir, int damage)
@@ -276,6 +291,8 @@ public partial class Steampunk : CharacterBase
 				projectile.Launch(this, damage, _sprite.FlipH);
 				_activeProjectile = projectile;
 				projectile.TreeExiting += () => _activeProjectile = null;
+				if (Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+					Rpc(nameof(SpawnProjectileRpc), projectile.GlobalPosition, _sprite.FlipH, false, damage);
 				break;
 		}
 	}
