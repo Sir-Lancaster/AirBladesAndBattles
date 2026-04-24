@@ -317,6 +317,20 @@ public partial class SirEdward: CharacterBase
 
         // Connect despawn signal to teleport Edward.
         halberd.Despawned += OnHalberdDespawned;
+
+        if (Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+            Rpc(nameof(SpawnHalberdRpc), halberd.GlobalPosition, throwDirection, damage);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SpawnHalberdRpc(Vector2 position, Vector2 direction, int damage)
+    {
+        var halberd = HalberdScene.Instantiate<Halberd>();
+        halberd.VisualOnly = true;
+        GetParent().AddChild(halberd);
+        halberd.GlobalPosition = position;
+        halberd.Launch(this, direction, damage);
     }
 
     /// <summary>
