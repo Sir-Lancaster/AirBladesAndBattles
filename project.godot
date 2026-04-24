@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 
 NetworkManager="*res://Scripts/Multiplayer/NetworkManager.cs"
 GameManager="*res://Scripts/GameManager.cs"
-MusicManager="*res://Scripts/MusicManager.cs"
+MusicManager="*res://Scenes/Utility/MusicManager.tscn"
 
 [display]
 
@@ -96,3 +96,4 @@ dodge={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+viewport/hdr_2d=true

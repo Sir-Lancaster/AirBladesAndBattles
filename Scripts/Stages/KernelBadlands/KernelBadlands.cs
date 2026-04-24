@@ -12,6 +12,9 @@ using Godot;
 /// PAD GROUPS (add every SolderPad Polygon2D to these in the editor):
 ///   kc001_pads, kc002_pads, kc003_pads, ground_pads
 ///
+/// LABEL GROUPS (add each mesa label node to these in the editor):
+///   kc001_labels, kc002_labels, kc003_labels
+///
 /// OTHER GROUPS:
 ///   quicksand — the quicksand Polygon2D and its collision shape
 ///
@@ -68,12 +71,11 @@ public partial class KernelBadlands : Node2D
         ("ground_traces", 0.15f),
     };
 
-    private static readonly string[] PadGroups =
+    private static readonly string[] LabelGroups =
     {
-        "kc001_pads",
-        "kc002_pads",
-        "kc003_pads",
-        "ground_pads",
+        "kc001_labels",
+        "kc002_labels",
+        "kc003_labels",
     };
 
     // ── Private state ─────────────────────────────────────────────────────────
@@ -110,6 +112,7 @@ public partial class KernelBadlands : Node2D
 
         UpdateTraces();
         UpdatePads();
+        UpdateLabels();
         UpdateMesas();
         UpdateGround();
         UpdateSkyShaders();
@@ -231,24 +234,55 @@ public partial class KernelBadlands : Node2D
         }
     }
 
-    // ── Pad modulation update ─────────────────────────────────────────────────
+    // ── Pad shader update ─────────────────────────────────────────────────────
+    // Requires a ShaderMaterial using NightGlow.gdshader assigned to each pad node.
+
+    // The parent mesa/ground nodes are modulated dark at night which cascades to all
+    // children including pads and labels. The inverse modulate counteracts that so the
+    // NightGlow shader output reaches the screen at its correct brightness/colour.
+
+    private Color InverseOf(Color c) => new(
+        1f / Mathf.Max(c.R, 0.001f),
+        1f / Mathf.Max(c.G, 0.001f),
+        1f / Mathf.Max(c.B, 0.001f),
+        1f
+    );
+
+    private static readonly string[] MesaPadGroups   = { "kc001_pads", "kc002_pads", "kc003_pads" };
+    private static readonly string[] GroundPadGroups  = { "ground_pads" };
 
     private void UpdatePads()
     {
-        float t        = _dayNight;
-        float r        = Mathf.Lerp(0.0f,  0.0f,   t);
-        float g        = Mathf.Lerp(0.1f,  1.0f,   t);
-        float b        = Mathf.Lerp(0.05f, 0.533f, t);
-        float a        = Mathf.Lerp(0.2f,  1.0f,   t);
-        var   padColor = new Color(r, g, b, a);
+        float t           = 1f - _dayNight;
+        Color mesaComp    = InverseOf(MesaDay.Lerp(MesaDusk,   t));
+        Color groundComp  = InverseOf(GroundDay.Lerp(GroundDusk, t));
 
-        foreach (string group in PadGroups)
+        foreach (string group in MesaPadGroups)
+            ApplyNightGlow(group, mesaComp);
+
+        foreach (string group in GroundPadGroups)
+            ApplyNightGlow(group, groundComp);
+    }
+
+    // ── Label shader update ───────────────────────────────────────────────────
+
+    private void UpdateLabels()
+    {
+        float t        = 1f - _dayNight;
+        Color mesaComp = InverseOf(MesaDay.Lerp(MesaDusk, t));
+
+        foreach (string group in LabelGroups)
+            ApplyNightGlow(group, mesaComp);
+    }
+
+    private void ApplyNightGlow(string group, Color compensation)
+    {
+        foreach (Node node in GetTree().GetNodesInGroup(group))
         {
-            foreach (Node node in GetTree().GetNodesInGroup(group))
-            {
-                if (node is CanvasItem ci)
-                    ci.Modulate = padColor;
-            }
+            if (node is not CanvasItem ci) continue;
+            ci.Modulate = compensation;
+            if (ci.Material is ShaderMaterial mat)
+                mat.SetShaderParameter("day_night", _dayNight);
         }
     }
 }

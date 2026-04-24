@@ -2,36 +2,34 @@ using Godot;
 
 public partial class KernelCowboy : CharacterBase
 {
-    private AnimatedSprite2D _KernelCowboy; //replace "KernelCowboy" node name below in _Ready()
-    private AttackDirection _currentAttackDirection;
-    private SpecialDirection _currentSpecialDirection;
-    private bool _isSpecial;
-    private Area2D _currentHitbox;
+    private AnimatedSprite2D _KernelCowboy;
     private LassoHandler _lassoHandler;
     private bool _waitingForLassoPause;
     private Hitbox _stompHitbox;
 
     [Export] public string CharacterLabel = "KernelCowboy";
-    [Export] public float AttackRecovery = 0.30f;       //tune to match attack animation length
-    [Export] public float SpecialAttackRecovery = 0.40f; //tune to match special animation length
+    [Export] public float AttackRecovery = 0.30f;
+    [Export] public float SpecialAttackRecovery = 0.40f;
+    [Export] public float NeutralSpecialCooldown = 2f;
 
     /// <summary>Frame of the Special animation to pause on while waiting for a lasso hit.</summary>
-    [Export] public int LassoPauseFrame = 3; //set to the frame where the throw is released
+    [Export] public int LassoPauseFrame = 3;
+
+    private float _neutralSpecialCooldownRemaining;
 
     private static readonly PackedScene HitboxScene =
         GD.Load<PackedScene>("res://Scenes/Utility/Hitbox.tscn");
 
     public override void _Ready()
     {
-        _KernelCowboy = GetNode<AnimatedSprite2D>("KernelCowboy"); //use the actual node name from your scene
-        GD.Print("Animations: ", string.Join(", ", _KernelCowboy.SpriteFrames.GetAnimationNames()));
+        _KernelCowboy = GetNode<AnimatedSprite2D>("KernelCowboy");
 
         _lassoHandler = GetNode<LassoHandler>("LassoHandler");
 
         // Neutral special: pause animation at throw frame, resume on connect or miss
         _lassoHandler.OnLassoConnected = () => _KernelCowboy.SpeedScale = 1.0f;
-        _lassoHandler.OnLassoMissed    = () => { _KernelCowboy.SpeedScale = 1.0f; _KernelCowboy.Stop(); EndAttackAfter(SpecialAttackRecovery); };
-        _lassoHandler.OnSlamComplete   = () => { _KernelCowboy.SpeedScale = 1.0f; EndAttackAfter(SpecialAttackRecovery); };
+        _lassoHandler.OnLassoMissed    = () => { _KernelCowboy.SpeedScale = 1.0f; _KernelCowboy.Stop(); EndAttackAfter(SpecialAttackRecovery); _neutralSpecialCooldownRemaining = NeutralSpecialCooldown; };
+        _lassoHandler.OnSlamComplete   = () => { _KernelCowboy.SpeedScale = 1.0f; EndAttackAfter(SpecialAttackRecovery); _neutralSpecialCooldownRemaining = NeutralSpecialCooldown; };
         _lassoHandler.OnSlamSplash     = SpawnSlamSplashHitbox;
 
         // Pause the Special animation only during a neutral special throw, and only once.
@@ -58,6 +56,7 @@ public partial class KernelCowboy : CharacterBase
 
         // Special up: end attack immediately so the player can steer during the launch
         _lassoHandler.OnRecoveryComplete = () => EndAttackAfter(0.05f);
+        _lassoHandler.OnRecoveryHooked   = SpawnRecoveryHookHitbox;
 
         base._Ready();
     }
@@ -69,56 +68,38 @@ public partial class KernelCowboy : CharacterBase
         if (Velocity.X != 0)
             _KernelCowboy.FlipH = Velocity.X < 0;
 
-        // Debug: press 'delete' to take 10 damage
-        if (Input.IsPhysicalKeyPressed(Key.Delete))
-        {
-            TakeDamage(10);
-            GD.Print($"{CharacterLabel} DEBUG: TakeDamage(10) called");
-        }
-    }
-
-    protected override void OnStateChanged(CharacterState fromState, CharacterState toState)
-    {
-        GD.Print($"{CharacterLabel} state: {fromState} -> {toState}");
+        if (_neutralSpecialCooldownRemaining > 0f)
+            _neutralSpecialCooldownRemaining -= (float)delta;
     }
 
     protected override void PlayAnimationForState(CharacterState state)
     {
         string anim = state switch
         {
-            CharacterState.Idle     => "Idle",      
-            CharacterState.Run      => "Run",        
-            CharacterState.Jump     => "Jump",      
+            CharacterState.Idle     => "Idle",
+            CharacterState.Run      => "Run",
+            CharacterState.Jump     => "Jump",
             CharacterState.Dodge    => "Dodge",
-            CharacterState.HitStun  => "Hurt",               CharacterState.Dead     => "dead",                   _                       => "Idle"
+            CharacterState.HitStun  => "Hurt",
+            CharacterState.Dead     => "dead",
+            _                       => "Idle"
         };
 
         _KernelCowboy.Play(anim);
-        GD.Print($"{CharacterLabel} play animation for: {state}");
-    }
-
-    protected override void OnHealthChanged(int oldHp, int newHp)
-    {
-        GD.Print($"{CharacterLabel} HP: {oldHp} -> {newHp}");
     }
 
     protected override void OnDamaged(int amount)
     {
-        GD.Print($"{CharacterLabel} took damage: {amount}");
         PlayAnimationForState(CharacterState.HitStun);
     }
 
     protected override void OnDied()
     {
-        GD.Print($"{CharacterLabel} died");
         PlayAnimationForState(CharacterState.Dead);
     }
 
     protected override void OnAttackPerformed(AttackDirection direction, int damage)
     {
-        _currentAttackDirection = direction;
-        _isSpecial = false;
-
         string attackAnim = direction switch
         {
             AttackDirection.Up      => "Up",
@@ -126,7 +107,6 @@ public partial class KernelCowboy : CharacterBase
             _                       => "Horizontal"
         };
         _KernelCowboy.Play(attackAnim);
-        GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 
         if (direction == AttackDirection.DownAir)
         {
@@ -143,19 +123,20 @@ public partial class KernelCowboy : CharacterBase
 
     protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
     {
-        _currentSpecialDirection = direction;
-        _isSpecial = true;
-
         string specialAnim = direction == SpecialDirection.Up ? "UpSpecial" : "Special";
         _KernelCowboy.Play(specialAnim);
 
         switch (direction)
         {
             case SpecialDirection.Neutral:
+                if (_neutralSpecialCooldownRemaining > 0f)
+                {
+                    EndAttackAfter(0f);
+                    return;
+                }
                 float facing = _KernelCowboy.FlipH ? -1f : 1f;
                 _waitingForLassoPause = true;
                 _lassoHandler.LaunchLasso(facing);
-                GD.Print($"{CharacterLabel} neutral special: lasso launched");
                 return; // EndAttackAfter is driven by LassoHandler callbacks, not here.
 
             case SpecialDirection.Up:
@@ -167,7 +148,6 @@ public partial class KernelCowboy : CharacterBase
                     EndAttackAfter(0f);
                     return;
                 }
-                GD.Print($"{CharacterLabel} up special: recovery lasso launched");
                 return;
         }
 
@@ -177,13 +157,11 @@ public partial class KernelCowboy : CharacterBase
     protected override void OnDodgeStarted(DodgeDirection direction, float dodgeDuration, float iFrameDuration)
     {
         PlayAnimationForState(CharacterState.Dodge);
-        GD.Print($"{CharacterLabel} dodge start: {direction}, duration: {dodgeDuration}, iframes: {iFrameDuration}");
     }
 
     protected override void OnDodgeEnded(float dodgeCooldown)
     {
         PlayAnimationForState(CharacterState.Idle);
-        GD.Print($"{CharacterLabel} dodge end, cooldown: {dodgeCooldown}");
     }
 
     // Waits for the currently playing animation to finish, then ends the attack state.
@@ -191,7 +169,6 @@ public partial class KernelCowboy : CharacterBase
     private async void EndAttackOnAnimationFinished()
     {
         await ToSignal(_KernelCowboy, AnimatedSprite2D.SignalName.AnimationFinished);
-        _currentHitbox = null;
 
         if (!IsDead && CurrentState == CharacterState.Attack)
             SetState(CharacterState.Idle);
@@ -201,7 +178,6 @@ public partial class KernelCowboy : CharacterBase
     private async void EndAttackAfter(float seconds)
     {
         await ToSignal(GetTree().CreateTimer(seconds), SceneTreeTimer.SignalName.Timeout);
-        _currentHitbox = null;
 
         if (!IsDead && CurrentState == CharacterState.Attack)
             SetState(CharacterState.Idle);
@@ -243,21 +219,10 @@ public partial class KernelCowboy : CharacterBase
                     /*how far above the character (keep negative) */ -40f);
                 hitbox.RotationDegrees = -90f;
                 break;
-
-            case AttackDirection.DownAir:
-                shape.Shape = MakeCapsule(
-                    /*radius */ 45f,
-                    /*height */ 100f);
-                hitbox.Position = new Vector2(
-                    /*horizontal offset */ 0f,
-                    /*how far below the character (keep positive) */ 40f);
-                hitbox.RotationDegrees = 90f;
-                break;
         }
 
         AddChild(hitbox);
         hitbox.Activate(this, damage, AttackRecovery);
-        _currentHitbox = hitbox;
     }
 
     // Spawns immediately when the lasso hooks the floor — positioned below the player's collision body.
@@ -305,6 +270,20 @@ public partial class KernelCowboy : CharacterBase
         shockRight.Activate(this, _lassoHandler.ShockwaveDamage, _lassoHandler.ShockwaveLifetime);
     }
 
+    // Spawns at the recovery hook point the instant the lasso connects — damages anyone caught in the impact zone.
+    // Added to the stage (not KC) so it stays planted at the hook position while KC flies upward.
+    private void SpawnRecoveryHookHitbox(Vector2 hookPos)
+    {
+        var hook = HitboxScene.Instantiate<Hitbox>();
+        var hookShape = hook.GetNode<CollisionShape2D>("CollisionShape2D");
+        hookShape.Shape = MakeCapsule(
+            /*radius (how wide the impact zone is) */ 40f,
+            /*height (how tall the impact zone is) */ 80f);
+        GetParent().AddChild(hook);
+        hook.GlobalPosition = hookPos;
+        hook.Activate(this, _lassoHandler.RecoveryHookDamage, 2f);
+    }
+
     // Spawns at the slam landing point — damages any bystander standing nearby when a grabbed target is slammed.
     // The grabbed target itself already takes full SlamDamage directly; this only hits others.
     private void SpawnSlamSplashHitbox(Vector2 landingPos)
@@ -318,7 +297,7 @@ public partial class KernelCowboy : CharacterBase
         splash.GlobalPosition = landingPos + new Vector2(
             /*horizontal offset from landing point */ 0f,
             /*vertical offset from landing point (0 = right at landing, negative = higher up) */ 60f);
-        splash.RotationDegrees = 0f; // capsule lies flat so it spreads left-right
+        splash.RotationDegrees = 0f;
         splash.Activate(this, _lassoHandler.SlamSplashDamage, 0.12f);
     }
 }
