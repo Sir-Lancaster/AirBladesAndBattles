@@ -1,10 +1,50 @@
 [gd_scene format=3 uid="uid://c5dnyaij1mbkn"]
 
 [ext_resource type="Script" uid="uid://brv0wt6gy4sw5" path="res://Scripts/Multiplayer/BattleManager.cs" id="1_ei3p6"]
+[ext_resource type="Texture2D" uid="uid://coyve02ynppah" path="res://Assets/Characters/KernelCowboy/KCFace.png" id="2_m8yak"]
+[ext_resource type="Texture2D" uid="uid://d3f3g4803afjp" path="res://Assets/Characters/SirEdward/Headshot.png" id="3_50uvd"]
+[ext_resource type="Texture2D" uid="uid://c5yih53bdif0c" path="res://Assets/Characters/Vampire/VampireHeadSprite.png" id="4_ni88j"]
+[ext_resource type="Texture2D" uid="uid://bg0ngcrps2mr8" path="res://Assets/Characters/steampunk/portrait_steampunk.png" id="5_so4lq"]
+[ext_resource type="PackedScene" uid="uid://bm26xivwe1tmw" path="res://Scenes/Stages/Utility/GameHUD.tscn" id="6_rnk46"]
 
-[node name="BattleScene" type="Node2D" unique_id=1083902639]
+[node name="BattleScene" type="Node2D" unique_id=1083902639 node_paths=PackedStringArray("_gameHUD", "_countdownOverlay", "_countdownLabel")]
 script = ExtResource("1_ei3p6")
+_gameHUD = NodePath("GameHud")
+_kernelCowboyPortrait = ExtResource("2_m8yak")
+_sirEdwardPortrait = ExtResource("3_50uvd")
+_steampunkPortrait = ExtResource("4_ni88j")
+_vampirePortrait = ExtResource("5_so4lq")
+_countdownOverlay = NodePath("CanvasLayer")
+_countdownLabel = NodePath("CanvasLayer/VBoxContainer/HBoxContainer/Label")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1854415273]
 _spawnable_scenes = PackedStringArray("uid://hq871q66ehp1", "uid://criaf3khhjvxf", "uid://cs7qyghscvvuf", "uid://btfcbuwxkk2ur", "uid://b2jnpel0uhjvw", "uid://bsl2awvp7ono0")
 spawn_path = NodePath(".")
+
+[node name="GameHud" parent="." unique_id=1780127748 instance=ExtResource("6_rnk46")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1782513812]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=276062939]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer" unique_id=1982737875]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer" unique_id=1160712585]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68237275, 2.7675183e-06, 4.813075e-07, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 50
+theme_override_constants/shadow_outline_size = 80
+theme_override_font_sizes/font_size = 60
+text = "3"
