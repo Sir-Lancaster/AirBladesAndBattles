@@ -14,8 +14,7 @@ using System.Collections.Generic;
 ///
 /// Scene setup required in the editor:
 ///   BattleScene (Node2D)  — this script
-///     MultiplayerSpawner  — spawnable_scenes: all 4 character .tscn paths
-///                           + SteampunkProjectile.tscn + Halberd.tscn
+///     MultiplayerSpawner  — SpawnFunction is set in code (no spawnable_scenes needed)
 ///                           spawn_path = NodePath(".")
 ///     (stage is added at runtime by _Ready)
 /// </summary>
@@ -47,10 +46,12 @@ public partial class BattleManager : Node2D
     public override void _Ready()
     {
         _spawner = GetNode<MultiplayerSpawner>("MultiplayerSpawner");
-        // Fires on both host (when it adds a node) and client (when spawn is received).
-        // Used to re-attach MultiplayerSynchronizer AFTER the spawn packet is sent,
-        // preventing the race where path registration arrives before the spawn.
         _spawner.Spawned += OnCharacterSpawned;
+
+        // Custom spawn function: the host calls _spawner.Spawn(data), which sends
+        // the data string to every peer and runs this function on each of them.
+        // This means no scenes need to be listed in spawnable_scenes in the editor.
+        _spawner.SpawnFunction = new Callable(this, nameof(CustomSpawn));
 
         LoadStage();
 
@@ -77,7 +78,6 @@ public partial class BattleManager : Node2D
 
         if (_readyCount < _expectedPlayers) return;
 
-        // All peers have loaded — safe to spawn; MultiplayerSpawner will replicate.
         int index = 0;
         foreach (long peerId in NetworkManager.Instance.ConnectedPeers)
         {
@@ -89,14 +89,6 @@ public partial class BattleManager : Node2D
     // -------------------------------------------------------------------------
     // Stage loading
     // -------------------------------------------------------------------------
-
-    /// <summary>
-    /// Instances the stage scene chosen in NetworkManager.SelectedStage and reads
-    /// its "SpawnPoints" child node to populate _spawnPoints.
-    ///
-    /// Stage convention: each stage scene must have a Node2D named "SpawnPoints"
-    /// with Marker2D children named "Spawn1" through "Spawn4".
-    /// </summary>
     private void LoadStage()
     {
         string stagePath = NetworkManager.Instance.SelectedStage;
@@ -116,7 +108,6 @@ public partial class BattleManager : Node2D
         Node stage = stageScene.Instantiate();
         AddChild(stage);
 
-        // Read spawn positions from the stage's SpawnPoints node.
         Node spawnRoot = stage.GetNodeOrNull("SpawnPoints");
         if (spawnRoot == null)
         {
@@ -142,37 +133,62 @@ public partial class BattleManager : Node2D
     // -------------------------------------------------------------------------
     // Spawning
     // -------------------------------------------------------------------------
+
+    // Called only on the host. Sends spawn data to all peers via the spawner.
     private void SpawnCharacter(long peerId, int spawnIndex)
     {
         string charName = NetworkManager.Instance.PeerCharacters.TryGetValue(peerId, out string c)
             ? c : "KernelCowboy";
 
-        if (!CharacterScenePaths.TryGetValue(charName, out string path))
+        if (!CharacterScenePaths.ContainsKey(charName))
         {
             GD.PushError($"[BattleManager] Unknown character name: '{charName}' for peer {peerId}");
             return;
         }
 
+        // Pack all data needed to reconstruct the character on any peer.
+        string spawnData = $"{peerId}:{charName}:{spawnIndex}";
+        GD.Print($"[BattleManager] Spawning {charName} for peer {peerId}");
+        _spawner.Spawn(spawnData);
+    }
+
+    // Runs on every peer (host and all clients) when Spawn() is called.
+    // Must return a Node; the spawner adds it as a child of spawn_path.
+    private Node CustomSpawn(Variant data)
+    {
+        string[] parts = data.AsString().Split(':');
+        if (parts.Length < 3)
+        {
+            GD.PushError($"[BattleManager] Malformed spawn data: {data}");
+            return null;
+        }
+
+        long peerId    = long.Parse(parts[0]);
+        string charName   = parts[1];
+        int spawnIndex = int.Parse(parts[2]);
+
+        if (!CharacterScenePaths.TryGetValue(charName, out string path))
+        {
+            GD.PushError($"[BattleManager] Unknown character '{charName}' in CustomSpawn");
+            return null;
+        }
+
         var scene = GD.Load<PackedScene>(path);
         if (scene == null)
         {
-            GD.PushError($"[BattleManager] Could not load scene at: {path}");
-            return;
+            GD.PushError($"[BattleManager] Could not load scene: {path}");
+            return null;
         }
 
         var node = scene.Instantiate<CharacterBase>();
         node.Name = peerId.ToString();
 
         if (_spawnPoints.Length > 0)
-            node.GlobalPosition = _spawnPoints[spawnIndex];
+            node.Position = _spawnPoints[spawnIndex];
 
         node.AddToGroup("characters");
 
-        // Strip the embedded MultiplayerSynchronizer before the node enters the tree.
-        // In Godot 4, a child's NOTIFICATION_ENTER_TREE fires before child_entered_tree
-        // on the parent, so the sync would send its path registration to clients BEFORE
-        // MultiplayerSpawner sends the spawn packet — clients would fail to find the node.
-        // We re-attach it inside OnCharacterSpawned, which fires after the spawn packet.
+        // Remove any embedded MultiplayerSynchronizer — state is synced via SyncState RPC.
         var sync = node.GetNodeOrNull<MultiplayerSynchronizer>("MultiplayerSynchronizer");
         if (sync != null)
         {
@@ -180,17 +196,13 @@ public partial class BattleManager : Node2D
             sync.Free();
         }
 
-        _spawner.CallDeferred(Node.MethodName.AddChild, node);
-        GD.Print($"[BattleManager] Spawning {charName} for peer {peerId} at {node.GlobalPosition}");
+        GD.Print($"[BattleManager] CustomSpawn: {charName} (peer {peerId}) at {node.Position}");
+        return node;
     }
 
     // -------------------------------------------------------------------------
     // Sync re-attachment
     // -------------------------------------------------------------------------
-
-    // Fires on both host and client when a character enters the scene tree.
-    // Strips any embedded MultiplayerSynchronizer — CharacterBase.SyncState RPC
-    // handles state propagation and avoids the cross-channel race condition.
     private void OnCharacterSpawned(Node node)
     {
         if (node is not CharacterBase character) return;
