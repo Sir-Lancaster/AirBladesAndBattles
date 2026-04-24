@@ -1,0 +1,178 @@
+[gd_scene format=3 uid="uid://cwbfyq0ua8kfw"]
+
+[ext_resource type="Material" uid="uid://cqi7uywjvi6fo" path="res://Scenes/Stages/Manor/Shaders/candlelight_shader.tres" id="1_svf0k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rlqsa"]
+size = Vector2(354.5, 30)
+
+[node name="Chandelier" type="Node2D" unique_id=1095443742]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1104175512]
+offset_left = 771.0
+offset_right = 779.0
+offset_bottom = 220.0
+color = Color(0.41960785, 0.26666668, 0.13725491, 1)
+
+[node name="Polygon2D6" type="Polygon2D" parent="." unique_id=1181615340]
+position = Vector2(1062, 204)
+rotation = -3.1415925
+scale = Vector2(0.75, -1.5)
+color = Color(0.41960785, 0.26666668, 0.13725491, 1)
+polygon = PackedVector2Array(392, 8, 364, 44, 322, 86, 252, 127, 241, 120, 310, 84, 356, 41, 378, 6)
+
+[node name="Polygon2D5" type="Polygon2D" parent="." unique_id=151387223]
+position = Vector2(470.00003, 213)
+scale = Vector2(0.75, 1.5)
+color = Color(0.41960785, 0.26666668, 0.13725491, 1)
+polygon = PackedVector2Array(392, 8, 364, 44, 322, 86, 252, 127, 241, 120, 310, 84, 356, 41, 378, 6)
+
+[node name="Polygon2D2" type="Polygon2D" parent="." unique_id=713635578]
+position = Vector2(968, 93)
+rotation = 3.1415927
+scale = Vector2(0.5, -1)
+color = Color(0.41960785, 0.26666668, 0.13725491, 1)
+polygon = PackedVector2Array(392, 8, 364, 44, 322, 86, 252, 127, 241, 120, 310, 84, 356, 41, 378, 6)
+
+[node name="Polygon2D3" type="Polygon2D" parent="." unique_id=774767911]
+position = Vector2(1230, 259)
+rotation = 3.1415927
+scale = Vector2(1, -1)
+color = Color(0.41960785, 0.26666668, 0.13725491, 1)
+polygon = PackedVector2Array(421, -27, 383, 21, 328, 71, 252, 127, 241, 120, 323, 62, 370, 16, 407, -28)
+
+[node name="Polygon2D4" type="Polygon2D" parent="." unique_id=1198085584]
+position = Vector2(315, 260)
+color = Color(0.41960785, 0.26666668, 0.13725491, 1)
+polygon = PackedVector2Array(421, -27, 383, 21, 328, 71, 252, 127, 241, 120, 323, 62, 370, 16, 407, -28)
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=87395497]
+position = Vector2(582, 93)
+scale = Vector2(0.5, 1)
+color = Color(0.41960785, 0.26666668, 0.13725491, 1)
+polygon = PackedVector2Array(392, 8, 364, 44, 322, 86, 252, 127, 241, 120, 310, 84, 356, 41, 378, 6)
+
+[node name="Platform1" type="StaticBody2D" parent="." unique_id=515859969]
+position = Vector2(-5, 140)
+
+[node name="Polygon2D5" type="Polygon2D" parent="Platform1" unique_id=988407609]
+position = Vector2(171.77919, -71.086945)
+scale = Vector2(1.2737551, 1.173913)
+color = Color(0.36078432, 0.2509804, 0.2, 1)
+polygon = PackedVector2Array(294.57843, 260.74075, 294.5785, 242, 300.85907, 241.99998, 300.85907, 257.33334, 314.99054, 261.5926, 324.4115, 261.5926, 333.83246, 258.18518, 333.83246, 247.96297, 340.8982, 247.96297, 340.8982, 258.18518, 360.5252, 261.5926, 377.79694, 261.5926, 393.49854, 257.33334, 393.49854, 247.96297, 399.77917, 247.96297, 399.77917, 257.33334, 422.5465, 261.5926, 448.45416, 261.5926, 468.08118, 256.48148, 468.08118, 244.55556, 475.1469, 244.55556, 475.1469, 256.48148, 497.12915, 261.5926, 526.9622, 261.5926, 545.01904, 258.18518, 545.01904, 247.96297, 551.2997, 247.96297, 551.2997, 258.18518, 567.0013, 261.5926, 589.7686, 261.5926, 605.4702, 258.18518, 605.4702, 247.96297, 610.96576, 247.96297, 610.96576, 258.18518, 620.3867, 261.5926, 635.3033, 261.5926, 654.9303, 256.48148, 654.9303, 241.99998, 660.42584, 241.99998, 660.42584, 259.8889, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1" unique_id=832330993]
+position = Vector2(780.5, 251)
+scale = Vector2(1.2800012, 1)
+shape = SubResource("RectangleShape2D_rlqsa")
+
+[node name="ColorRect2" type="ColorRect" parent="Platform1" unique_id=1459425117]
+material = ExtResource("1_svf0k")
+offset_left = 758.0
+offset_top = 194.0
+offset_right = 788.0
+offset_bottom = 225.36363
+
+[node name="ColorRect" type="ColorRect" parent="Platform1" unique_id=1962014751]
+material = ExtResource("1_svf0k")
+offset_left = 536.0
+offset_top = 192.00002
+offset_right = 566.0
+offset_bottom = 223.36365
+
+[node name="ColorRect3" type="ColorRect" parent="Platform1" unique_id=240337796]
+material = ExtResource("1_svf0k")
+offset_left = 994.0
+offset_top = 192.00002
+offset_right = 1024.0
+offset_bottom = 223.36365
+
+[node name="ColorRect4" type="ColorRect" parent="Platform1" unique_id=698165203]
+material = ExtResource("1_svf0k")
+offset_left = 587.0
+offset_top = 198.0
+offset_right = 617.0
+offset_bottom = 229.36363
+
+[node name="ColorRect5" type="ColorRect" parent="Platform1" unique_id=931839786]
+material = ExtResource("1_svf0k")
+offset_left = 662.0
+offset_top = 200.00002
+offset_right = 692.0
+offset_bottom = 231.36365
+
+[node name="ColorRect6" type="ColorRect" parent="Platform1" unique_id=388502688]
+material = ExtResource("1_svf0k")
+offset_left = 855.0
+offset_top = 198.00002
+offset_right = 885.0
+offset_bottom = 229.36365
+
+[node name="ColorRect7" type="ColorRect" parent="Platform1" unique_id=2017717489]
+material = ExtResource("1_svf0k")
+offset_left = 932.0
+offset_top = 198.00002
+offset_right = 962.0
+offset_bottom = 229.36365
+
+[node name="Platform2" type="StaticBody2D" parent="." unique_id=1561577422]
+position = Vector2(-371, -33)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform2" unique_id=1992622169]
+position = Vector2(945, -15)
+scale = Vector2(0.4209404, 1)
+color = Color(0.36078432, 0.2509804, 0.2, 1)
+polygon = PackedVector2Array(295, 257, 294.5785, 242, 304.08105, 242, 304.08105, 254, 315.95923, 258, 324.65, 258, 332.58862, 256, 332.58862, 248, 342.0912, 248, 342.0912, 256, 361.0962, 258, 377.7256, 258, 391.9795, 256, 391.9795, 248, 401.48193, 248, 401.48193, 256, 422.86267, 258, 448.99463, 258, 465.62402, 254, 465.62402, 244, 477.5022, 244, 477.5022, 254, 498.88293, 258, 527.3905, 258, 544.02, 255, 544.02, 248, 553.52246, 248, 553.52246, 255, 567.77625, 258, 589.157, 258, 603.41077, 256, 603.41077, 248, 612.9133, 248, 612.9133, 256, 620.3635, 257.99997, 634.29407, 258, 650.92346, 253, 650.92346, 242, 660.426, 242, 660.426, 255, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2" unique_id=766724588]
+position = Vector2(1146.3225, 258)
+scale = Vector2(0.4209404, 1)
+shape = SubResource("RectangleShape2D_rlqsa")
+
+[node name="ColorRect" type="ColorRect" parent="Platform2" unique_id=1967454848]
+material = ExtResource("1_svf0k")
+offset_left = 1131.0
+offset_top = 211.0
+offset_right = 1156.0
+offset_bottom = 237.13635
+
+[node name="ColorRect2" type="ColorRect" parent="Platform2" unique_id=2055459686]
+material = ExtResource("1_svf0k")
+offset_left = 1075.0
+offset_top = 216.0
+offset_right = 1100.0
+offset_bottom = 242.13635
+
+[node name="ColorRect3" type="ColorRect" parent="Platform2" unique_id=811872001]
+material = ExtResource("1_svf0k")
+offset_left = 1188.0
+offset_top = 216.0
+offset_right = 1213.0
+offset_bottom = 242.13635
+
+[node name="ColorRect4" type="ColorRect" parent="Platform2" unique_id=102406243]
+material = ExtResource("1_svf0k")
+offset_left = 1164.0
+offset_top = 215.0
+offset_right = 1189.0
+offset_bottom = 241.13635
+
+[node name="ColorRect5" type="ColorRect" parent="Platform2" unique_id=2115320012]
+material = ExtResource("1_svf0k")
+offset_left = 1100.0
+offset_top = 215.0
+offset_right = 1125.0
+offset_bottom = 241.13635
+
+[node name="ColorRect6" type="ColorRect" parent="Platform2" unique_id=1176741093]
+material = ExtResource("1_svf0k")
+offset_left = 1059.0
+offset_top = 209.0
+offset_right = 1084.0
+offset_bottom = 235.13635
+
+[node name="ColorRect7" type="ColorRect" parent="Platform2" unique_id=1785616052]
+material = ExtResource("1_svf0k")
+offset_left = 1209.0
+offset_top = 209.0
+offset_right = 1234.0
+offset_bottom = 235.13635

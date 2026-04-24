@@ -1,0 +1,142 @@
+[gd_scene format=3 uid="uid://cbh3qyifh3ij0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rjyuy"]
+size = Vector2(354.5, 30)
+
+[node name="Railing" type="Node2D" unique_id=2087253541]
+
+[node name="Railing1" type="StaticBody2D" parent="." unique_id=825260544]
+position = Vector2(-5, 140)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Railing1" unique_id=358540621]
+position = Vector2(51.75, -83)
+scale = Vector2(0.025146827, 2.246737)
+shape = SubResource("RectangleShape2D_rjyuy")
+
+[node name="ColorRect2" type="ColorRect" parent="Railing1" unique_id=538124720]
+offset_left = -186.0
+offset_top = -108.9604
+offset_right = 1732.2673
+offset_bottom = -104.82555
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.101960786, 0.101960786, 0.101960786, 1)
+
+[node name="ColorRect" type="ColorRect" parent="Railing1" unique_id=566019198]
+offset_left = 49.0
+offset_top = -115.0
+offset_right = 89.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect3" type="ColorRect" parent="Railing1" unique_id=726286173]
+offset_left = 33.0
+offset_top = -115.0
+offset_right = 73.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect4" type="ColorRect" parent="Railing1" unique_id=615313656]
+offset_left = 17.0
+offset_top = -115.0
+offset_right = 57.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect5" type="ColorRect" parent="Railing1" unique_id=2015073737]
+offset_left = 1.0
+offset_top = -115.0
+offset_right = 41.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect6" type="ColorRect" parent="Railing1" unique_id=1655414995]
+offset_left = -15.0
+offset_top = -115.0
+offset_right = 25.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect7" type="ColorRect" parent="Railing1" unique_id=427228070]
+offset_left = -31.0
+offset_top = -115.0
+offset_right = 9.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect8" type="ColorRect" parent="Railing1" unique_id=1492722383]
+offset_left = -47.0
+offset_top = -115.0
+offset_right = -7.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect9" type="ColorRect" parent="Railing1" unique_id=1940114544]
+offset_left = -63.000004
+offset_top = -115.0
+offset_right = -23.000004
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect10" type="ColorRect" parent="Railing1" unique_id=1523434739]
+offset_left = -79.0
+offset_top = -115.0
+offset_right = -39.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect11" type="ColorRect" parent="Railing1" unique_id=1130315848]
+offset_left = -95.0
+offset_top = -115.0
+offset_right = -55.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect12" type="ColorRect" parent="Railing1" unique_id=1385945269]
+offset_left = -111.00001
+offset_top = -115.0
+offset_right = -71.00001
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect13" type="ColorRect" parent="Railing1" unique_id=1955721333]
+offset_left = -127.00001
+offset_top = -115.0
+offset_right = -87.00001
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect14" type="ColorRect" parent="Railing1" unique_id=1735582977]
+offset_left = -143.0
+offset_top = -115.0
+offset_right = -103.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect15" type="ColorRect" parent="Railing1" unique_id=1808626273]
+offset_left = -159.0
+offset_top = -115.0
+offset_right = -119.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
+
+[node name="ColorRect16" type="ColorRect" parent="Railing1" unique_id=1234447781]
+offset_left = -175.0
+offset_top = -115.0
+offset_right = -135.0
+offset_bottom = -75.0
+scale = Vector2(0.12667681, 1.1996557)
+color = Color(0.1764706, 0.1764706, 0.1764706, 1)
