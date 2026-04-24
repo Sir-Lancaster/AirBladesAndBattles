@@ -38,7 +38,7 @@ public partial class NetworkManager : Node
     /// Set this from the UI before calling StartBattle().
     /// Defaults to Clocktower.
     /// </summary>
-    public string SelectedStage { get; set; } = "res://Scenes/Stages/Clocktower.tscn";
+    public string SelectedStage { get; set; } = "";
 
     /// <summary>
     /// Maps peer ID → character name chosen in the lobby UI (e.g. "KernelCowboy").
@@ -212,7 +212,7 @@ public partial class NetworkManager : Node
     public void StartBattle()
     {
         if (!IsHost) return;
-        Rpc(MethodName.LoadBattleScene);
+        Rpc(MethodName.LoadBattleScene, SelectedStage);
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
@@ -230,9 +230,10 @@ public partial class NetworkManager : Node
     }
 
     [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void LoadBattleScene()
+    private void LoadBattleScene(string stagePath)
     {
-        GD.Print($"[NetworkManager] LoadBattleScene — my peer ID: {Multiplayer.GetUniqueId()}");
+        SelectedStage = stagePath;
+        GD.Print($"[NetworkManager] LoadBattleScene — my peer ID: {Multiplayer.GetUniqueId()}, stage: {stagePath}");
         GetTree().ChangeSceneToFile("res://Scenes/Multiplayer/BattleScene.tscn");
     }
 }

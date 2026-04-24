@@ -100,6 +100,12 @@ public partial class BattleManager : Node2D
     private void LoadStage()
     {
         string stagePath = NetworkManager.Instance.SelectedStage;
+        if (string.IsNullOrEmpty(stagePath))
+        {
+            GD.PushError("[BattleManager] SelectedStage is not set — host must call SetStage() before StartBattle().");
+            return;
+        }
+
         var stageScene = GD.Load<PackedScene>(stagePath);
         if (stageScene == null)
         {
