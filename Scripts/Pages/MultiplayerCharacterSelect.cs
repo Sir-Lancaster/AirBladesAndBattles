@@ -129,8 +129,15 @@ public partial class MultiplayerCharacterSelect : Control
 
     // ── Navigation ────────────────────────────────────────────────────────────
 
-    private void OnBackPressed()       => GameManager.Instance.GoToMainMenu();
-    private void OnStartMatchPressed() => Rpc(nameof(AllStartBattle));
+    private void OnBackPressed() => GameManager.Instance.GoToMainMenu();
+
+    private void OnStartMatchPressed()
+    {
+        if (!Multiplayer.IsServer()) return;
+        MusicManager.Instance?.StopMusic();
+        GameManager.Instance.SetStocks(_stocks);
+        NetworkManager.Instance.StartBattle();
+    }
 
     // ── RPCs ──────────────────────────────────────────────────────────────────
 
@@ -177,15 +184,6 @@ public partial class MultiplayerCharacterSelect : Control
     {
         _stocks = stocks;
         UpdateStocksLabel();
-    }
-
-    /// <summary>Host tells all peers to load the battle scene.</summary>
-    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
-    private void AllStartBattle()
-    {
-        MusicManager.Instance?.StopMusic();
-        GameManager.Instance.SetStocks(_stocks);
-        GameManager.Instance.StartMultiplayerMatch();
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

@@ -158,13 +158,26 @@ public partial class SirEdward: CharacterBase
     /// </summary>
     /// <param name="direction">Tracks the direction of the attack.</param>
     /// <param name="damage">Tracks the damage to be dealt.</param>
+    protected override void PlayAnimationByName(string animName)
+    {
+        float facing = _edward.FlipH ? -1f : 1f;
+        _edward.Offset = animName switch
+        {
+            "attack_horizontal" => new Vector2(15f * facing, -6f),
+            "attack_up"         => new Vector2(7.5f * facing, -17.5f),
+            "special_neutral"   => new Vector2(0f, -10f),
+            _                   => Vector2.Zero
+        };
+        _edward.Play(animName);
+    }
+
     protected override void OnAttackPerformed(AttackDirection direction, int damage)
     {
         _currentAttackDirection = direction;
         _isSpecial = false;
 
         GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
-        PlayAnimationForState(CharacterState.Attack);
+        BroadcastAnimation($"attack_{direction.ToString().ToLower()}");
         EndAttackAfter(AttackRecovery);
         SpawnAttackHitbox(direction, damage);
     }
@@ -181,9 +194,8 @@ public partial class SirEdward: CharacterBase
     {
         _currentSpecialDirection = direction;
         _isSpecial = true;
-        
-        // Play animation AFTER setting _isSpecial
-        PlayAnimationForState(CharacterState.Attack);
+
+        BroadcastAnimation($"special_{direction.ToString().ToLower()}");
         
         switch (direction)
         {
@@ -305,6 +317,20 @@ public partial class SirEdward: CharacterBase
 
         // Connect despawn signal to teleport Edward.
         halberd.Despawned += OnHalberdDespawned;
+
+        if (Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+            Rpc(nameof(SpawnHalberdRpc), halberd.GlobalPosition, throwDirection, damage);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SpawnHalberdRpc(Vector2 position, Vector2 direction, int damage)
+    {
+        var halberd = HalberdScene.Instantiate<Halberd>();
+        halberd.VisualOnly = true;
+        GetParent().AddChild(halberd);
+        halberd.GlobalPosition = position;
+        halberd.Launch(this, direction, damage);
     }
 
     /// <summary>

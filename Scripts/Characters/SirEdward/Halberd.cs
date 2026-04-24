@@ -10,6 +10,8 @@ public partial class Halberd : Area2D
     [Export] public float Lifetime = 0.5f;
     [Export] public int Damage = 8;
     [Export] public bool DestroyOnHit = true;
+    // When true, the halberd is a visual-only replica on a remote peer — no damage, no teleport signal.
+    public bool VisualOnly = false;
 
     private readonly HashSet<ulong> _hitTargets = new();
     private Node _ownerNode;
@@ -91,7 +93,7 @@ public partial class Halberd : Area2D
     /// <param name="target">The node to test for damage application.</param>
     private void TryHit(Node2D target)
     {
-        if (target == null) return;
+        if (VisualOnly || target == null) return;
 
         if (_ownerNode != null)
         {
@@ -122,7 +124,8 @@ public partial class Halberd : Area2D
     /// </summary>
     private void Despawn()
     {
-        EmitSignal(SignalName.Despawned, GlobalPosition);
+        if (!VisualOnly)
+            EmitSignal(SignalName.Despawned, GlobalPosition);
         QueueFree();
     }
 }

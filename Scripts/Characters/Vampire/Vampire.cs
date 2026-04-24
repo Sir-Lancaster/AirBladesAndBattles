@@ -154,6 +154,8 @@ public partial class Vampire : CharacterBase
 
 	// Attack state animations are deferred to OnAttackPerformed/OnSpecialPerformed so we
 	// know the direction before choosing a clip. All other states map directly to name.
+	protected override void PlayAnimationByName(string animName) => SetAnimation(animName);
+
 	protected override void PlayAnimationForState(CharacterState state)
 	{
 		if (state == CharacterState.Attack) return;
@@ -186,7 +188,7 @@ public partial class Vampire : CharacterBase
 	protected override void OnAttackPerformed(AttackDirection direction, int damage)
 	{
 		GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
-		SetAnimation(GetAttackAnim(direction));
+		BroadcastAnimation(GetAttackAnim(direction));
 		
 		if (direction == AttackDirection.Horizontal)
 		{
@@ -222,7 +224,7 @@ public partial class Vampire : CharacterBase
 	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
 	{
 		GD.Print($"{CharacterLabel} special: {direction}, damage: {damage}");
-		SetAnimation(GetSpecialAnim(direction));
+		BroadcastAnimation(GetSpecialAnim(direction));
 		
 		if (direction == SpecialDirection.Neutral)
 		{
