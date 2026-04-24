@@ -252,8 +252,10 @@ public partial class StageManager : Node2D
             if (slot.Eliminated || slot.ActiveCharacter == null) continue;
             if (_deathHandled.Contains(slot.ActiveCharacter)) continue;
 
+            if (!IsInstanceValid(slot.ActiveCharacter)) continue;
+
             bool dead = (slot.ActiveCharacter is CharacterBase cb && cb.IsDead)
-                     || (slot.ActiveCharacter is AiBaseClass ai  && ai.IsDead);
+                     || (slot.ActiveCharacter is AiBaseClass   ai && ai.IsDead);
 
             if (!dead) continue;
 
@@ -264,8 +266,17 @@ public partial class StageManager : Node2D
 
     private void OnDeathZoneBodyEntered(Node2D body)
     {
-        if (body is CharacterBase cb) { cb.TakeDamage(9999); return; }
-        if (body is AiBaseClass   ai) { ai.TakeDamage(9999); }
+        if (body is CharacterBase cb)
+        {
+            GD.Print($"[DeathZone] CharacterBase '{body.Name}' entered kill zone.");
+            cb.TakeDamage(9999);
+            return;
+        }
+        if (body is AiBaseClass ai)
+        {
+            GD.Print($"[DeathZone] AiBaseClass '{body.Name}' entered kill zone.");
+            ai.TakeDamage(9999);
+        }
     }
 
     private void HandleDeath(int slotIndex)
@@ -280,6 +291,7 @@ public partial class StageManager : Node2D
             slot.Eliminated = true;
             slot.ActiveCharacter?.QueueFree();
             slot.ActiveCharacter = null;
+            _gameHUD?.UpdateHealth(slotIndex, 0);
             GD.Print($"[StageManager] Slot {slotIndex} eliminated.");
             CheckMatchOver();
         }
@@ -289,9 +301,11 @@ public partial class StageManager : Node2D
             GetTree().CreateTimer(2.0).Timeout += () =>
             {
                 _deathHandled.Remove(dying);
-                dying?.QueueFree();
+                if (IsInstanceValid(dying)) dying.QueueFree();
                 SpawnCharacter(slotIndex);
-                _gameHUD?.UpdateHealth(slotIndex, GetMaxHp(slotIndex));
+                // Defer by one frame so the new character's _Ready runs first
+                // and CurrentHP is fully initialised before we read MaxHP.
+                CallDeferred(nameof(RefreshRespawnHUD), slotIndex);
             };
         }
     }
@@ -341,6 +355,12 @@ public partial class StageManager : Node2D
         }
 
         _gameHUD.InitializePlayers(infos);
+    }
+
+    private void RefreshRespawnHUD(int slotIndex)
+    {
+        _gameHUD?.UpdateHealth(slotIndex, GetMaxHp(slotIndex));
+        GD.Print($"[StageManager] Slot {slotIndex} respawned — HUD reset to {GetMaxHp(slotIndex)} HP.");
     }
 
     private void RefreshHUDHealth()

@@ -5,3 +5,4 @@
 # Import files
 *.*.import
 *.*.uid
+.DS_Store

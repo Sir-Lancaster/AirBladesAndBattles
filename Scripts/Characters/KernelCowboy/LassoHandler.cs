@@ -87,6 +87,9 @@ public partial class LassoHandler : Node
     /// <summary>How close the character needs to get to the hook point before the rope releases (px).</summary>
     [Export] public float RecoveryArrivalThreshold = 60f;
 
+    /// <summary>Damage dealt by the hitbox spawned at the recovery hook point on connect.</summary>
+    [Export] public int RecoveryHookDamage = 6;
+
     // ── Visual exports ────────────────────────────────────────────────────────
 
     /// <summary>
@@ -147,6 +150,12 @@ public partial class LassoHandler : Node
 
     /// <summary>Fired immediately after the recovery lasso launches the owner.</summary>
     public Action OnRecoveryComplete;
+
+    /// <summary>Fired the moment the recovery lasso hooks its point. Spawn a damage hitbox here.</summary>
+    public Action<Vector2> OnRecoveryHooked;
+
+    /// <summary>Fired when the recovery pull ends (character arrived at hook or started falling back).</summary>
+    public Action OnRecoveryEnded;
 
     // ── Public state ──────────────────────────────────────────────────────────
 
@@ -503,6 +512,7 @@ public partial class LassoHandler : Node
             _recoveryPulling = true;
 
             PlayHitAnimation();
+            OnRecoveryHooked?.Invoke(_recoveryHookPoint);
 
             // Launch the character and end the Attack state so they can steer.
             _owner.Velocity = new Vector2(_owner.Velocity.X, -RecoveryLaunchSpeed);
@@ -529,6 +539,7 @@ public partial class LassoHandler : Node
         {
             _recoveryPulling = false;
             _ropeVisible = false;
+            OnRecoveryEnded?.Invoke();
         }
     }
 

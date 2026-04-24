@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://cf2e67qxihqt8" path="res://Scripts/Characters/KernelCowboy/KernelCowboy.cs" id="1_2fosr"]
 [ext_resource type="Texture2D" uid="uid://ctf3g8ckon053" path="res://Assets/Characters/KernelCowboy/KCHorizontal.png" id="2_2fosr"]
-[ext_resource type="Texture2D" uid="uid://1nu8i3bj6xka" path="res://Assets/Characters/KernelCowboy/lassoclose.png" id="2_v6plb"]
+[ext_resource type="Texture2D" uid="uid://bt3egnhj34wpq" path="res://Assets/Characters/KernelCowboy/lassoclose.png" id="2_v6plb"]
 [ext_resource type="Texture2D" uid="uid://huf8gkvrgxut" path="res://Assets/Characters/KernelCowboy/KCHurt.png" id="3_egudy"]
-[ext_resource type="Script" uid="uid://c6k1duhl8w4d" path="res://Scripts/Characters/KernelCowboy/LassoHandler.cs" id="3_xysxx"]
+[ext_resource type="Script" uid="uid://c5jr8kg7ay4gm" path="res://Scripts/Characters/KernelCowboy/LassoHandler.cs" id="3_xysxx"]
 [ext_resource type="Texture2D" uid="uid://dgq3sgvsfgm3d" path="res://Assets/Characters/KernelCowboy/KCDodge.png" id="4_7yy75"]
 [ext_resource type="Texture2D" uid="uid://q7wc8v61w3pt" path="res://Assets/Characters/KernelCowboy/KCIdle.png" id="4_a4ul0"]
 [ext_resource type="Texture2D" uid="uid://df2gsqo75jruk" path="res://Assets/Characters/KernelCowboy/KCRun.png" id="5_6st2j"]
@@ -543,9 +543,10 @@ animations = [{
 [node name="KernelCowboy" type="CharacterBody2D" unique_id=156738427 groups=["characters"]]
 script = ExtResource("1_2fosr")
 LassoPauseFrame = 1
+BasicDamage = 6
 MoveSpeed = 300.0
 JumpVelocity = -500.0
-DodgeTime = 0.5
+DodgeTime = 1.0
 
 [node name="LassoRope" type="Line2D" parent="." unique_id=2089675127]
 position = Vector2(-2.0544748, 2.7345133)
@@ -566,8 +567,8 @@ script = ExtResource("3_xysxx")
 LassoSpeed = 600.0
 ArcHeight = 200.0
 ArcDuration = 0.5
-SlamDamage = 10
-SlamSplashDamage = 2
+SlamDamage = 8
+SlamSplashDamage = 8
 LandingOffset = 150.0
 LassoRadius = 80.0
 DownAirLassoSpeed = 800.0
@@ -575,7 +576,7 @@ DownAirLassoRange = 500.0
 DownAirPullSpeed = 1000.0
 StompDamage = 6
 DownAirLassoRadius = 5.0
-ShockwaveDamage = 3
+ShockwaveDamage = 5
 ShockwaveWidth = 80.0
 ShockwaveHeight = 50.0
 ShockwaveLifetime = 0.2
