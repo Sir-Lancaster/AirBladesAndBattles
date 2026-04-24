@@ -138,6 +138,9 @@ public partial class Hitbox : Area2D
 
         if (isNetworked && target is CharacterBase targetChar)
         {
+            // Reject self-hits (same check singleplayer gets via TryReceiveHit).
+            if ((Node)target == OwnerNode) return;
+
             // Multiplayer — route the hit to whichever peer owns the victim.
             _hitTargetIds.Add(targetId);
             HitLanded?.Invoke();

@@ -192,6 +192,20 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         OnStateChanged(CurrentState, newState);
         CurrentState = newState;
         PlayAnimationForState(newState);
+
+        // Notify remote peers reliably so fast states like Attack are never dropped.
+        if (Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+            Rpc(nameof(SyncStateChange), (int)newState);
+    }
+
+    // Reliable so short-lived states (Attack, Dodge) are guaranteed to arrive.
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SyncStateChange(int state)
+    {
+        CurrentState = (CharacterState)state;
+        PlayAnimationForState(CurrentState);
+        _lastReplicatedState = CurrentState;
     }
 
     // Virtual hooks to be overridden in individual characters.
