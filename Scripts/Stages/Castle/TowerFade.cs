@@ -11,12 +11,15 @@ public partial class TowerFade : Node
 
     public override void _Ready()
     {
+        GD.Print($"TowerFade ready. Exterior: {_exterior}, Trigger: {_trigger}");
         _trigger.BodyEntered += OnBodyEntered;
         _trigger.BodyExited += OnBodyExited;
     }
 
+
     private void OnBodyEntered(Node2D body)
     {
+        GD.Print($"BodyEntered: {body.Name} ({body.GetType().Name})");
         if (body is not CharacterBase) return;
         _charactersInside++;
         FadeTo(0f);
