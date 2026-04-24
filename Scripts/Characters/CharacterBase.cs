@@ -220,6 +220,12 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     /// </summary>
     public override void _Ready()
     {
+        // Must run before _PhysicsProcess. _Ready is guaranteed to fire after the spawner
+        // has set the node name, unlike _EnterTree which can fire before the name is assigned
+        // on clients receiving a replicated spawn.
+        if (int.TryParse(Name, out int peerId))
+            SetMultiplayerAuthority(peerId);
+
         CurrentHP = MaxHP;
         IsDead = false;
         _jumpsRemaining = MaxJumps;
@@ -230,14 +236,6 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         // Characters pass through each other and through themselves (multi-player safe).
         CollisionLayer = 2;
         CollisionMask = 1;
-    }
-
-    public override void _EnterTree()
-    {
-        // BattleManager sets Name = peerId.ToString() before AddChild.
-        // int.TryParse guard keeps singleplayer working (names like "KernelCowboy" won't parse).
-        if (int.TryParse(Name, out int peerId))
-            SetMultiplayerAuthority(peerId);
     }
 
     /// <summary>
