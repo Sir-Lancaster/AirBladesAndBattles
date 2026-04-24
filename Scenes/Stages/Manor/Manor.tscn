@@ -1,0 +1,272 @@
+[gd_scene format=3 uid="uid://dgcng01h2pxn3"]
+
+[ext_resource type="Shader" uid="uid://dwecftg7yfgpi" path="res://Scenes/Stages/Manor/Shaders/dusk.gdshader" id="1_7virt"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d8qje"]
+[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_ba1s0"]
+[ext_resource type="Shader" uid="uid://4gnba0a2dtcg" path="res://Scenes/Stages/Manor/Shaders/InteriorBrick.gdshader" id="2_tob7e"]
+[ext_resource type="PackedScene" uid="uid://cbh3qyifh3ij0" path="res://Scenes/Stages/Manor/Railing.tscn" id="3_2xjp8"]
+[ext_resource type="Material" uid="uid://b1t4ps2guh3d0" path="res://Scenes/Stages/Manor/Shaders/exterior_brick.tres" id="3_tob7e"]
+[ext_resource type="PackedScene" uid="uid://cwbfyq0ua8kfw" path="res://Scenes/Stages/Manor/Chandelier.tscn" id="3_vhx7h"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vhx7h"]
+shader = ExtResource("1_7virt")
+shader_parameter/horizon_color = Color(0.2, 0.15, 0.4, 1)
+shader_parameter/zenith_color = Color(0.1, 0.05, 0.25, 1)
+shader_parameter/lightning_intensity = 0.8
+shader_parameter/lightning_frequency = 3.00000011875
+shader_parameter/flash_duration = 0.27300001226897996
+shader_parameter/atmosphere_intensity = 1.0
+shader_parameter/cloud_speed = 0.3
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xs8my"]
+size = Vector2(20, 768)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2xjp8"]
+shader = ExtResource("2_tob7e")
+shader_parameter/brick_color = Color(0.34901962, 0.18039216, 0.11764706, 1)
+shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 32.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 1.0
+shader_parameter/weathering = 0.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pr151"]
+size = Vector2(354.5, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_niasw"]
+size = Vector2(351, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_slysq"]
+size = Vector2(360.01468, 30)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vvus4"]
+shader = ExtResource("1_d8qje")
+shader_parameter/pixel_size = 5.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pr151"]
+
+[sub_resource type="Environment" id="Environment_7virt"]
+glow_enabled = true
+glow_intensity = 0.8
+glow_strength = 2.0
+
+[node name="GregStage" type="Node2D" unique_id=1403897259]
+
+[node name="Sky" type="ColorRect" parent="." unique_id=1405007415]
+material = SubResource("ShaderMaterial_vhx7h")
+offset_left = -34.0
+offset_top = -343.0
+offset_right = 1978.0
+offset_bottom = 779.0
+
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=2131201603]
+
+[node name="Spawn1" type="Marker2D" parent="SpawnPoints" unique_id=347092435]
+position = Vector2(64, 275)
+
+[node name="Spawn2" type="Marker2D" parent="SpawnPoints" unique_id=1223011022]
+position = Vector2(776, 112)
+
+[node name="Spawn3" type="Marker2D" parent="SpawnPoints" unique_id=987828081]
+position = Vector2(392, 656)
+
+[node name="Spawn4" type="Marker2D" parent="SpawnPoints" unique_id=670009721]
+position = Vector2(1248, 456)
+
+[node name="DeathZone" type="Area2D" parent="." unique_id=2102002048]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=2058179135]
+position = Vector2(1951.0001, 380.00003)
+scale = Vector2(3.005817, -2.8982425)
+shape = SubResource("RectangleShape2D_xs8my")
+
+[node name="Railings" type="Node2D" parent="." unique_id=1476991874]
+position = Vector2(1494, 496)
+
+[node name="Railing" parent="Railings" unique_id=2087253541 instance=ExtResource("3_2xjp8")]
+
+[node name="Railing2" parent="Railings" unique_id=577034601 instance=ExtResource("3_2xjp8")]
+position = Vector2(-181, -556)
+
+[node name="Railing3" parent="Railings" unique_id=2042302792 instance=ExtResource("3_2xjp8")]
+position = Vector2(0, -384)
+
+[node name="InteriorWall" type="ColorRect" parent="." unique_id=527671529]
+material = SubResource("ShaderMaterial_2xjp8")
+offset_top = 36.0
+offset_right = 1348.0
+offset_bottom = 766.0
+
+[node name="Chandelier" parent="." unique_id=1095443742 instance=ExtResource("3_vhx7h")]
+
+[node name="Platform1" type="StaticBody2D" parent="." unique_id=248309987]
+position = Vector2(-5, 140)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform1" unique_id=1180509316]
+material = ExtResource("3_tob7e")
+position = Vector2(901, 167)
+polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1" unique_id=453756407]
+position = Vector2(1373.5, 439)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="Platform4" type="StaticBody2D" parent="." unique_id=474534871]
+position = Vector2(-65, 140)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform4" unique_id=1543060816]
+material = ExtResource("3_tob7e")
+position = Vector2(62, 121.999985)
+polygon = PackedVector2Array(295, 257, 445, 257, 423, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4" unique_id=1592955564]
+position = Vector2(432.5, 394)
+scale = Vector2(0.4209404, 1)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="Platform5" type="StaticBody2D" parent="." unique_id=38804684]
+position = Vector2(-371, -33)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform5" unique_id=1983581202]
+material = ExtResource("3_tob7e")
+position = Vector2(-144, 122)
+polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5" unique_id=128829866]
+position = Vector2(432.5, 394)
+scale = Vector2(0.4209404, 1)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="Floor" type="StaticBody2D" parent="." unique_id=809799900]
+position = Vector2(55, 140)
+
+[node name="ColorRect" type="ColorRect" parent="Floor" unique_id=942323831]
+material = ExtResource("3_tob7e")
+offset_left = 245.0
+offset_top = 615.0
+offset_right = 1997.0
+offset_bottom = 876.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=2075913242]
+position = Vector2(1045, 632.9999)
+scale = Vector2(5.040159, 1.1911094)
+shape = SubResource("RectangleShape2D_niasw")
+
+[node name="Stairs" type="StaticBody2D" parent="." unique_id=722296418]
+position = Vector2(-5, 140)
+
+[node name="Polygon2D5" type="Polygon2D" parent="Stairs" unique_id=277769607]
+position = Vector2(-144, 271)
+scale = Vector2(0.99999994, 0.99999994)
+color = Color(0.52156866, 0.3372549, 0.20392157, 1)
+polygon = PackedVector2Array(298, 248, 298, 380, 488, 380, 488, 338, 468, 338, 468, 328, 448, 328, 448, 318, 428, 318, 428, 308, 408, 308, 408, 298, 388, 298, 388, 288, 370, 288, 370, 278, 352, 278, 352, 268, 334, 268, 334, 258, 316, 258, 316.01233, 247.63887)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Stairs" unique_id=988845217]
+position = Vector2(-99.326454, 55.927513)
+rotation = 0.5938876
+color = Color(0.52156866, 0.3372549, 0.20392157, 1)
+polygon = PackedVector2Array(271.25867, 277.85657, 394.92743, 461.0151, 549.0789, 356.93185, 462.9237, 232.90656, 446.3483, 244.0983, 440.7524, 235.81058, 424.17697, 247.00232, 418.58112, 238.71458, 403.6632, 248.78716, 398.06732, 240.49944, 383.14948, 250.572, 377.5536, 242.28432, 362.63568, 252.35689, 357.0398, 244.06917, 342.12195, 254.14174, 336.52606, 245.85402, 321.60815, 255.92659, 316.01233, 247.63887)
+
+[node name="Polygon2D6" type="Polygon2D" parent="Stairs" unique_id=1894940231]
+material = ExtResource("3_tob7e")
+position = Vector2(-299, 199)
+scale = Vector2(0.9999999, 0.9999999)
+polygon = PackedVector2Array(269.00003, 678.0001, 659.00006, 677.0001, 659.00006, 416.00003, 631.00006, 416.00003, 309.00003, 244.00003, 269.00003, 244.00003)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stairs" unique_id=1737817408]
+position = Vector2(170.28455, 536.2784)
+rotation = 0.48869222
+scale = Vector2(1.0765867, 0.8222257)
+shape = SubResource("RectangleShape2D_slysq")
+
+[node name="LeftWall" type="StaticBody2D" parent="." unique_id=589369047]
+position = Vector2(110, 140)
+
+[node name="ColorRect" type="ColorRect" parent="LeftWall" unique_id=1903419223]
+material = ExtResource("3_tob7e")
+offset_left = -188.0
+offset_top = -153.0
+offset_right = -106.0
+offset_bottom = 460.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=263949075]
+position = Vector2(-124.99988, 163.00005)
+scale = Vector2(0.11485845, 18.697369)
+shape = SubResource("RectangleShape2D_niasw")
+
+[node name="RightWall" type="StaticBody2D" parent="." unique_id=2057709667]
+position = Vector2(55, 140)
+
+[node name="ColorRect" type="ColorRect" parent="RightWall" unique_id=325931532]
+material = ExtResource("3_tob7e")
+offset_left = 1270.0
+offset_top = 68.0
+offset_right = 1311.0
+offset_bottom = 284.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1026290377]
+position = Vector2(1291, 176.00003)
+scale = Vector2(0.11485845, 7.1623874)
+shape = SubResource("RectangleShape2D_niasw")
+
+[node name="Platform3" type="StaticBody2D" parent="." unique_id=79718456]
+position = Vector2(-5, 140)
+
+[node name="Polygon2D4" type="Polygon2D" parent="Platform3" unique_id=628755985]
+material = ExtResource("3_tob7e")
+position = Vector2(901, -212)
+polygon = PackedVector2Array(295, 257, 651, 257, 627, 287, 323, 288)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3" unique_id=1716194504]
+position = Vector2(1373.5, 60)
+shape = SubResource("RectangleShape2D_pr151")
+
+[node name="Roof" type="StaticBody2D" parent="." unique_id=1726620006]
+position = Vector2(110, 140)
+
+[node name="ColorRect2" type="ColorRect" parent="Roof" unique_id=942883840]
+material = ExtResource("3_tob7e")
+offset_left = -150.0
+offset_top = -481.00003
+offset_right = 1041.0
+offset_bottom = -135.0
+
+[node name="ColorRect" type="ColorRect" parent="Roof" unique_id=1794226094]
+material = ExtResource("3_tob7e")
+offset_left = -150.0
+offset_top = -135.0
+offset_right = 1254.0
+offset_bottom = -99.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Roof" unique_id=310539684]
+position = Vector2(550.99994, -117.000015)
+scale = Vector2(4.0086575, 1.1911094)
+shape = SubResource("RectangleShape2D_niasw")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Roof" unique_id=1427606497]
+position = Vector2(447, -301)
+scale = Vector2(3.3831158, 12.087892)
+shape = SubResource("RectangleShape2D_niasw")
+
+[node name="Pixelator" type="ColorRect" parent="." unique_id=1787882924]
+visible = false
+material = SubResource("ShaderMaterial_vvus4")
+layout_direction = 1
+offset_left = -220.0
+offset_top = -805.99994
+offset_right = -93.15001
+offset_bottom = -675.89996
+scale = Vector2(20, 20)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1031939648]
+material = SubResource("ShaderMaterial_pr151")
+use_parent_material = true
+position = Vector2(25038.209, 1090.7478)
+scale = Vector2(26.505554, 0.8646544)
+script = ExtResource("2_ba1s0")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1210724183]
+environment = SubResource("Environment_7virt")
