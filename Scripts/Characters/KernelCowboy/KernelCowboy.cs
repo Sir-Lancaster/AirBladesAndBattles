@@ -72,6 +72,8 @@ public partial class KernelCowboy : CharacterBase
             _neutralSpecialCooldownRemaining -= (float)delta;
     }
 
+    protected override void PlayAnimationByName(string animName) => _KernelCowboy.Play(animName);
+
     protected override void PlayAnimationForState(CharacterState state)
     {
         string anim = state switch
@@ -106,7 +108,8 @@ public partial class KernelCowboy : CharacterBase
             AttackDirection.DownAir => "Down",
             _                       => "Horizontal"
         };
-        _KernelCowboy.Play(attackAnim);
+        BroadcastAnimation(attackAnim);
+        GD.Print($"{CharacterLabel} attack: {direction}, damage: {damage}");
 
         if (direction == AttackDirection.DownAir)
         {
@@ -124,7 +127,7 @@ public partial class KernelCowboy : CharacterBase
     protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
     {
         string specialAnim = direction == SpecialDirection.Up ? "UpSpecial" : "Special";
-        _KernelCowboy.Play(specialAnim);
+        BroadcastAnimation(specialAnim);
 
         switch (direction)
         {

@@ -44,6 +44,7 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
 
     private int _jumpsRemaining;
     private CharacterState _lastReplicatedState;
+    private bool _multiplayerReady;
 
     // Base methods, owned by the core class.
 
@@ -192,13 +193,43 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         OnStateChanged(CurrentState, newState);
         CurrentState = newState;
         PlayAnimationForState(newState);
+
+        // Notify remote peers reliably so fast states like Attack are never dropped.
+        // _multiplayerReady guards against RPCs during _Ready() initialization.
+        if (_multiplayerReady && Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+            Rpc(nameof(SyncStateChange), (int)newState);
     }
+
+    // Reliable so short-lived states (Attack, Dodge) are guaranteed to arrive.
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SyncStateChange(int state)
+    {
+        CurrentState = (CharacterState)state;
+        PlayAnimationForState(CurrentState);
+        _lastReplicatedState = CurrentState;
+    }
+
+    // Plays an animation by name locally and sends it reliably to all remote peers.
+    // Call this from OnAttackPerformed/OnSpecialPerformed instead of SetAnimation/AnimationPlayer.Play.
+    protected void BroadcastAnimation(string animName)
+    {
+        PlayAnimationByName(animName);
+        if (_multiplayerReady && Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+            Rpc(nameof(ReceiveAnimSync), animName);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void ReceiveAnimSync(string animName) => PlayAnimationByName(animName);
 
     // Virtual hooks to be overridden in individual characters.
 
     // Lifecycle/State
     protected virtual void OnStateChanged(CharacterState currentState, CharacterState newState) { }
     protected virtual void PlayAnimationForState(CharacterState state) { }
+    // Override to delegate to each character's internal SetAnimation / AnimationPlayer.Play.
+    protected virtual void PlayAnimationByName(string animName) { }
 
     // Health
     protected virtual void OnHealthChanged(int oldHp, int newHp) { }
@@ -220,24 +251,26 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
     /// </summary>
     public override void _Ready()
     {
+        // Must run before _PhysicsProcess. _Ready is guaranteed to fire after the spawner
+        // has set the node name, unlike _EnterTree which can fire before the name is assigned
+        // on clients receiving a replicated spawn.
+        if (int.TryParse(Name, out int peerId))
+            SetMultiplayerAuthority(peerId);
+
         CurrentHP = MaxHP;
         IsDead = false;
         _jumpsRemaining = MaxJumps;
         CurrentState = CharacterState.Run; // To ensure that SetState fires correcty, set current state to a non-idle value then call Setstate().
-        SetState(CharacterState.Idle);
+        SetState(CharacterState.Idle);     // _multiplayerReady is false here, so no RPC is sent.
 
         // Layer 2 = characters; mask 1 = world only.
         // Characters pass through each other and through themselves (multi-player safe).
         CollisionLayer = 2;
         CollisionMask = 1;
-    }
 
-    public override void _EnterTree()
-    {
-        // BattleManager sets Name = peerId.ToString() before AddChild.
-        // int.TryParse guard keeps singleplayer working (names like "KernelCowboy" won't parse).
-        if (int.TryParse(Name, out int peerId))
-            SetMultiplayerAuthority(peerId);
+        // Allow SyncStateChange RPCs only after initialization is complete and the node
+        // is fully registered in the scene tree with the multiplayer system.
+        _multiplayerReady = true;
     }
 
     /// <summary>
