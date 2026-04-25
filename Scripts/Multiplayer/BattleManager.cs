@@ -198,7 +198,7 @@ public partial class BattleManager : Node2D
     {
         foreach (PeerSlot slot in _peerSlots)
         {
-            Node node = GetNodeOrNull(slot.PeerId.ToString());
+            Node node = _spawner.GetNodeOrNull(slot.PeerId.ToString());
             if (node != null) node.ProcessMode = ProcessModeEnum.Disabled;
         }
     }
@@ -207,7 +207,7 @@ public partial class BattleManager : Node2D
     {
         foreach (PeerSlot slot in _peerSlots)
         {
-            Node node = GetNodeOrNull(slot.PeerId.ToString());
+            Node node = _spawner.GetNodeOrNull(slot.PeerId.ToString());
             if (node != null) node.ProcessMode = ProcessModeEnum.Inherit;
         }
     }
@@ -372,7 +372,7 @@ public partial class BattleManager : Node2D
         {
             if (slot.Eliminated || _deathHandled.Contains(slot.PeerId)) continue;
 
-            var character = GetNodeOrNull<CharacterBase>(slot.PeerId.ToString());
+            var character = _spawner.GetNodeOrNull<CharacterBase>(slot.PeerId.ToString());
             if (character == null || character.CurrentState != CharacterBase.CharacterState.Dead) continue;
 
             _deathHandled.Add(slot.PeerId);
@@ -389,12 +389,12 @@ public partial class BattleManager : Node2D
         if (slot.StocksRemaining <= 0)
         {
             slot.Eliminated = true;
-            GetNodeOrNull(slot.PeerId.ToString())?.QueueFree();
+            _spawner.GetNodeOrNull(slot.PeerId.ToString())?.QueueFree();
             CheckMatchOver();
         }
         else
         {
-            Node dying = GetNodeOrNull(slot.PeerId.ToString());
+            Node dying = _spawner.GetNodeOrNull(slot.PeerId.ToString());
             GetTree().CreateTimer(2.0).Timeout += () =>
             {
                 _deathHandled.Remove(slot.PeerId);
@@ -472,7 +472,7 @@ public partial class BattleManager : Node2D
         foreach (PeerSlot slot in _peerSlots)
         {
             if (slot.Eliminated) continue;
-            var character = GetNodeOrNull<CharacterBase>(slot.PeerId.ToString());
+            var character = _spawner.GetNodeOrNull<CharacterBase>(slot.PeerId.ToString());
             if (character == null) continue;
             _gameHUD.UpdateHealth(slot.HudIndex, character.CurrentHP);
         }
@@ -494,7 +494,7 @@ public partial class BattleManager : Node2D
     {
         if (!Multiplayer.IsServer()) return;
 
-        Node character = GetNodeOrNull(id.ToString());
+        Node character = _spawner.GetNodeOrNull(id.ToString());
         if (character != null)
         {
             character.QueueFree();
