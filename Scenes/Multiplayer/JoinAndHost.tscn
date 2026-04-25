@@ -3,6 +3,16 @@
 [ext_resource type="Texture2D" uid="uid://belmq35pog31p" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="1_ac11a"]
 [ext_resource type="Script" uid="uid://ce1ctfmygopdl" path="res://Scripts/Multiplayer/JoinAndHost.cs" id="1_uemc7"]
 [ext_resource type="Texture2D" uid="uid://by01u7ctxpxa1" path="res://Assets/Icons/Halberd_Crossed.png" id="2_5tgta"]
+[ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="4_dwd3w"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s2egs"]
+shader = ExtResource("4_dwd3w")
+shader_parameter/speed = 0.5
+shader_parameter/blob_size = 0.1
+shader_parameter/color_bg = Color(0.18039216, 0.015686275, 0.015686275, 1)
+shader_parameter/color_lava = Color(1, 0.101960786, 0.101960786, 1)
+shader_parameter/color_highlight = Color(1, 0.6, 0.6, 1)
+shader_parameter/color_glow = Color(0.6, 0, 0, 1)
 
 [node name="JoinAndHost" type="Control" unique_id=882776453 node_paths=PackedStringArray("_hostButton", "_joinButton", "_mainMenuButton")]
 layout_mode = 3
@@ -27,8 +37,8 @@ offset_left = 10.0
 offset_top = 10.0
 offset_right = 170.0
 offset_bottom = 50.0
-text = "Main Menu"
 theme_override_font_sizes/font_size = 20
+text = "Main Menu"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1999134621]
 anchors_preset = 8
@@ -70,6 +80,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Join"
 icon = ExtResource("2_5tgta")
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=247739100]
+z_index = -2
+material = SubResource("ShaderMaterial_s2egs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
