@@ -9,6 +9,7 @@ public partial class MainMenu : Control
 {
     [Export] private Button _singlePlayerButton;
     [Export] private Button _multiplayerButton;
+    [Export] private Button _creditsButton;
     [Export] private Button _quitButton;
 
     public override void _Ready()
@@ -25,7 +26,8 @@ public partial class MainMenu : Control
             GameManager.Instance.SetMode(GameManager.GameMode.Multiplayer);
             GetTree().ChangeSceneToFile("res://Scenes/Multiplayer/JoinAndHost.tscn");
         };
-        _quitButton.Pressed += GameManager.Instance.QuitGame;
+        _creditsButton.Pressed += () => GetTree().ChangeSceneToFile("res://Scenes/Pages/Credits.tscn");
+        _quitButton.Pressed    += GameManager.Instance.QuitGame;
 
         _singlePlayerButton.GrabFocus();
     }

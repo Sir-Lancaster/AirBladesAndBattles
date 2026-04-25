@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://bwm4flpei3jc1"]
+
+[ext_resource type="Script" uid="uid://hwok4mepy5jp" path="res://Scripts/Pages/Credits.cs" id="1_k6s7g"]
+[ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="2_iv4co"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fyl75"]
+shader = ExtResource("2_iv4co")
+shader_parameter/speed = 0.5
+shader_parameter/blob_size = 0.1
+shader_parameter/color_bg = Color(0.02, 0.04, 0.01, 1)
+shader_parameter/color_lava = Color(0.04, 0.82, 0.14, 1)
+shader_parameter/color_highlight = Color(0.55, 1, 0.6, 1)
+shader_parameter/color_glow = Color(0.4, 0.06666667, 0.6, 1)
+
+[node name="Credits" type="Control" unique_id=1377980136 node_paths=PackedStringArray("_backButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_k6s7g")
+_backButton = NodePath("MarginContainer/CenterContainer/VBoxContainer/Button")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1969430609]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=34807282]
+z_index = -2
+material = SubResource("ShaderMaterial_fyl75")
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer" unique_id=1484110763]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer" unique_id=1477789561]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=219326611]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.19752553, 0.51209056, 0.85003185, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 60
+theme_override_font_sizes/font_size = 120
+text = "Credits "
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=753781723]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer/CenterContainer/VBoxContainer/PanelContainer" unique_id=1763776285]
+layout_mode = 2
+color = Color(0.32156864, 0.32156864, 0.32156864, 0.72156864)
+
+[node name="Label" type="Label" parent="MarginContainer/CenterContainer/VBoxContainer/PanelContainer" unique_id=343896474]
+layout_mode = 2
+text = "
+Clock Tower Music -  https://pixabay.com/music/main-title-against-the-clock-steampunk-victorian-music-292800/
+Manor Music - \"Dangerous\" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/
+Castle Music - Music by SunixMuz from Freesound.org
+Kerenl Badlands Music - Tech RAve By Frenchyboy OpenGameArt.org
+Fight Count Down - Voiced by Rebecca Nisbet 
+"
+
+[node name="Button" type="Button" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=933939624]
+layout_mode = 2
+text = "back"
