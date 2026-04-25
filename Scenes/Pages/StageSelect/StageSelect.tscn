@@ -2,6 +2,16 @@
 
 [ext_resource type="Script" uid="uid://budpyma7h8ab0" path="res://Scripts/Pages/StageSelect.cs" id="1_htqdj"]
 [ext_resource type="Texture2D" uid="uid://cwj6fbkekjlrs" path="res://icon.svg" id="2_4l67h"]
+[ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="3_4l67h"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b6skw"]
+shader = ExtResource("3_4l67h")
+shader_parameter/speed = 0.5
+shader_parameter/blob_size = 0.1
+shader_parameter/color_bg = Color(0.18039216, 0.015686275, 0.015686275, 1)
+shader_parameter/color_lava = Color(1, 0.101960786, 0.101960786, 1)
+shader_parameter/color_highlight = Color(1, 0.6, 0.6, 1)
+shader_parameter/color_glow = Color(0.6, 0, 0, 1)
 
 [node name="StageSelect" type="Control" unique_id=1540081624 node_paths=PackedStringArray("_stage1Button", "_stage2Button", "_stage3Button", "_stage4Button", "_backButton", "_continueButton")]
 layout_mode = 3
@@ -26,6 +36,11 @@ anchor_bottom = 1.0
 offset_top = 31.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=1732732454]
+z_index = -2
+material = SubResource("ShaderMaterial_b6skw")
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1380232356]
 layout_mode = 2
