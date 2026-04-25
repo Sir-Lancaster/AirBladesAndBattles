@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://rbowfddj7rhg"]
 
-[ext_resource type="Shader" uid="uid://nmtxvyrl0yuc" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
+[ext_resource type="Shader" uid="uid://nxbci2bqdfhu" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
 [ext_resource type="Shader" uid="uid://nt2tks8n5tbh" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
-[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
-[ext_resource type="Script" uid="uid://dkn4s4rhl6vaa" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
+[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
+[ext_resource type="Script" uid="uid://tng7iyo1ivc3" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
+[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7w41v"]
 shader = ExtResource("1_7w41v")
@@ -168,6 +169,10 @@ shader_parameter/brick_width = 80.0
 shader_parameter/brick_height = 64.0
 shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 0.550000026125
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pixl"]
+shader = ExtResource("4_pixl")
+shader_parameter/pixel_size = 5.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sn43w"]
 size = Vector2(11283, 895)
@@ -561,6 +566,15 @@ shadow_enabled = true
 shadow_color = Color(0.14117648, 0.14117648, 0.14117648, 0.8784314)
 shadow_filter = 1
 shadow_item_cull_mask = 3
+
+[node name="Pixelator" type="ColorRect" parent="." unique_id=2099999901]
+material = SubResource("ShaderMaterial_pixl")
+layout_direction = 1
+offset_left = -125.0
+offset_top = -833.99994
+offset_right = -25.0
+offset_bottom = -733.99994
+scale = Vector2(40, 40)
 
 [node name="DeathZone" type="Area2D" parent="." unique_id=1857423832]
 position = Vector2(1712, 1848)

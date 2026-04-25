@@ -49,7 +49,7 @@ public partial class GameManager : Node
     private const string StageSelectScene               = "res://Scenes/Pages/StageSelect/StageSelect.tscn";
     private const string CharacterSelectScene = "res://Scenes/Pages/CharacterSelect/CharacterSelect.tscn";
     private const string GameScene                      = "res://Scenes/Stages/Utility/Game.tscn";
-    private const string MultiplayerBattleScene         = "res://Scenes/Multiplayer/BattleScene.tscn"; 
+    private const string MultiplayerBattleScene         = "res://Scenes/Multiplayer/BattleScene.tscn";
 
     // -------------------------------------------------------------------------
     // State
@@ -57,6 +57,7 @@ public partial class GameManager : Node
 
     public MatchConfig CurrentMatch { get; private set; } = new();
     public GameMode CurrentMode { get; private set; } = GameMode.SinglePlayer;
+    public int WinnerSlotIndex { get; private set; } = -1;
 
     /// <summary>
     /// Emitted when StageManager calls OnMatchOver().
@@ -149,7 +150,11 @@ public partial class GameManager : Node
     /// Called by StageManager when only one player remains.
     /// Emits MatchOver so the game scene can show the results popup.
     /// </summary>
-       public void OnMatchOver(int winnerIndex) => EmitSignal(SignalName.MatchOver, (Variant)winnerIndex);
+    public void OnMatchOver(int winnerIndex)
+    {
+        WinnerSlotIndex = winnerIndex;
+        EmitSignal(SignalName.MatchOver, (Variant)winnerIndex);
+    }
     /// <summary>
     /// Replays the match with the same MatchConfig — skips the lobby entirely.
     /// Called by the "Play Again" button in the results popup.

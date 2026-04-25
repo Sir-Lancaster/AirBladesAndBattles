@@ -331,6 +331,10 @@ public partial class StageManager : Node2D
         _matchOver = true;
         GD.Print($"[StageManager] Match over. Winner: slot {survivorIndex}");
         GameManager.Instance.OnMatchOver(survivorIndex);
+
+        var endScene = GD.Load<PackedScene>("res://Scenes/Stages/Utility/GameEnd.tscn");
+        if (endScene != null)
+            AddChild(endScene.Instantiate());
     }
 
     // ── HUD ───────────────────────────────────────────────────────────────────
