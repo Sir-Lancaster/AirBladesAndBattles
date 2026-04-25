@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d22ys6jtu7m6t"]
 
-[ext_resource type="Script" uid="uid://budpyma7h8ab0" path="res://Scripts/Pages/StageSelect.cs" id="1_htqdj"]
+[ext_resource type="Script" uid="uid://crbu0hgsceus3" path="res://Scripts/Pages/StageSelect.cs" id="1_htqdj"]
 [ext_resource type="Texture2D" uid="uid://cwj6fbkekjlrs" path="res://icon.svg" id="2_4l67h"]
 [ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="3_4l67h"]
 
@@ -68,22 +68,17 @@ icon = ExtResource("2_4l67h")
 
 [node name="KCBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1166176764]
 layout_mode = 2
-text = "Testing
-
-use this.
-no really!
-Please 
-pick me!!"
+text = "Kernel Badlands "
 icon = ExtResource("2_4l67h")
 
 [node name="SirEdwardBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=445154238]
 layout_mode = 2
-text = "Castle"
+text = "Castle "
 icon = ExtResource("2_4l67h")
 
 [node name="VanpireBtn" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1973231377]
 layout_mode = 2
-text = "Manor"
+text = "Manor "
 icon = ExtResource("2_4l67h")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer" unique_id=878764787]
