@@ -81,6 +81,11 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         int oldHp = CurrentHP;
         CurrentHP = Mathf.Max(0, CurrentHP - amount);
 
+        // Reliably push the new HP to all peers so the HUD updates immediately.
+        // The periodic SyncState is unreliable and can miss the exact damage frame.
+        if (_multiplayerReady && Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+            Rpc(nameof(SyncHp), CurrentHP);
+
         OnHealthChanged(oldHp, CurrentHP);
         OnDamaged(amount);
         GD.Print($"[{Name}] took {amount} damage ({oldHp} -> {CurrentHP} HP)");
@@ -342,6 +347,11 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         CurrentState   = (CharacterState)state;
         CurrentHP      = hp;
     }
+
+    // Reliable one-shot sent on every hit so the HUD always reflects damage immediately.
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SyncHp(int hp) => CurrentHP = hp;
 
     private void HandleCombatInput()
     {
