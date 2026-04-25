@@ -203,11 +203,11 @@ public partial class SirEdward: CharacterBase
                 // Healing.
                 int oldHp = CurrentHP;
                 _healCount += 1;
-                if (_healCount < 3)
+                if (_healCount < 5)
                 {
-                    CurrentHP = Mathf.Min(MaxHP, CurrentHP + 2);
+                    CurrentHP = Mathf.Min(MaxHP, CurrentHP + 4);
                     OnHealthChanged(oldHp, CurrentHP);
-                    GD.Print($"{CharacterLabel} neutral special: heal 2");
+                    GD.Print($"{CharacterLabel} neutral special: heal 4");
                 }
                 
                 // TODO: Once sound effect has been found, play error sound. 
