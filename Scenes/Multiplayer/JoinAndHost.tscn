@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://celqjhpdl1dq2"]
 
-[ext_resource type="Texture2D" uid="uid://belmq35pog31p" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="1_ac11a"]
-[ext_resource type="Script" uid="uid://ce1ctfmygopdl" path="res://Scripts/Multiplayer/JoinAndHost.cs" id="1_uemc7"]
+[ext_resource type="Texture2D" uid="uid://c1gnnclnvbs4i" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="1_ac11a"]
+[ext_resource type="Script" uid="uid://bbs5lj1oakl7h" path="res://Scripts/Multiplayer/JoinAndHost.cs" id="1_uemc7"]
 [ext_resource type="Texture2D" uid="uid://by01u7ctxpxa1" path="res://Assets/Icons/Halberd_Crossed.png" id="2_5tgta"]
 [ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="4_dwd3w"]
 
@@ -89,15 +89,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Join"
 icon = ExtResource("2_5tgta")
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=247739100]
-z_index = -2
-material = SubResource("ShaderMaterial_s2egs")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
