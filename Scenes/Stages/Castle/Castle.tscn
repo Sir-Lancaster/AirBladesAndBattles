@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://djvvatbos7n6k" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
 [ext_resource type="Script" uid="uid://4f4vfqjywpvm" path="res://Scripts/Stages/Utility/CastleCamera.cs" id="4_fbqer"]
 [ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
+[ext_resource type="AudioStream" uid="uid://dx58fc2x7hyyf" path="res://Assets/Music/767840__sunixmuz__sunixmuz-dark-castle-opening-trailer-epic-music-free-ccby.mp3" id="7_sn43w"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7w41v"]
 shader = ExtResource("1_7w41v")
@@ -44,8 +45,8 @@ shader = ExtResource("3_f15jd")
 shader_parameter/grass_shadow = Color(0.07, 0.13, 0.05, 1)
 shader_parameter/grass_base = Color(0.13, 0.21, 0.09, 1)
 shader_parameter/grass_highlight = Color(0.19, 0.29, 0.13, 1)
-shader_parameter/wind_speed = 2.9050000000000002
-shader_parameter/wind_strength = 2.2800000000000002
+shader_parameter/wind_speed = 2.905
+shader_parameter/wind_strength = 2.28
 shader_parameter/noise_scale = 1.0
 shader_parameter/ambient_light = 0.6
 
@@ -635,3 +636,7 @@ material = SubResource("ShaderMaterial_kvto4")
 position = Vector2(46.5, 288.5)
 shape = SubResource("RectangleShape2D_sn43w")
 debug_color = Color(0.99607843, 0, 0, 0.41960785)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1164851535]
+stream = ExtResource("7_sn43w")
+autoplay = true
