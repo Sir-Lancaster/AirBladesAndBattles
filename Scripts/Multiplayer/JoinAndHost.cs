@@ -6,10 +6,12 @@ public partial class JoinAndHost : Control
 {
 	[Export] private Button _hostButton;
 	[Export] private Button _joinButton;
+	[Export] private Button _mainMenuButton;
 
 	public override void _Ready()
 	{
 		_hostButton?.GrabFocus();
+		if (_mainMenuButton != null) _mainMenuButton.Pressed += GameManager.Instance.GoToMainMenu;
 	}
 
 	private void _on_host_button_pressed()

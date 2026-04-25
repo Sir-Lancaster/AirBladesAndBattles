@@ -9,6 +9,7 @@ public partial class Join : Control
 	{
 		_ipInput = GetNode<LineEdit>("CanvasLayer/VBoxContainer/HBoxContainer/LineEdit");
 		GetNode<Button>("CanvasLayer/VBoxContainer/Button").Pressed += _on_connect_pressed;
+		GetNode<Button>("CanvasLayer/MainMenuButton").Pressed += GameManager.Instance.GoToMainMenu;
 
 		_statusLabel = new Label { HorizontalAlignment = HorizontalAlignment.Center };
 		GetNode("CanvasLayer/VBoxContainer").AddChild(_statusLabel);

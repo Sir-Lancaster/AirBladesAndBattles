@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://ce1ctfmygopdl" path="res://Scripts/Multiplayer/JoinAndHost.cs" id="1_uemc7"]
 [ext_resource type="Texture2D" uid="uid://by01u7ctxpxa1" path="res://Assets/Icons/Halberd_Crossed.png" id="2_5tgta"]
 
-[node name="JoinAndHost" type="Control" unique_id=882776453 node_paths=PackedStringArray("_hostButton", "_joinButton")]
+[node name="JoinAndHost" type="Control" unique_id=882776453 node_paths=PackedStringArray("_hostButton", "_joinButton", "_mainMenuButton")]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -18,8 +18,17 @@ size_flags_vertical = 6
 script = ExtResource("1_uemc7")
 _hostButton = NodePath("CanvasLayer/VBoxContainer/HBoxContainer/HostButton")
 _joinButton = NodePath("CanvasLayer/VBoxContainer/HBoxContainer/JoinButton")
+_mainMenuButton = NodePath("CanvasLayer/MainMenuButton")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=126293264]
+
+[node name="MainMenuButton" type="Button" parent="CanvasLayer" unique_id=1111111111]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 170.0
+offset_bottom = 50.0
+text = "Main Menu"
+theme_override_font_sizes/font_size = 20
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1999134621]
 anchors_preset = 8
