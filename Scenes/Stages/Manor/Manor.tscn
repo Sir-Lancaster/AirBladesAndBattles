@@ -252,7 +252,6 @@ scale = Vector2(3.3831158, 12.087892)
 shape = SubResource("RectangleShape2D_niasw")
 
 [node name="Pixelator" type="ColorRect" parent="." unique_id=1787882924]
-visible = false
 material = SubResource("ShaderMaterial_vvus4")
 layout_direction = 1
 offset_left = -220.0

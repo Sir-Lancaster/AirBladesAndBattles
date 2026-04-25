@@ -2,18 +2,14 @@
 
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d36ga"]
 [ext_resource type="FontFile" uid="uid://baxoray2nhnnw" path="res://Assets/Levels/KernelBadlands/GoogleSansCode-VariableFont_MONO,wght.ttf" id="1_lttus"]
-[ext_resource type="Script" uid="uid://wh36lpndux4l" path="res://Scripts/Stages/KernelBadlands/KernelBadlands.cs" id="1_wmi0o"]
-[ext_resource type="Shader" uid="uid://bb1rrryl42wh6" path="res://Scripts/Stages/KernelBadlands/DaySky.gdshader" id="1_y2tob"]
-[ext_resource type="Shader" uid="uid://bn2h7vlb08kuo" path="res://Scripts/Stages/KernelBadlands/DaySun.gdshader" id="3_ecyni"]
-[ext_resource type="Shader" uid="uid://7uvq40lhovur" path="res://Scripts/Stages/KernelBadlands/Stars.gdshader" id="5_oye3f"]
-[ext_resource type="Script" uid="uid://be56f8ystbquh" path="res://Scripts/Stages/Utility/KernelBadlandsCam.cs" id="6_d36ga"]
-[ext_resource type="Shader" uid="uid://dg5dhntynidq1" path="res://Scripts/Stages/KernelBadlands/TraceChaser.gdshader" id="6_oye3f"]
-[ext_resource type="Shader" uid="uid://cwamvwq5vl75" path="res://Scripts/Stages/KernelBadlands/NightGlow.gdshader" id="7_wmi0o"]
+[ext_resource type="Script" uid="uid://dnmftc3nqncp3" path="res://Scripts/Stages/KernelBadlands/KernelBadlands.cs" id="1_wmi0o"]
+[ext_resource type="Shader" uid="uid://caubkoo7mtx0c" path="res://Scripts/Stages/KernelBadlands/DaySky.gdshader" id="1_y2tob"]
+[ext_resource type="Shader" uid="uid://hvpfh7wv4j2u" path="res://Scripts/Stages/KernelBadlands/DaySun.gdshader" id="3_ecyni"]
+[ext_resource type="Shader" uid="uid://b88d8r8ptqiai" path="res://Scripts/Stages/KernelBadlands/Stars.gdshader" id="5_oye3f"]
+[ext_resource type="Script" uid="uid://ciptug3e4g1e2" path="res://Scripts/Stages/Utility/KernelBadlandsCam.cs" id="6_d36ga"]
+[ext_resource type="Shader" uid="uid://ke3a5jt17ehj" path="res://Scripts/Stages/KernelBadlands/TraceChaser.gdshader" id="6_oye3f"]
+[ext_resource type="Shader" uid="uid://bufjasjgu5kka" path="res://Scripts/Stages/KernelBadlands/NightGlow.gdshader" id="7_wmi0o"]
 [ext_resource type="AudioStream" uid="uid://lskr5qncf38" path="res://Assets/Music/TechRaveFaster.wav" id="10_oye3f"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_nainl"]
-shader = ExtResource("1_d36ga")
-shader_parameter/pixel_size = 5.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7pl6s"]
 shader = ExtResource("1_y2tob")
@@ -223,6 +219,10 @@ shader_parameter/pulse_aura_width = 0.35
 shader_parameter/base_color = Color(0, 1, 0.533, 1)
 shader_parameter/pulse_color = Color(0.224, 1, 0.078, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nainl"]
+shader = ExtResource("1_d36ga")
+shader_parameter/pixel_size = 5.0
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o4e8y"]
 
 [sub_resource type="Environment" id="Environment_wmi0o"]
@@ -260,16 +260,6 @@ _starsRect = NodePath("Background/stars")
 _quicksandVisuals = NodePath("Ground/StaticBody2D/Quicksand")
 _quicksandCollision = NodePath("Ground/StaticBody2D/QuicksandCollision")
 QuicksandInterval = 10.0
-
-[node name="Pixelator" type="ColorRect" parent="." unique_id=1921458910]
-z_index = 12
-material = SubResource("ShaderMaterial_nainl")
-layout_direction = 1
-offset_left = -346.99997
-offset_top = -277.99997
-offset_right = -246.99997
-offset_bottom = -177.99997
-scale = Vector2(20, 20)
 
 [node name="SpawnPoints" type="Node2D" parent="." unique_id=343758460]
 z_index = 16
@@ -1530,6 +1520,15 @@ width = 3.0
 default_color = Color(0, 0, 0, 1)
 
 [node name="KillZones" type="Node2D" parent="." unique_id=2123798175]
+
+[node name="Pixelator" type="ColorRect" parent="." unique_id=1921458910]
+material = SubResource("ShaderMaterial_nainl")
+layout_direction = 1
+offset_left = -346.99997
+offset_top = -277.99997
+offset_right = -246.99997
+offset_bottom = -177.99997
+scale = Vector2(20, 20)
 
 [node name="BadlandsCam" type="Camera2D" parent="." unique_id=280257639]
 material = SubResource("ShaderMaterial_o4e8y")
