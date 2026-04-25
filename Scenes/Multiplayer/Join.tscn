@@ -20,6 +20,15 @@ script = ExtResource("1_yui1h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1059253763]
 
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=693036496]
+z_index = -2
+material = SubResource("ShaderMaterial_ake3q")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="MainMenuButton" type="Button" parent="CanvasLayer" unique_id=-2072745074]
 offset_left = 10.0
 offset_top = 10.0
@@ -68,12 +77,3 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Connect!"
 icon = ExtResource("1_dpowv")
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=693036496]
-z_index = -2
-material = SubResource("ShaderMaterial_ake3q")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2

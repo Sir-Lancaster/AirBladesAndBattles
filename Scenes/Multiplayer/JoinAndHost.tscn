@@ -32,6 +32,15 @@ _mainMenuButton = NodePath("CanvasLayer/MainMenuButton")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=126293264]
 
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=247739100]
+z_index = -2
+material = SubResource("ShaderMaterial_s2egs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="MainMenuButton" type="Button" parent="CanvasLayer" unique_id=1111111111]
 offset_left = 10.0
 offset_top = 10.0
@@ -80,15 +89,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Join"
 icon = ExtResource("2_5tgta")
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=247739100]
-z_index = -2
-material = SubResource("ShaderMaterial_s2egs")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/HBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
