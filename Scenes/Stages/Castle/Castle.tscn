@@ -2,6 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://b0tsluylw1qjw" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
 [ext_resource type="Shader" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
+[ext_resource type="Shader" uid="uid://yhljwy7ufna6" path="res://Assets/Levels/Castle/CastleGrass.gdshader" id="3_f15jd"]
 [ext_resource type="Script" uid="uid://djvvatbos7n6k" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
 [ext_resource type="Script" uid="uid://4f4vfqjywpvm" path="res://Scripts/Stages/Utility/CastleCamera.cs" id="4_fbqer"]
 [ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
@@ -37,6 +38,16 @@ shader_parameter/brick_width = 80.0
 shader_parameter/brick_height = 64.0
 shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_slc20"]
+shader = ExtResource("3_f15jd")
+shader_parameter/grass_shadow = Color(0.07, 0.13, 0.05, 1)
+shader_parameter/grass_base = Color(0.13, 0.21, 0.09, 1)
+shader_parameter/grass_highlight = Color(0.19, 0.29, 0.13, 1)
+shader_parameter/wind_speed = 2.9050000000000002
+shader_parameter/wind_strength = 2.2800000000000002
+shader_parameter/noise_scale = 1.0
+shader_parameter/ambient_light = 0.6
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2iiqq"]
 size = Vector2(698, 35)
@@ -192,6 +203,8 @@ shader_parameter/ambient_light = 0.550000026125
 shader = ExtResource("4_pixl")
 shader_parameter/pixel_size = 2.5
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kvto4"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sn43w"]
 size = Vector2(11283, 895)
 
@@ -240,6 +253,10 @@ polygon = PackedVector2Array(1127.5, -39.5, 1127.5, 38.5, 1828.5, 38.5, 1828.5, 
 [node name="Polygon2D2" type="Polygon2D" parent="Ground/CollisionShape2D" unique_id=2129028991]
 material = SubResource("ShaderMaterial_bcwio")
 polygon = PackedVector2Array(-1826.5, -38.5, -1826.5, 40.5, -1126.5, 41.5, -1127.5, -40.5)
+
+[node name="GrassHill" type="Polygon2D" parent="Ground" unique_id=406537973]
+material = SubResource("ShaderMaterial_slc20")
+polygon = PackedVector2Array(-2820, 1597, -1346, 82, 2606, 79, 4090, 1637)
 
 [node name="TowerLeft" type="StaticBody2D" parent="." unique_id=255941224]
 light_mask = 2
@@ -409,7 +426,6 @@ shape = SubResource("RectangleShape2D_2iiqq")
 one_way_collision = true
 
 [node name="Exterior" type="Polygon2D" parent="TowerRight" unique_id=1874890098]
-visible = false
 light_mask = 4
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
@@ -615,6 +631,7 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=628145965]
+material = SubResource("ShaderMaterial_kvto4")
 position = Vector2(46.5, 288.5)
 shape = SubResource("RectangleShape2D_sn43w")
 debug_color = Color(0.99607843, 0, 0, 0.41960785)
