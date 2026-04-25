@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://rbowfddj7rhg"]
 
-[ext_resource type="Shader" uid="uid://nxbci2bqdfhu" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
+[ext_resource type="Shader" uid="uid://nmtxvyrl0yuc" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
 [ext_resource type="Shader" uid="uid://nt2tks8n5tbh" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
-[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
-[ext_resource type="Script" uid="uid://tng7iyo1ivc3" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
-[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
+[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
+[ext_resource type="Script" uid="uid://dkn4s4rhl6vaa" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
+[ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7w41v"]
 shader = ExtResource("1_7w41v")
@@ -33,7 +33,7 @@ shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_fbqer"]
-polygon = PackedVector2Array(439, -299, 438, -370, 439, -280, 443, 705)
+polygon = PackedVector2Array(439, -299, 438, -370, 443.99426, -280, 443, 705)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7w41v"]
 size = Vector2(3, 1624)
@@ -159,7 +159,7 @@ shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_7w41v"]
-polygon = PackedVector2Array(-956, 663, 1269, 660, 1261, 42, -961, 60)
+polygon = PackedVector2Array(-956, 229, 1289, 227, 1284, 56, -961, 55)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_js386"]
 shader = ExtResource("1_2iiqq")
@@ -225,6 +225,8 @@ shape = SubResource("RectangleShape2D_2iiqq")
 one_way_collision = true
 
 [node name="Exterior" type="Polygon2D" parent="TowerLeft" unique_id=1734651818]
+light_mask = 4
+visibility_layer = 4
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
 position = Vector2(0.37197876, 0)
@@ -380,6 +382,7 @@ shape = SubResource("RectangleShape2D_2iiqq")
 one_way_collision = true
 
 [node name="Exterior" type="Polygon2D" parent="TowerRight" unique_id=1874890098]
+light_mask = 4
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
 position = Vector2(0.37197876, 0)
@@ -412,6 +415,8 @@ position = Vector2(435.5, 923.5)
 shape = SubResource("RectangleShape2D_f15jd")
 
 [node name="Interior" type="Polygon2D" parent="TowerRight" unique_id=1983505635]
+light_mask = 2
+visibility_layer = 2
 z_as_relative = false
 material = SubResource("ShaderMaterial_fbqer")
 polygon = PackedVector2Array(-252, -277, 438, -278, 436, 1302, -260, 1302, -260, -277)
@@ -538,14 +543,14 @@ material = SubResource("ShaderMaterial_cg4hr")
 polygon = PackedVector2Array(-962, 53, -962, -53, -962, -112, -858, -112, -858, -52, -778, -52, -779, -111, -648, -111, -649, -51, -503, -51, -503, -112, -364, -112, -364, -52, -265, -52, -265, -112, -159, -112, -159, -52, -55, -52, -55, -112, 75, -112, 75, -52, 193.71948, -52, 194, -112, 313, -112, 313, -52, 407, -52, 407, -111, 531, -112, 531, -52, 598.3769, -52.000008, 599, -112, 694, -112, 694, -52, 773, -52, 773, -112, 876, -112, 876, -52, 972, -52, 972, -112, 1085, -112, 1085, -52, 1184, -52, 1184, -112, 1293, -112, 1293, 53)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Battlements/Rampart" unique_id=175410667]
-visibility_layer = 0
+light_mask = 3
+visibility_layer = 3
 z_index = 2
 z_as_relative = false
 occluder = SubResource("OccluderPolygon2D_7w41v")
+occluder_light_mask = 2
 
 [node name="Wall" type="Polygon2D" parent="Battlements" unique_id=600361816]
-light_mask = 0
-visibility_layer = 2
 material = SubResource("ShaderMaterial_js386")
 polygon = PackedVector2Array(-962, 53, 962.8086, 52.99994, 1293, 53, 1293, 667, -962, 667)
 
@@ -563,7 +568,7 @@ color = Color(0.8986283, 0.9997534, 0.99999994, 1)
 energy = 0.75
 blend_mode = 2
 shadow_enabled = true
-shadow_color = Color(0.14117648, 0.14117648, 0.14117648, 0.8784314)
+shadow_color = Color(0.22745098, 0.22745098, 0.22745098, 0)
 shadow_filter = 1
 shadow_item_cull_mask = 3
 
