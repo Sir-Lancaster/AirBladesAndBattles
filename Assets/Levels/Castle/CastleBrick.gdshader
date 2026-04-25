@@ -39,18 +39,20 @@ void fragment() {
         mod(px.y, brick_height)
     );
 
-    // Are we inside the mortar gap?
-    // Mortar runs along the right edge and bottom edge of each brick cell.
-    bool in_mortar = brick_local.x > (brick_width - mortar_thickness)
-                  || brick_local.y > (brick_height - mortar_thickness);
-
-    // Pick the color: mortar gap or brick face?
-    vec4 base_color = in_mortar ? mortar_color : brick_color;
+    // Signed distance to the mortar edge (positive = inside brick, negative = in mortar).
+    // fwidth gives the screen-space size of one pixel in local-space units, so the
+    // smoothstep window stays exactly one pixel wide regardless of zoom level.
+    vec2 fw = fwidth(brick_local);
+    float edge_x = brick_width - mortar_thickness;
+    float edge_y = brick_height - mortar_thickness;
+    float mortar_x = smoothstep(edge_x - fw.x, edge_x + fw.x, brick_local.x);
+    float mortar_y = smoothstep(edge_y - fw.y, edge_y + fw.y, brick_local.y);
+    float mortar_factor = max(mortar_x, mortar_y);
 
     // Subtle per-brick variation so they don't look copy-pasted.
     // Standard hash trick: large prime multiply + fract gives pseudo-random floats.
     float variation = fract(sin(col * 127.1 + row * 311.7) * 43758.5453) * 0.08 - 0.04;
-    base_color.rgb += variation;
+    vec4 base_color = mix(brick_color + vec4(vec3(variation), 0.0), mortar_color, mortar_factor);
 
     COLOR = vec4(base_color.rgb * ambient_light, base_color.a);
 }

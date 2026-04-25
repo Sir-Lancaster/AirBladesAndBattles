@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://rbowfddj7rhg"]
 
-[ext_resource type="Shader" uid="uid://nxbci2bqdfhu" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
-[ext_resource type="Shader" uid="uid://nt2tks8n5tbh" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
-[ext_resource type="Script" uid="uid://cxudautu4t5sd" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
-[ext_resource type="Script" uid="uid://tng7iyo1ivc3" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
-[ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
+[ext_resource type="Shader" uid="uid://b0tsluylw1qjw" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
+[ext_resource type="Shader" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
+[ext_resource type="Shader" uid="uid://yhljwy7ufna6" path="res://Assets/Levels/Castle/CastleGrass.gdshader" id="3_f15jd"]
+[ext_resource type="Script" uid="uid://djvvatbos7n6k" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
+[ext_resource type="Script" uid="uid://4f4vfqjywpvm" path="res://Scripts/Stages/Utility/CastleCamera.cs" id="4_fbqer"]
+[ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
+[ext_resource type="AudioStream" uid="uid://dx58fc2x7hyyf" path="res://Assets/Music/767840__sunixmuz__sunixmuz-dark-castle-opening-trailer-epic-music-free-ccby.mp3" id="7_sn43w"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7w41v"]
 shader = ExtResource("1_7w41v")
@@ -20,6 +22,34 @@ shader_parameter/lightning_frequency = 0.3850000182875
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3rsef"]
 size = Vector2(3653, 79)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tjh41"]
+shader = ExtResource("1_2iiqq")
+shader_parameter/brick_color = Color(0.45, 0.22, 0.15, 1)
+shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 64.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bcwio"]
+shader = ExtResource("1_2iiqq")
+shader_parameter/brick_color = Color(0.45, 0.22, 0.15, 1)
+shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 64.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_slc20"]
+shader = ExtResource("3_f15jd")
+shader_parameter/grass_shadow = Color(0.07, 0.13, 0.05, 1)
+shader_parameter/grass_base = Color(0.13, 0.21, 0.09, 1)
+shader_parameter/grass_highlight = Color(0.19, 0.29, 0.13, 1)
+shader_parameter/wind_speed = 2.905
+shader_parameter/wind_strength = 2.28
+shader_parameter/noise_scale = 1.0
+shader_parameter/ambient_light = 0.6
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2iiqq"]
 size = Vector2(698, 35)
 
@@ -33,7 +63,7 @@ shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_fbqer"]
-polygon = PackedVector2Array(439, -299, 438, -370, 439, -280, 443, 705)
+polygon = PackedVector2Array(439, -299, 438, -370, 443.99426, -280, 443.99426, 1298)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7w41v"]
 size = Vector2(3, 1624)
@@ -159,7 +189,7 @@ shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_7w41v"]
-polygon = PackedVector2Array(-956, 663, 1269, 660, 1261, 42, -961, 60)
+polygon = PackedVector2Array(-956, 229, 1289, 227, 1284, 56, -961, 55)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_js386"]
 shader = ExtResource("1_2iiqq")
@@ -172,7 +202,9 @@ shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pixl"]
 shader = ExtResource("4_pixl")
-shader_parameter/pixel_size = 5.0
+shader_parameter/pixel_size = 2.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kvto4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sn43w"]
 size = Vector2(11283, 895)
@@ -200,19 +232,32 @@ anchors_preset = 0
 [node name="ColorRect" type="ColorRect" parent="Background" unique_id=752596749]
 material = SubResource("ShaderMaterial_7w41v")
 layout_mode = 0
-offset_left = -118.0
+offset_left = -2719.0
 offset_top = -819.99994
-offset_right = 64.64998
-offset_bottom = -700.1
+offset_right = -2276.25
+offset_bottom = -620.69995
 scale = Vector2(20, 20)
 color = Color(0, 0.6509804, 1, 1)
 
 [node name="Ground" type="StaticBody2D" parent="." unique_id=321402204]
+z_index = 1
 position = Vector2(1067, 1498)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1460815677]
 position = Vector2(641.5, 40.5)
 shape = SubResource("RectangleShape2D_3rsef")
+
+[node name="Polygon2D" type="Polygon2D" parent="Ground/CollisionShape2D" unique_id=554258760]
+material = SubResource("ShaderMaterial_tjh41")
+polygon = PackedVector2Array(1127.5, -39.5, 1127.5, 38.5, 1828.5, 38.5, 1828.5, -39.5)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Ground/CollisionShape2D" unique_id=2129028991]
+material = SubResource("ShaderMaterial_bcwio")
+polygon = PackedVector2Array(-1826.5, -38.5, -1826.5, 40.5, -1126.5, 41.5, -1127.5, -40.5)
+
+[node name="GrassHill" type="Polygon2D" parent="Ground" unique_id=406537973]
+material = SubResource("ShaderMaterial_slc20")
+polygon = PackedVector2Array(-2820, 1597, -1346, 82, 2606, 79, 4090, 1637)
 
 [node name="TowerLeft" type="StaticBody2D" parent="." unique_id=255941224]
 light_mask = 2
@@ -225,6 +270,8 @@ shape = SubResource("RectangleShape2D_2iiqq")
 one_way_collision = true
 
 [node name="Exterior" type="Polygon2D" parent="TowerLeft" unique_id=1734651818]
+light_mask = 4
+visibility_layer = 4
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
 position = Vector2(0.37197876, 0)
@@ -380,6 +427,7 @@ shape = SubResource("RectangleShape2D_2iiqq")
 one_way_collision = true
 
 [node name="Exterior" type="Polygon2D" parent="TowerRight" unique_id=1874890098]
+light_mask = 4
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
 position = Vector2(0.37197876, 0)
@@ -391,7 +439,7 @@ position = Vector2(-1, 0)
 occluder = SubResource("OccluderPolygon2D_fbqer")
 
 [node name="LeftWall" type="CollisionShape2D" parent="TowerRight" unique_id=488221240]
-position = Vector2(-258.5, 530)
+position = Vector2(431.5, 530)
 shape = SubResource("RectangleShape2D_7w41v")
 
 [node name="Area2D" type="Area2D" parent="TowerRight" unique_id=510916640]
@@ -404,14 +452,16 @@ position = Vector2(12, 312.5)
 shape = SubResource("RectangleShape2D_fbqer")
 
 [node name="RightWallTop" type="CollisionShape2D" parent="TowerRight" unique_id=478700435]
-position = Vector2(435.5, 72.5)
+position = Vector2(-256.5, 72.5)
 shape = SubResource("RectangleShape2D_f15jd")
 
 [node name="RightWallBottom" type="CollisionShape2D" parent="TowerRight" unique_id=1740897508]
-position = Vector2(435.5, 923.5)
+position = Vector2(-250.5, 923.5)
 shape = SubResource("RectangleShape2D_f15jd")
 
 [node name="Interior" type="Polygon2D" parent="TowerRight" unique_id=1983505635]
+light_mask = 2
+visibility_layer = 2
 z_as_relative = false
 material = SubResource("ShaderMaterial_fbqer")
 polygon = PackedVector2Array(-252, -277, 438, -278, 436, 1302, -260, 1302, -260, -277)
@@ -538,20 +588,20 @@ material = SubResource("ShaderMaterial_cg4hr")
 polygon = PackedVector2Array(-962, 53, -962, -53, -962, -112, -858, -112, -858, -52, -778, -52, -779, -111, -648, -111, -649, -51, -503, -51, -503, -112, -364, -112, -364, -52, -265, -52, -265, -112, -159, -112, -159, -52, -55, -52, -55, -112, 75, -112, 75, -52, 193.71948, -52, 194, -112, 313, -112, 313, -52, 407, -52, 407, -111, 531, -112, 531, -52, 598.3769, -52.000008, 599, -112, 694, -112, 694, -52, 773, -52, 773, -112, 876, -112, 876, -52, 972, -52, 972, -112, 1085, -112, 1085, -52, 1184, -52, 1184, -112, 1293, -112, 1293, 53)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Battlements/Rampart" unique_id=175410667]
-visibility_layer = 0
+light_mask = 3
+visibility_layer = 3
 z_index = 2
 z_as_relative = false
 occluder = SubResource("OccluderPolygon2D_7w41v")
+occluder_light_mask = 2
 
 [node name="Wall" type="Polygon2D" parent="Battlements" unique_id=600361816]
-light_mask = 0
-visibility_layer = 2
 material = SubResource("ShaderMaterial_js386")
 polygon = PackedVector2Array(-962, 53, 962.8086, 52.99994, 1293, 53, 1293, 667, -962, 667)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1862920484]
 position = Vector2(581, 323)
-script = ExtResource("2_js386")
+script = ExtResource("4_fbqer")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=977003687]
 rotation = 1.0471976
@@ -563,16 +613,16 @@ color = Color(0.8986283, 0.9997534, 0.99999994, 1)
 energy = 0.75
 blend_mode = 2
 shadow_enabled = true
-shadow_color = Color(0.14117648, 0.14117648, 0.14117648, 0.8784314)
+shadow_color = Color(0.22745098, 0.22745098, 0.22745098, 0)
 shadow_filter = 1
 shadow_item_cull_mask = 3
 
 [node name="Pixelator" type="ColorRect" parent="." unique_id=2099999901]
 material = SubResource("ShaderMaterial_pixl")
 layout_direction = 1
-offset_left = -125.0
+offset_left = -1866.9998
 offset_top = -833.99994
-offset_right = -25.0
+offset_right = -1698.3497
 offset_bottom = -733.99994
 scale = Vector2(40, 40)
 
@@ -582,6 +632,11 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone" unique_id=628145965]
+material = SubResource("ShaderMaterial_kvto4")
 position = Vector2(46.5, 288.5)
 shape = SubResource("RectangleShape2D_sn43w")
 debug_color = Color(0.99607843, 0, 0, 0.41960785)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1164851535]
+stream = ExtResource("7_sn43w")
+autoplay = true
