@@ -68,6 +68,7 @@ http://creativecommons.org/licenses/by/4.0/
 Castle Music - Music by SunixMuz from Freesound.org
 Kerenl Badlands Music - Tech RAve By Frenchyboy OpenGameArt.org
 Fight Count Down - Voiced by Rebecca Nisbet 
+Title Music - \"Fantasia Fantasia\" Kevin MacLeod (incompetech.com)
 "
 
 [node name="Button" type="Button" parent="MarginContainer/CenterContainer/VBoxContainer" unique_id=933939624]

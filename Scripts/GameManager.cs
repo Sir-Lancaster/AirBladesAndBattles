@@ -142,8 +142,9 @@ public partial class GameManager : Node
 
     public void GoToMainMenu()
     {
-        CurrentMatch = new MatchConfig();
-        CurrentMode  = GameMode.SinglePlayer;
+        CurrentMatch    = new MatchConfig();
+        CurrentMode     = GameMode.SinglePlayer;
+        WinnerSlotIndex = -1;
         GetTree().ChangeSceneToFile(MainMenuScene);
     }
 

@@ -2,6 +2,16 @@
 
 [ext_resource type="Texture2D" uid="uid://by01u7ctxpxa1" path="res://Assets/Icons/Halberd_Crossed.png" id="1_dpowv"]
 [ext_resource type="Script" uid="uid://di70eh4bwvpan" path="res://Scripts/Multiplayer/Join.cs" id="1_yui1h"]
+[ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="3_gjaco"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ake3q"]
+shader = ExtResource("3_gjaco")
+shader_parameter/speed = 0.5
+shader_parameter/blob_size = 0.1
+shader_parameter/color_bg = Color(0.02, 0.04, 0.01, 1)
+shader_parameter/color_lava = Color(0.04, 0.82, 0.14, 1)
+shader_parameter/color_highlight = Color(0.55, 1, 0.6, 1)
+shader_parameter/color_glow = Color(0.4, 0.06666667, 0.6, 1)
 
 [node name="Join" type="Control" unique_id=1896761032]
 layout_mode = 3
@@ -10,13 +20,13 @@ script = ExtResource("1_yui1h")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1059253763]
 
-[node name="MainMenuButton" type="Button" parent="CanvasLayer" unique_id=2222222222]
+[node name="MainMenuButton" type="Button" parent="CanvasLayer" unique_id=-2072745074]
 offset_left = 10.0
 offset_top = 10.0
 offset_right = 170.0
 offset_bottom = 50.0
-text = "Main Menu"
 theme_override_font_sizes/font_size = 20
+text = "Main Menu"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=1405960122]
 anchors_preset = 8
@@ -58,3 +68,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Connect!"
 icon = ExtResource("1_dpowv")
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=693036496]
+z_index = -2
+material = SubResource("ShaderMaterial_ake3q")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

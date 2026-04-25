@@ -51,6 +51,11 @@ public partial class BattleManager : Node2D
     [Export] private Texture2D  _vampirePortrait;
 
     // -------------------------------------------------------------------------
+    // Match end — drag GameEnd.tscn here in the editor
+    // -------------------------------------------------------------------------
+    [Export] private PackedScene _gameEndScene;
+
+    // -------------------------------------------------------------------------
     // Countdown exports — wire in the editor
     // -------------------------------------------------------------------------
     [Export] private CanvasLayer        _countdownOverlay;
@@ -447,7 +452,22 @@ public partial class BattleManager : Node2D
     {
         _matchOver = true;
         GD.Print($"[BattleManager] Match over! Winner: peer {winnerPeerId}");
-        // TODO: navigate to results / main menu
+
+        if (_gameEndScene == null) return;
+
+        string charName = "Unknown";
+        if (winnerPeerId == -1)
+            charName = "Nobody";
+        else
+        {
+            PeerSlot winner = _peerSlots.Find(s => s.PeerId == winnerPeerId);
+            if (winner != null) charName = winner.CharName;
+        }
+
+        var gameEnd = _gameEndScene.Instantiate<GameEnd>();
+        gameEnd.OverrideWinnerName = charName;
+        gameEnd.DisconnectOnReturn = true;
+        AddChild(gameEnd);
     }
 
     // -------------------------------------------------------------------------
