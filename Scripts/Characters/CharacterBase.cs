@@ -425,4 +425,35 @@ public abstract partial class CharacterBase : CharacterBody2D, IDamageable
         if (!IsMultiplayerAuthority()) return;
         TakeDamage(damage);
     }
+
+    // Called by a remote attacker's LassoHandler when a grab arc begins.
+    // Stops this peer's own physics so it doesn't fight the arc positioning.
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    public void FreezeForLasso()
+    {
+        if (!IsMultiplayerAuthority()) return;
+        SetPhysicsProcess(false);
+    }
+
+    // Called when the grab arc completes to restore normal physics.
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    public void UnfreezeForLasso()
+    {
+        if (!IsMultiplayerAuthority()) return;
+        SetPhysicsProcess(true);
+    }
+
+    // Per-frame arc position sent by the attacker's LassoHandler.
+    // Applies locally and re-broadcasts via SyncState so all peers see the throw.
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.UnreliableOrdered)]
+    public void LassoPositionUpdate(Vector2 pos)
+    {
+        if (!IsMultiplayerAuthority()) return;
+        GlobalPosition = pos;
+        if (Multiplayer.MultiplayerPeer != null)
+            Rpc(nameof(SyncState), GlobalPosition, Velocity, (int)CurrentState, CurrentHP);
+    }
 }

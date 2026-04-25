@@ -399,7 +399,10 @@ public partial class BattleManager : Node2D
             {
                 _deathHandled.Remove(slot.PeerId);
                 dying?.QueueFree();
-                SpawnCharacter(slot.PeerId, slot.SpawnIndex);
+                // Defer one frame so the spawner sends its despawn message before the respawn message.
+                // QueueFree is asynchronous; without CallDeferred the spawn arrives on clients
+                // before the despawn, causing on_spawn_receive "has_node(name)" errors.
+                Callable.From(() => SpawnCharacter(slot.PeerId, slot.SpawnIndex)).CallDeferred();
             };
         }
     }
