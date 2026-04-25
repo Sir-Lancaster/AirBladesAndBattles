@@ -60,8 +60,8 @@ public partial class VampireAi : AiBaseClass
 		_sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		_spriteBasePosition = _sprite.Position;
 		RegisterAttack(245f, 295f, 0f, 150f, AttackUp);               // up
-		RegisterAttack(315f, 45f, 0f, 100f, AttackHorizontal);        // right
-		RegisterAttack(135f, 225f, 0f, 100f, AttackHorizontal);       // left
+		RegisterAttack(315f, 45f, 0f, 90f, AttackHorizontal);        // right
+		RegisterAttack(135f, 225f, 0f, 90f, AttackHorizontal);       // left
 		RegisterAttack(70f, 110f, 0f, 300f, AttackDown, () => !IsOnFloor()); // down air
 		RegisterAttack(245f, 295f, 0f, 600f, SpecialUp, isSpecial: true);   // up special
 		RegisterAttack(315f, 45f, 200f, 200f, SpecialHorizontal, isSpecial: true);  // right special
