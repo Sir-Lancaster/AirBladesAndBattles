@@ -2,11 +2,12 @@
 
 [ext_resource type="Shader" uid="uid://dwecftg7yfgpi" path="res://Scenes/Stages/Manor/Shaders/dusk.gdshader" id="1_7virt"]
 [ext_resource type="Shader" uid="uid://cq7n5rpg3lf4" path="res://Assets/Levels/Clocktower.gdshader" id="1_d8qje"]
-[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_ba1s0"]
 [ext_resource type="Shader" uid="uid://4gnba0a2dtcg" path="res://Scenes/Stages/Manor/Shaders/InteriorBrick.gdshader" id="2_tob7e"]
 [ext_resource type="PackedScene" uid="uid://cbh3qyifh3ij0" path="res://Scenes/Stages/Manor/Railing.tscn" id="3_2xjp8"]
 [ext_resource type="Material" uid="uid://b1t4ps2guh3d0" path="res://Scenes/Stages/Manor/Shaders/exterior_brick.tres" id="3_tob7e"]
 [ext_resource type="PackedScene" uid="uid://cwbfyq0ua8kfw" path="res://Scenes/Stages/Manor/Chandelier.tscn" id="3_vhx7h"]
+[ext_resource type="Script" uid="uid://ckonetfds4iwi" path="res://Scripts/Stages/Utility/KernelBadlandsCam.cs" id="7_vhx7h"]
+[ext_resource type="AudioStream" uid="uid://cxhivtl8e70os" path="res://Assets/Music/Dangerous.mp3" id="8_2xjp8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vhx7h"]
 shader = ExtResource("1_7virt")
@@ -252,7 +253,6 @@ scale = Vector2(3.3831158, 12.087892)
 shape = SubResource("RectangleShape2D_niasw")
 
 [node name="Pixelator" type="ColorRect" parent="." unique_id=1787882924]
-visible = false
 material = SubResource("ShaderMaterial_vvus4")
 layout_direction = 1
 offset_left = -220.0
@@ -266,7 +266,11 @@ material = SubResource("ShaderMaterial_pr151")
 use_parent_material = true
 position = Vector2(25038.209, 1090.7478)
 scale = Vector2(26.505554, 0.8646544)
-script = ExtResource("2_ba1s0")
+script = ExtResource("7_vhx7h")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1210724183]
 environment = SubResource("Environment_7virt")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1386686272]
+stream = ExtResource("8_2xjp8")
+autoplay = true
