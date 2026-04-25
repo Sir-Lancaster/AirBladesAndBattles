@@ -67,7 +67,7 @@ public partial class EvilEdwardAi : AiBaseClass
         RegisterAttack(65f, 115f, 0f, 150f, AttackDown, () => !IsOnFloor());
         // Neutral special — self-heal, used at any range when HP ≤ 50% and charges remain
         RegisterAttack(0f, 360f, 0f, 1000f, SpecialHorizontal,
-            () => _healCount < 2 && CurrentHP < MaxHP * 0.5f, isSpecial: true);
+            () => _healCount < 5 && CurrentHP < MaxHP * 0.5f, isSpecial: true);
         // Up special — halberd throw, target above at medium range
         RegisterAttack(225f, 315f, 150f, 500f, SpecialUp, isSpecial: true);
         base._Ready();
