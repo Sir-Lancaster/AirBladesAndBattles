@@ -26,5 +26,7 @@ public partial class MainMenu : Control
             GetTree().ChangeSceneToFile("res://Scenes/Multiplayer/JoinAndHost.tscn");
         };
         _quitButton.Pressed += GameManager.Instance.QuitGame;
+
+        _singlePlayerButton.GrabFocus();
     }
 }

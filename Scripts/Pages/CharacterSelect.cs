@@ -106,6 +106,8 @@ public partial class CharacterSelect : Control
         UpdateAiCountLabel();
         UpdateCharacterButtonStates();
         BuildSlotNodes();
+
+        _continueButton.GrabFocus();
     }
 
     private void EnterPickingPhase()
@@ -124,6 +126,8 @@ public partial class CharacterSelect : Control
         HighlightActiveSlot();
         UpdatePickingLabel();
         UpdateCharacterButtonStates();
+
+        _character1Button.GrabFocus();
     }
 
     // ── Button handlers ───────────────────────────────────────────────────────

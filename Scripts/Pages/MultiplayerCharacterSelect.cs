@@ -95,13 +95,14 @@ public partial class MultiplayerCharacterSelect : Control
         UpdateStocksLabel();
         UpdateCharacterButtonStates();
 
+        _character1Button.GrabFocus();
+
         if (isHost)
         {
-            var peers = new List<long> { (long)Multiplayer.GetUniqueId() };
-            foreach (long id in NetworkManager.Instance.ConnectedPeers)
-                peers.Add(id);
-
-            Rpc(nameof(ReceivePeerList), string.Join(",", peers));
+            // ConnectedPeers already includes the host (peer 1) — sort so the host
+            // is always slot 0 / "Player 1", matching BattleManager's ordering.
+            var sorted = NetworkManager.Instance.ConnectedPeers.OrderBy(id => id);
+            Rpc(nameof(ReceivePeerList), string.Join(",", sorted));
         }
     }
 

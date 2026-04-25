@@ -4,6 +4,14 @@ using System.Net.Sockets;
 
 public partial class JoinAndHost : Control
 {
+	[Export] private Button _hostButton;
+	[Export] private Button _joinButton;
+
+	public override void _Ready()
+	{
+		_hostButton?.GrabFocus();
+	}
+
 	private void _on_host_button_pressed()
 	{
 		Error err = NetworkManager.Instance.StartHost();
