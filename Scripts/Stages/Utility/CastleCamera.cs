@@ -8,7 +8,7 @@ public partial class CastleCamera : Camera2D
     private const float MinY = 0f;
     private const float MaxY = 1200f;
 
-    private const float MinZoom = 0.5f;
+    private const float MinZoom = 0.25f;
     private const float MaxZoom = 1.0f;
     private const float Padding = 300f;
     private const float ZoomSpeed = 2.0f;
