@@ -20,6 +20,7 @@ public partial class Steampunk : CharacterBase
 	private bool _hasUsedAirUpAttack;
 	private bool _wasOnFloor = true;
 	private SteampunkProjectile _activeProjectile;
+	private float _specialCooldownTimer = 0f;
 	private static readonly PackedScene HitboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Hitbox.tscn");
 	private static readonly PackedScene UpboxScene = GD.Load<PackedScene>("res://Scenes/Steampunk/Upbox.tscn");
 	private static readonly PackedScene Hitbox2Scene = GD.Load<PackedScene>("res://Scenes/Steampunk/Hitbox2.tscn");
@@ -38,10 +39,13 @@ public partial class Steampunk : CharacterBase
 		{
 			Vector2 move = Input.GetVector("move_left", "move_right", "move_up", "move_down");
 
+			if (_specialCooldownTimer > 0f)
+				_specialCooldownTimer -= (float)delta;
+
 			if (!Input.IsActionPressed("special"))
 				_specialUpBlocked = false;
 
-			if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && !_specialUpBlocked)
+			if (Input.IsActionPressed("special") && move.Y < -0.5f && !_holdingSpecialUp && !_specialUpBlocked && _specialCooldownTimer <= 0f)
 			{
 				if (CurrentState != CharacterState.HitStun &&
 					CurrentState != CharacterState.Dead &&
@@ -194,12 +198,18 @@ public partial class Steampunk : CharacterBase
 
 	protected override void OnSpecialPerformed(SpecialDirection direction, int damage)
 	{
+		if (_specialCooldownTimer > 0f)
+		{
+			SetState(CharacterState.Idle);
+			return;
+		}
 		if (direction == SpecialDirection.Neutral && _activeProjectile != null && IsInstanceValid(_activeProjectile))
 		{
 			SetState(CharacterState.Idle);
 			return;
 		}
 		BroadcastAnimation(GetSpecialAnim(direction));
+		_specialCooldownTimer = SpecialAttackRecovery;
 		if (direction != SpecialDirection.Up)
 			EndAttackAfter(BasicAttackRecovery);
 		SpawnSpecialHitbox(direction, damage);
