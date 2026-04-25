@@ -122,6 +122,39 @@ public partial class KernelCowboy : CharacterBase
         // Horizontal and Up attacks are whip hitboxes — end when animation finishes.
         EndAttackOnAnimationFinished();
         SpawnAttackHitbox(direction, damage);
+
+        if (Multiplayer.MultiplayerPeer != null && IsMultiplayerAuthority())
+        {
+            float facing = _KernelCowboy.FlipH ? -1f : 1f;
+            Rpc(nameof(SpawnWhipHitboxRpc), (int)direction, facing);
+        }
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void SpawnWhipHitboxRpc(int dirInt, float facing)
+    {
+        var dir = (AttackDirection)dirInt;
+        var hitbox = HitboxScene.Instantiate<Hitbox>();
+        var shape = hitbox.GetNode<CollisionShape2D>("CollisionShape2D");
+
+        switch (dir)
+        {
+            case AttackDirection.Horizontal:
+                shape.Shape = MakeCapsule(30f, 100f);
+                hitbox.Position = new Vector2(70f * facing, 40f);
+                hitbox.RotationDegrees = 0f;
+                break;
+            case AttackDirection.Up:
+                shape.Shape = MakeCapsule(45f, 100f);
+                hitbox.Position = new Vector2(0f, -40f);
+                hitbox.RotationDegrees = -90f;
+                break;
+        }
+
+        AddChild(hitbox);
+        hitbox.Monitoring = false; // visual-only on remote peers — damage is routed by the authority via ReceiveHitRpc
+        GetTree().CreateTimer(AttackRecovery).Timeout += () => { if (IsInstanceValid(hitbox)) hitbox.QueueFree(); };
     }
 
     protected override void OnSpecialPerformed(SpecialDirection direction, int damage)

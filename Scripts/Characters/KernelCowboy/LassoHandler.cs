@@ -258,32 +258,59 @@ public partial class LassoHandler : Node
         _headPos = AnchorPos();
         _ropeVisible = true;
         ShowFirstFrame();
+
+        if (Multiplayer.MultiplayerPeer != null && _owner.IsMultiplayerAuthority())
+            Rpc(nameof(RpcLaunchLasso), facing);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcLaunchLasso(float facing)
+    {
+        _lassoDirection = new Vector2(facing, 0f);
+        _lassoTraveled = 0f;
+        _lassoActive = true; // no Area2D on remote peers — visual simulation only
+        _headPos = AnchorPos();
+        _ropeVisible = true;
+        ShowFirstFrame();
     }
 
     private void TickNeutralLasso(float dt)
     {
-        if (!_lassoActive || !IsInstanceValid(_lassoArea)) return;
+        if (!_lassoActive) return;
 
         float move = LassoSpeed * dt;
         _lassoTraveled += move;
-        _lassoArea.GlobalPosition += _lassoDirection * move;
 
-        // Keep visual head in sync with the hitbox.
-        _headPos = _lassoArea.GlobalPosition;
+        if (_lassoArea != null && IsInstanceValid(_lassoArea))
+        {
+            _lassoArea.GlobalPosition += _lassoDirection * move;
+            _headPos = _lassoArea.GlobalPosition;
+        }
+        else
+        {
+            // Remote peer: no Area2D — simulate head position for the rope visual.
+            _headPos = _owner.GlobalPosition + _lassoDirection * _lassoTraveled;
+        }
 
         if (_lassoTraveled >= LassoRange)
         {
             FreeArea(ref _lassoArea);
             _lassoActive = false;
             _ropeVisible = false;
-            OnLassoMissed?.Invoke();
+            if (_owner.IsMultiplayerAuthority())
+                OnLassoMissed?.Invoke();
         }
     }
 
     private void TickNeutralArc(float dt)
     {
         if (!IsLassoing) return;
-        if (!IsInstanceValid(_lassoTarget))
+
+        bool isAuthority = _owner.IsMultiplayerAuthority();
+
+        // On authority, abort if the grabbed target disappeared (freed mid-match).
+        if (isAuthority && !IsInstanceValid(_lassoTarget))
         {
             IsLassoing = false;
             _ropeVisible = false;
@@ -299,23 +326,44 @@ public partial class LassoHandler : Node
         // Fall (0.5→1): quadratic ease-in so the target accelerates and slams abruptly into the ground.
         float arcOffset;
         if (_arcT <= 0.5f)
-        {
             arcOffset = Mathf.Sin(_arcT * Mathf.Pi) * ArcHeight;
+        else
+        {
+            float fallT = (_arcT - 0.5f) * 2f;
+            arcOffset = (1f - fallT * fallT) * ArcHeight;
+        }
+
+        Vector2 arcPos = new Vector2(x, Mathf.Lerp(_arcStart.Y, _arcEnd.Y, _arcT) - arcOffset);
+
+        if (isAuthority)
+        {
+            _lassoTarget.GlobalPosition = arcPos;
+            _headPos = arcPos;
+
+            // Push arc position to the target's authority so it re-broadcasts via SyncState.
+            if (Multiplayer.MultiplayerPeer != null && _lassoTarget is CharacterBase targetCb)
+            {
+                long targetAuth = targetCb.GetMultiplayerAuthority();
+                if (targetAuth != Multiplayer.GetUniqueId())
+                    targetCb.RpcId(targetAuth, nameof(CharacterBase.LassoPositionUpdate), arcPos);
+            }
         }
         else
         {
-            float fallT = (_arcT - 0.5f) * 2f; // remap 0.5→1 into 0→1
-            arcOffset = (1f - fallT * fallT) * ArcHeight; // starts fast at peak, slams hard at end
+            // Remote peer: just drive the rope visual — target position is synced via SyncState.
+            _headPos = arcPos;
         }
 
-        float y = Mathf.Lerp(_arcStart.Y, _arcEnd.Y, _arcT) - arcOffset;
-        _lassoTarget.GlobalPosition = new Vector2(x, y);
-
-        // Rope follows the captured target during the arc.
-        _headPos = _lassoTarget.GlobalPosition;
-
         if (_arcT >= 1f)
-            ExecuteSlam();
+        {
+            if (isAuthority)
+                ExecuteSlam();
+            else
+            {
+                IsLassoing = false;
+                _ropeVisible = false;
+            }
+        }
     }
 
     private void OnNeutralBodyEntered(Node2D body)
@@ -331,11 +379,37 @@ public partial class LassoHandler : Node
         _arcStart = target.GlobalPosition;
         _arcEnd = _owner.GlobalPosition + new Vector2(-_lassoDirection.X * LandingOffset, 0f);
 
-        // Freeze the target so gravity and MoveAndSlide don't fight our arc positioning.
+        // Freeze the target locally (stops MoveAndSlide on this peer's replica).
         _lassoTarget.SetPhysicsProcess(false);
+
+        // Also freeze the target on its own authority so it stops sending SyncState
+        // (which would otherwise override KC's arc positioning every frame).
+        if (Multiplayer.MultiplayerPeer != null && target is CharacterBase targetCb)
+        {
+            long targetAuth = targetCb.GetMultiplayerAuthority();
+            if (targetAuth != Multiplayer.GetUniqueId())
+                targetCb.RpcId(targetAuth, nameof(CharacterBase.FreezeForLasso));
+        }
 
         PlayHitAnimation();
         OnLassoConnected?.Invoke();
+
+        // Sync arc parameters to remote peers so the rope visual follows the throw.
+        if (Multiplayer.MultiplayerPeer != null && _owner.IsMultiplayerAuthority())
+            Rpc(nameof(RpcLassoArcStart), _arcStart, _arcEnd);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcLassoArcStart(Vector2 arcStart, Vector2 arcEnd)
+    {
+        _lassoActive = false;
+        IsLassoing = true;
+        _arcT = 0f;
+        _arcStart = arcStart;
+        _arcEnd = arcEnd;
+        _headPos = arcStart;
+        PlayHitAnimation();
     }
 
     private void ExecuteSlam()
@@ -347,12 +421,20 @@ public partial class LassoHandler : Node
         {
             Vector2 landingPos = _lassoTarget.GlobalPosition;
 
-            // Re-enable physics before dealing damage so hitstun/knockback work normally.
+            // Re-enable physics on the replica on this peer.
             _lassoTarget.SetPhysicsProcess(true);
+
+            // Also unfreeze the target on its own authority so SyncState resumes.
+            if (Multiplayer.MultiplayerPeer != null && _lassoTarget is CharacterBase unfreezeTarget)
+            {
+                long targetAuth = unfreezeTarget.GetMultiplayerAuthority();
+                if (targetAuth != Multiplayer.GetUniqueId())
+                    unfreezeTarget.RpcId(targetAuth, nameof(CharacterBase.UnfreezeForLasso));
+            }
+
             if (_lassoTarget is CharacterBase cb) cb.TakeDamage(SlamDamage);
             else if (_lassoTarget is AiBaseClass ai) ai.TakeDamage(SlamDamage);
 
-            // Splash hitbox at the landing point — damages any bystander standing nearby.
             OnSlamSplash?.Invoke(landingPos);
         }
         _lassoTarget = null;
@@ -382,28 +464,60 @@ public partial class LassoHandler : Node
         _headPos = AnchorPos();
         _ropeVisible = true;
         ShowFirstFrame();
+
+        if (Multiplayer.MultiplayerPeer != null && _owner.IsMultiplayerAuthority())
+            Rpc(nameof(RpcLaunchDownAirLasso));
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcLaunchDownAirLasso()
+    {
+        _downAirTraveled = 0f;
+        _downAirPullElapsed = 0f;
+        _shockwaveFired = false;
+        _downAirActive = true; // no Area2D on remote peers — visual simulation only
+        _headPos = AnchorPos();
+        _ropeVisible = true;
+        ShowFirstFrame();
     }
 
     private void TickDownAirLasso(float dt)
     {
-        if (!_downAirActive || !IsInstanceValid(_downAirArea)) return;
+        if (!_downAirActive) return;
 
         float move = DownAirLassoSpeed * dt;
         _downAirTraveled += move;
-        _downAirArea.GlobalPosition += Vector2.Down * move;
 
-        _headPos = _downAirArea.GlobalPosition;
+        if (_downAirArea != null && IsInstanceValid(_downAirArea))
+        {
+            _downAirArea.GlobalPosition += Vector2.Down * move;
+            _headPos = _downAirArea.GlobalPosition;
+        }
+        else
+        {
+            // Remote peer: simulate head position visually without the area hitbox.
+            _headPos = _owner.GlobalPosition + Vector2.Down * _downAirTraveled;
+        }
 
         if (_downAirTraveled >= DownAirLassoRange)
         {
-            GD.Print("DownAir: max range — pulling to furthest point");
-            _downAirTarget = _downAirArea.GlobalPosition;
+            Vector2 hookPoint = (_downAirArea != null && IsInstanceValid(_downAirArea))
+                ? _downAirArea.GlobalPosition : _headPos;
             FreeArea(ref _downAirArea);
             _downAirActive = false;
-            _downAirPulling = true;
 
-            PlayHitAnimation();
-            OnFloorHooked?.Invoke(_downAirTarget);
+            if (_owner.IsMultiplayerAuthority())
+            {
+                GD.Print("DownAir: max range — pulling to furthest point");
+                _downAirTarget = hookPoint;
+                _downAirPulling = true;
+                PlayHitAnimation();
+                OnFloorHooked?.Invoke(_downAirTarget);
+                if (Multiplayer.MultiplayerPeer != null)
+                    Rpc(nameof(RpcDownAirHooked), _downAirTarget);
+            }
+            // Remote peer: RpcDownAirHooked will start the pull phase with the correct hook point.
         }
     }
 
@@ -419,29 +533,30 @@ public partial class LassoHandler : Node
         // Rope head stays fixed at the hook point while the owner flies to it.
         _headPos = _downAirTarget;
 
+        bool isAuthority = _owner.IsMultiplayerAuthority();
         bool arrived  = toTarget.Length() <= step;
         bool timedOut = _downAirPullElapsed >= 1.5f;
-        bool landed   = _owner.IsOnFloor();
+        bool landed   = isAuthority && _owner.IsOnFloor();
 
         if (landed || arrived || timedOut)
         {
-            if (arrived)
+            if (isAuthority && arrived)
                 _owner.GlobalPosition = _downAirTarget;
 
             _downAirPulling = false;
             _downAirPullElapsed = 0f;
             _ropeVisible = false;
 
-            // Shockwave and attack-end fire together the instant the character touches down.
-            if (!_shockwaveFired)
+            if (!_shockwaveFired && isAuthority)
             {
                 _shockwaveFired = true;
                 OnStompLanded?.Invoke(_owner.GlobalPosition);
             }
 
-            OnDownAirComplete?.Invoke();
+            if (isAuthority)
+                OnDownAirComplete?.Invoke();
         }
-        else
+        else if (isAuthority)
         {
             // Zero velocity so MoveAndSlide doesn't fight our direct position update.
             _owner.Velocity = Vector2.Zero;
@@ -469,9 +584,25 @@ public partial class LassoHandler : Node
 
         PlayHitAnimation();
 
-        // Defer the callback so KernelCowboy's AddChild (spawning the stomp hitbox) doesn't
-        // fire inside a BodyEntered physics callback — Godot forbids that during query flushing.
-        Callable.From(() => OnFloorHooked?.Invoke(_downAirTarget)).CallDeferred();
+        // Defer so KernelCowboy's AddChild (stomp hitbox) doesn't fire inside a physics callback.
+        Callable.From(() =>
+        {
+            OnFloorHooked?.Invoke(_downAirTarget);
+            if (Multiplayer.MultiplayerPeer != null && _owner.IsMultiplayerAuthority())
+                Rpc(nameof(RpcDownAirHooked), _downAirTarget);
+        }).CallDeferred();
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcDownAirHooked(Vector2 hookPoint)
+    {
+        FreeArea(ref _downAirArea); // safe — null on remote peers
+        _downAirActive = false;
+        _downAirTarget = hookPoint;
+        _downAirPulling = true;
+        _headPos = hookPoint;
+        PlayHitAnimation();
     }
 
     // ── Recovery lasso (special up) ───────────────────────────────────────────

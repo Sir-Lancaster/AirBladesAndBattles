@@ -134,7 +134,7 @@ public partial class Hitbox : Area2D
             return;
         }
 
-        bool isNetworked = GameManager.Instance?.CurrentMode == GameManager.GameMode.Multiplayer;
+        bool isNetworked = Multiplayer.MultiplayerPeer != null;
 
         if (isNetworked && target is CharacterBase targetChar)
         {
