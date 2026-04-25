@@ -1,13 +1,23 @@
 [gd_scene format=3 uid="uid://xfheol2gx14k"]
 
-[ext_resource type="Script" uid="uid://cwqs6xhkn5mch" path="res://Scripts/Pages/CharacterSelect.cs" id="1_ud5kc"]
-[ext_resource type="Texture2D" uid="uid://bubab35tmtews" path="res://Assets/Icons/Arrow.png" id="2_lr6k0"]
+[ext_resource type="Script" uid="uid://3nle72uojxji" path="res://Scripts/Pages/CharacterSelect.cs" id="1_ud5kc"]
+[ext_resource type="Texture2D" uid="uid://cxct3fbfri0a0" path="res://Assets/Icons/Arrow.png" id="2_lr6k0"]
 [ext_resource type="PackedScene" uid="uid://dnck31hi7mucy" path="res://Scenes/Pages/CharacterSelect/PlayerSlot.tscn" id="2_luqvi"]
 [ext_resource type="Texture2D" uid="uid://bkp0j0tgyjdc1" path="res://Assets/Icons/Down.png" id="3_oolbc"]
 [ext_resource type="Texture2D" uid="uid://coyve02ynppah" path="res://Assets/Characters/KernelCowboy/KCFace.png" id="3_q3j8y"]
 [ext_resource type="Texture2D" uid="uid://d3f3g4803afjp" path="res://Assets/Characters/SirEdward/Headshot.png" id="4_asw60"]
 [ext_resource type="Texture2D" uid="uid://bg0ngcrps2mr8" path="res://Assets/Characters/steampunk/portrait_steampunk.png" id="5_ohyu7"]
 [ext_resource type="Texture2D" uid="uid://c5yih53bdif0c" path="res://Assets/Characters/Vampire/VampireHeadSprite.png" id="6_kxbv1"]
+[ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="9_luqvi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q3j8y"]
+shader = ExtResource("9_luqvi")
+shader_parameter/speed = 0.5
+shader_parameter/blob_size = 0.1
+shader_parameter/color_bg = Color(0, 0.101960786, 0.18039216, 1)
+shader_parameter/color_lava = Color(0, 0.8, 1, 1)
+shader_parameter/color_highlight = Color(0.4, 1, 1, 1)
+shader_parameter/color_glow = Color(0, 0.26666668, 0.4, 1)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_srw28"]
 load_path = "res://.godot/imported/Arrow.png-a641c21e7fa74c1f44a1eda108f8400b.ctex"
@@ -55,6 +65,11 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=1176683656]
+z_index = -2
+material = SubResource("ShaderMaterial_q3j8y")
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1380232356]
 layout_mode = 2

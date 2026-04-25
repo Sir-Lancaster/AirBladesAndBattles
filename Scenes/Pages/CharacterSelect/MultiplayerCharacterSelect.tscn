@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d1ltgmx4ooj3l"]
 
-[ext_resource type="Script" uid="uid://5ocfviaemcdq" path="res://Scripts/Pages/MultiplayerCharacterSelect.cs" id="1_ur2b2"]
+[ext_resource type="Script" uid="uid://dyjmhs8pnc06h" path="res://Scripts/Pages/MultiplayerCharacterSelect.cs" id="1_ur2b2"]
 [ext_resource type="PackedScene" uid="uid://dnck31hi7mucy" path="res://Scenes/Pages/CharacterSelect/PlayerSlot.tscn" id="2_btatq"]
 [ext_resource type="Texture2D" uid="uid://coyve02ynppah" path="res://Assets/Characters/KernelCowboy/KCFace.png" id="3_3kspl"]
 [ext_resource type="Texture2D" uid="uid://d3f3g4803afjp" path="res://Assets/Characters/SirEdward/Headshot.png" id="4_kfnka"]
@@ -8,9 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://bkp0j0tgyjdc1" path="res://Assets/Icons/Down.png" id="6_7vbyb"]
 [ext_resource type="Texture2D" uid="uid://c5yih53bdif0c" path="res://Assets/Characters/Vampire/VampireHeadSprite.png" id="7_btatq"]
 [ext_resource type="Shader" uid="uid://cb4514rfh40mm" path="res://Scripts/Pages/LavaLampBackground.gdshader" id="8_3kspl"]
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_bxq2a"]
-load_path = "res://.godot/imported/Arrow.png-a641c21e7fa74c1f44a1eda108f8400b.ctex"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kfnka"]
 shader = ExtResource("8_3kspl")
@@ -20,6 +17,9 @@ shader_parameter/color_bg = Color(0.02, 0.04, 0.01, 1)
 shader_parameter/color_lava = Color(0.04, 0.82, 0.14, 1)
 shader_parameter/color_highlight = Color(0.55, 1, 0.6, 1)
 shader_parameter/color_glow = Color(0, 0.3, 0.04, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_bxq2a"]
+load_path = "res://.godot/imported/Arrow.png-a641c21e7fa74c1f44a1eda108f8400b.ctex"
 
 [node name="MulCharSelect" type="Control" unique_id=1540081624 node_paths=PackedStringArray("_character1Button", "_character2Button", "_character3Button", "_character4Button", "_backButton", "_startMatchButton", "_stocksLabel", "_stocksUpButton", "_stocksDownButton", "_slotsContainer")]
 layout_mode = 3
@@ -51,6 +51,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=2042188810]
+z_index = -2
+material = SubResource("ShaderMaterial_kfnka")
+layout_mode = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer" unique_id=1001528176]
 layout_mode = 2
@@ -169,8 +174,3 @@ text = "Back "
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Continue "
-
-[node name="ColorRect" type="ColorRect" parent="MarginContainer" unique_id=2042188810]
-z_index = -2
-material = SubResource("ShaderMaterial_kfnka")
-layout_mode = 2
