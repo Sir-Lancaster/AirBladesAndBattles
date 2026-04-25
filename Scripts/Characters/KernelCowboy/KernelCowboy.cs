@@ -74,10 +74,6 @@ public partial class KernelCowboy : CharacterBase
 
     protected override void PlayAnimationByName(string animName) => _KernelCowboy.Play(animName);
 
-    protected override void PlayAnimationByName(string animName) => _KernelCowboy.Play(animName);
-
-    protected override void PlayAnimationByName(string animName) => _KernelCowboy.Play(animName);
-
     protected override void PlayAnimationForState(CharacterState state)
     {
         string anim = state switch
