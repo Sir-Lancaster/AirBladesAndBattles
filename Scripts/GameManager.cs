@@ -74,6 +74,38 @@ public partial class GameManager : Node
         // Enforce singleton — if a duplicate somehow gets created, discard it.
         if (Instance != null) { QueueFree(); return; }
         Instance = this;
+
+        RegisterControllerInputs();
+    }
+
+    // Ensures gamepad buttons and left-stick are mapped to the built-in ui_* actions.
+    // Safe to call multiple times — duplicate events are skipped.
+    private static void RegisterControllerInputs()
+    {
+        AddJoyButton("ui_accept", JoyButton.A);
+        AddJoyButton("ui_cancel", JoyButton.B);
+        AddJoyButton("ui_up",    JoyButton.DpadUp);
+        AddJoyButton("ui_down",  JoyButton.DpadDown);
+        AddJoyButton("ui_left",  JoyButton.DpadLeft);
+        AddJoyButton("ui_right", JoyButton.DpadRight);
+        AddJoyAxis("ui_up",    JoyAxis.LeftY, -1f);
+        AddJoyAxis("ui_down",  JoyAxis.LeftY,  1f);
+        AddJoyAxis("ui_left",  JoyAxis.LeftX, -1f);
+        AddJoyAxis("ui_right", JoyAxis.LeftX,  1f);
+    }
+
+    private static void AddJoyButton(string action, JoyButton button)
+    {
+        var ev = new InputEventJoypadButton { ButtonIndex = button };
+        if (!InputMap.ActionHasEvent(action, ev))
+            InputMap.ActionAddEvent(action, ev);
+    }
+
+    private static void AddJoyAxis(string action, JoyAxis axis, float value)
+    {
+        var ev = new InputEventJoypadMotion { Axis = axis, AxisValue = value };
+        if (!InputMap.ActionHasEvent(action, ev))
+            InputMap.ActionAddEvent(action, ev);
     }
 
     // -------------------------------------------------------------------------

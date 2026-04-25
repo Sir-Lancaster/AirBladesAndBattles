@@ -95,6 +95,8 @@ public partial class MultiplayerCharacterSelect : Control
         UpdateStocksLabel();
         UpdateCharacterButtonStates();
 
+        _character1Button.GrabFocus();
+
         if (isHost)
         {
             // ConnectedPeers already includes the host (peer 1) — sort so the host

@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://celqjhpdl1dq2"]
 
-[ext_resource type="Texture2D" uid="uid://c1gnnclnvbs4i" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="1_ac11a"]
-[ext_resource type="Script" uid="uid://bbs5lj1oakl7h" path="res://Scripts/Multiplayer/JoinAndHost.cs" id="1_uemc7"]
+[ext_resource type="Texture2D" uid="uid://belmq35pog31p" path="res://Assets/Characters/SirEdward/Projectile/Halberd.png" id="1_ac11a"]
+[ext_resource type="Script" uid="uid://ce1ctfmygopdl" path="res://Scripts/Multiplayer/JoinAndHost.cs" id="1_uemc7"]
 [ext_resource type="Texture2D" uid="uid://by01u7ctxpxa1" path="res://Assets/Icons/Halberd_Crossed.png" id="2_5tgta"]
 
-[node name="JoinAndHost" type="Control" unique_id=882776453]
+[node name="JoinAndHost" type="Control" unique_id=882776453 node_paths=PackedStringArray("_hostButton", "_joinButton")]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -16,6 +16,8 @@ grow_vertical = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
 script = ExtResource("1_uemc7")
+_hostButton = NodePath("CanvasLayer/VBoxContainer/HBoxContainer/HostButton")
+_joinButton = NodePath("CanvasLayer/VBoxContainer/HBoxContainer/JoinButton")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=126293264]
 

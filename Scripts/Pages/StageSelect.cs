@@ -74,6 +74,8 @@ public partial class StageSelect : Control
 
         // Dim all stage buttons to start so the golden highlight is clearly meaningful.
         UpdateButtonVisuals();
+
+        _stage1Button.GrabFocus();
     }
 
     // ── Button handlers ───────────────────────────────────────────────────────
