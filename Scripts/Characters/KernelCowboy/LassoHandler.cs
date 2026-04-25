@@ -464,28 +464,60 @@ public partial class LassoHandler : Node
         _headPos = AnchorPos();
         _ropeVisible = true;
         ShowFirstFrame();
+
+        if (Multiplayer.MultiplayerPeer != null && _owner.IsMultiplayerAuthority())
+            Rpc(nameof(RpcLaunchDownAirLasso));
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcLaunchDownAirLasso()
+    {
+        _downAirTraveled = 0f;
+        _downAirPullElapsed = 0f;
+        _shockwaveFired = false;
+        _downAirActive = true; // no Area2D on remote peers — visual simulation only
+        _headPos = AnchorPos();
+        _ropeVisible = true;
+        ShowFirstFrame();
     }
 
     private void TickDownAirLasso(float dt)
     {
-        if (!_downAirActive || !IsInstanceValid(_downAirArea)) return;
+        if (!_downAirActive) return;
 
         float move = DownAirLassoSpeed * dt;
         _downAirTraveled += move;
-        _downAirArea.GlobalPosition += Vector2.Down * move;
 
-        _headPos = _downAirArea.GlobalPosition;
+        if (_downAirArea != null && IsInstanceValid(_downAirArea))
+        {
+            _downAirArea.GlobalPosition += Vector2.Down * move;
+            _headPos = _downAirArea.GlobalPosition;
+        }
+        else
+        {
+            // Remote peer: simulate head position visually without the area hitbox.
+            _headPos = _owner.GlobalPosition + Vector2.Down * _downAirTraveled;
+        }
 
         if (_downAirTraveled >= DownAirLassoRange)
         {
-            GD.Print("DownAir: max range — pulling to furthest point");
-            _downAirTarget = _downAirArea.GlobalPosition;
+            Vector2 hookPoint = (_downAirArea != null && IsInstanceValid(_downAirArea))
+                ? _downAirArea.GlobalPosition : _headPos;
             FreeArea(ref _downAirArea);
             _downAirActive = false;
-            _downAirPulling = true;
 
-            PlayHitAnimation();
-            OnFloorHooked?.Invoke(_downAirTarget);
+            if (_owner.IsMultiplayerAuthority())
+            {
+                GD.Print("DownAir: max range — pulling to furthest point");
+                _downAirTarget = hookPoint;
+                _downAirPulling = true;
+                PlayHitAnimation();
+                OnFloorHooked?.Invoke(_downAirTarget);
+                if (Multiplayer.MultiplayerPeer != null)
+                    Rpc(nameof(RpcDownAirHooked), _downAirTarget);
+            }
+            // Remote peer: RpcDownAirHooked will start the pull phase with the correct hook point.
         }
     }
 
@@ -501,29 +533,30 @@ public partial class LassoHandler : Node
         // Rope head stays fixed at the hook point while the owner flies to it.
         _headPos = _downAirTarget;
 
+        bool isAuthority = _owner.IsMultiplayerAuthority();
         bool arrived  = toTarget.Length() <= step;
         bool timedOut = _downAirPullElapsed >= 1.5f;
-        bool landed   = _owner.IsOnFloor();
+        bool landed   = isAuthority && _owner.IsOnFloor();
 
         if (landed || arrived || timedOut)
         {
-            if (arrived)
+            if (isAuthority && arrived)
                 _owner.GlobalPosition = _downAirTarget;
 
             _downAirPulling = false;
             _downAirPullElapsed = 0f;
             _ropeVisible = false;
 
-            // Shockwave and attack-end fire together the instant the character touches down.
-            if (!_shockwaveFired)
+            if (!_shockwaveFired && isAuthority)
             {
                 _shockwaveFired = true;
                 OnStompLanded?.Invoke(_owner.GlobalPosition);
             }
 
-            OnDownAirComplete?.Invoke();
+            if (isAuthority)
+                OnDownAirComplete?.Invoke();
         }
-        else
+        else if (isAuthority)
         {
             // Zero velocity so MoveAndSlide doesn't fight our direct position update.
             _owner.Velocity = Vector2.Zero;
@@ -551,9 +584,25 @@ public partial class LassoHandler : Node
 
         PlayHitAnimation();
 
-        // Defer the callback so KernelCowboy's AddChild (spawning the stomp hitbox) doesn't
-        // fire inside a BodyEntered physics callback — Godot forbids that during query flushing.
-        Callable.From(() => OnFloorHooked?.Invoke(_downAirTarget)).CallDeferred();
+        // Defer so KernelCowboy's AddChild (stomp hitbox) doesn't fire inside a physics callback.
+        Callable.From(() =>
+        {
+            OnFloorHooked?.Invoke(_downAirTarget);
+            if (Multiplayer.MultiplayerPeer != null && _owner.IsMultiplayerAuthority())
+                Rpc(nameof(RpcDownAirHooked), _downAirTarget);
+        }).CallDeferred();
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = false,
+         TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+    private void RpcDownAirHooked(Vector2 hookPoint)
+    {
+        FreeArea(ref _downAirArea); // safe — null on remote peers
+        _downAirActive = false;
+        _downAirTarget = hookPoint;
+        _downAirPulling = true;
+        _headPos = hookPoint;
+        PlayHitAnimation();
     }
 
     // ── Recovery lasso (special up) ───────────────────────────────────────────
