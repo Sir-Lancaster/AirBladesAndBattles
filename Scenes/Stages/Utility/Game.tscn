@@ -6,12 +6,20 @@
 [ext_resource type="Texture2D" uid="uid://bg0ngcrps2mr8" path="res://Assets/Characters/steampunk/portrait_steampunk.png" id="4_ieqa8"]
 [ext_resource type="Texture2D" uid="uid://c5yih53bdif0c" path="res://Assets/Characters/Vampire/VampireHeadSprite.png" id="5_nyo5q"]
 [ext_resource type="PackedScene" uid="uid://bm26xivwe1tmw" path="res://Scenes/Stages/Utility/GameHUD.tscn" id="6_a0m3m"]
+[ext_resource type="AudioStream" uid="uid://c60lsbjcphbsa" path="res://Assets/Music/Three.mp3" id="7_nyo5q"]
+[ext_resource type="AudioStream" uid="uid://hqqkqrn3ivyi" path="res://Assets/Music/Two.mp3" id="8_a0m3m"]
+[ext_resource type="AudioStream" uid="uid://bcsrhwtjjl6q6" path="res://Assets/Music/One.mp3" id="9_6edmi"]
+[ext_resource type="AudioStream" uid="uid://beiucaqw3msy6" path="res://Assets/Music/Fight.mp3" id="10_xxgol"]
 
-[node name="Game" type="Node2D" unique_id=1253827890 node_paths=PackedStringArray("_gameHUD", "_countdownOverlay", "_countdownLabel")]
+[node name="Game" type="Node2D" unique_id=1253827890 node_paths=PackedStringArray("_gameHUD", "_countdownOverlay", "_countdownLabel", "_threeAudio", "_twoAudio", "_oneAudio", "_fightAudio")]
 script = ExtResource("1_0i360")
 _gameHUD = NodePath("GameHud")
 _countdownOverlay = NodePath("CanvasLayer")
 _countdownLabel = NodePath("CanvasLayer/VBoxContainer/HBoxContainer/Label")
+_threeAudio = NodePath("Three")
+_twoAudio = NodePath("Two")
+_oneAudio = NodePath("One")
+_fightAudio = NodePath("Fight")
 _kernelCowboyPortrait = ExtResource("2_rra87")
 _sirEdwardPortrait = ExtResource("3_p6b51")
 _steampunkPortrait = ExtResource("4_ieqa8")
@@ -44,3 +52,15 @@ theme_override_constants/outline_size = 50
 theme_override_constants/shadow_outline_size = 80
 theme_override_font_sizes/font_size = 60
 text = "3"
+
+[node name="Three" type="AudioStreamPlayer" parent="." unique_id=1942242322]
+stream = ExtResource("7_nyo5q")
+
+[node name="Two" type="AudioStreamPlayer" parent="." unique_id=554521054]
+stream = ExtResource("8_a0m3m")
+
+[node name="One" type="AudioStreamPlayer" parent="." unique_id=760792598]
+stream = ExtResource("9_6edmi")
+
+[node name="Fight" type="AudioStreamPlayer" parent="." unique_id=651419420]
+stream = ExtResource("10_xxgol")

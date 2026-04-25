@@ -55,8 +55,15 @@ public partial class BattleManager : Node2D
     // -------------------------------------------------------------------------
     [Export] private CanvasLayer        _countdownOverlay;
     [Export] private Label              _countdownLabel;
-    [Export] private AudioStreamPlayer  _tickAudio;
+    [Export] private AudioStreamPlayer  _threeAudio;
+    [Export] private AudioStreamPlayer  _twoAudio;
+    [Export] private AudioStreamPlayer  _oneAudio;
     [Export] private AudioStreamPlayer  _fightAudio;
+
+    /// <summary>Seconds of silence before "3" appears.</summary>
+    [Export] private float _countdownInitialDelay = 1.5f;
+    /// <summary>Seconds each number is shown before the next one appears.</summary>
+    [Export] private float _countdownStepDuration = 1.0f;
 
     // -------------------------------------------------------------------------
     // Per-peer match state
@@ -176,19 +183,21 @@ public partial class BattleManager : Node2D
         if (_countdownOverlay != null) _countdownOverlay.Visible = true;
 
         FreezeCharacters();
-        ShowCount("3");
-        _tickAudio?.Play();
 
-        GetTree().CreateTimer(1.5).Timeout += () => { ShowCount("2"); _tickAudio?.Play(); };
-        GetTree().CreateTimer(3.0).Timeout += () => { ShowCount("1"); _tickAudio?.Play(); };
-        GetTree().CreateTimer(4.5).Timeout += () =>
+        float d = _countdownInitialDelay;
+        float s = _countdownStepDuration;
+
+        GetTree().CreateTimer(d).Timeout         += () => { ShowCount("3"); _threeAudio?.Play(); };
+        GetTree().CreateTimer(d + s).Timeout     += () => { ShowCount("2"); _twoAudio?.Play(); };
+        GetTree().CreateTimer(d + s * 2).Timeout += () => { ShowCount("1"); _oneAudio?.Play(); };
+        GetTree().CreateTimer(d + s * 3).Timeout += () =>
         {
             ShowCount("FIGHT!");
             _fightAudio?.Play();
             UnfreezeCharacters();
             _countdownActive = false;
         };
-        GetTree().CreateTimer(5.5).Timeout += () =>
+        GetTree().CreateTimer(d + s * 3 + 1.0f).Timeout += () =>
         {
             if (_countdownOverlay != null) _countdownOverlay.Visible = false;
         };
