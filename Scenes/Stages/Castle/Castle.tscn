@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://rbowfddj7rhg"]
 
-[ext_resource type="Shader" uid="uid://nmtxvyrl0yuc" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
-[ext_resource type="Shader" uid="uid://nt2tks8n5tbh" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
-[ext_resource type="Script" uid="uid://cwecpusuqfa4q" path="res://Scripts/Stages/Utility/Camera2d.cs" id="2_js386"]
-[ext_resource type="Script" uid="uid://dkn4s4rhl6vaa" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
+[ext_resource type="Shader" uid="uid://b0tsluylw1qjw" path="res://Assets/Levels/Castle/CastleBrick.gdshader" id="1_2iiqq"]
+[ext_resource type="Shader" path="res://Assets/Levels/Castle/CastleSky.gdshader" id="1_7w41v"]
+[ext_resource type="Script" uid="uid://djvvatbos7n6k" path="res://Scripts/Stages/Castle/TowerFade.cs" id="3_fbqer"]
+[ext_resource type="Script" uid="uid://4f4vfqjywpvm" path="res://Scripts/Stages/Utility/CastleCamera.cs" id="4_fbqer"]
 [ext_resource type="Shader" uid="uid://b4ar14vnfiwg8" path="res://Assets/Levels/Clocktower.gdshader" id="4_pixl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7w41v"]
@@ -20,6 +20,24 @@ shader_parameter/lightning_frequency = 0.3850000182875
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3rsef"]
 size = Vector2(3653, 79)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tjh41"]
+shader = ExtResource("1_2iiqq")
+shader_parameter/brick_color = Color(0.45, 0.22, 0.15, 1)
+shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 64.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bcwio"]
+shader = ExtResource("1_2iiqq")
+shader_parameter/brick_color = Color(0.45, 0.22, 0.15, 1)
+shader_parameter/mortar_color = Color(0.75, 0.72, 0.68, 1)
+shader_parameter/brick_width = 80.0
+shader_parameter/brick_height = 64.0
+shader_parameter/mortar_thickness = 4.0
+shader_parameter/ambient_light = 1.0
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2iiqq"]
 size = Vector2(698, 35)
 
@@ -33,7 +51,7 @@ shader_parameter/mortar_thickness = 4.0
 shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_fbqer"]
-polygon = PackedVector2Array(439, -299, 438, -370, 443.99426, -280, 443, 705)
+polygon = PackedVector2Array(439, -299, 438, -370, 443.99426, -280, 443.99426, 1298)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7w41v"]
 size = Vector2(3, 1624)
@@ -172,7 +190,7 @@ shader_parameter/ambient_light = 0.550000026125
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pixl"]
 shader = ExtResource("4_pixl")
-shader_parameter/pixel_size = 5.0
+shader_parameter/pixel_size = 2.5
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sn43w"]
 size = Vector2(11283, 895)
@@ -200,19 +218,28 @@ anchors_preset = 0
 [node name="ColorRect" type="ColorRect" parent="Background" unique_id=752596749]
 material = SubResource("ShaderMaterial_7w41v")
 layout_mode = 0
-offset_left = -118.0
+offset_left = -2719.0
 offset_top = -819.99994
-offset_right = 64.64998
-offset_bottom = -700.1
+offset_right = -2276.25
+offset_bottom = -620.69995
 scale = Vector2(20, 20)
 color = Color(0, 0.6509804, 1, 1)
 
 [node name="Ground" type="StaticBody2D" parent="." unique_id=321402204]
+z_index = 1
 position = Vector2(1067, 1498)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=1460815677]
 position = Vector2(641.5, 40.5)
 shape = SubResource("RectangleShape2D_3rsef")
+
+[node name="Polygon2D" type="Polygon2D" parent="Ground/CollisionShape2D" unique_id=554258760]
+material = SubResource("ShaderMaterial_tjh41")
+polygon = PackedVector2Array(1127.5, -39.5, 1127.5, 38.5, 1828.5, 38.5, 1828.5, -39.5)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Ground/CollisionShape2D" unique_id=2129028991]
+material = SubResource("ShaderMaterial_bcwio")
+polygon = PackedVector2Array(-1826.5, -38.5, -1826.5, 40.5, -1126.5, 41.5, -1127.5, -40.5)
 
 [node name="TowerLeft" type="StaticBody2D" parent="." unique_id=255941224]
 light_mask = 2
@@ -382,6 +409,7 @@ shape = SubResource("RectangleShape2D_2iiqq")
 one_way_collision = true
 
 [node name="Exterior" type="Polygon2D" parent="TowerRight" unique_id=1874890098]
+visible = false
 light_mask = 4
 z_index = 1
 material = SubResource("ShaderMaterial_2iiqq")
@@ -394,7 +422,7 @@ position = Vector2(-1, 0)
 occluder = SubResource("OccluderPolygon2D_fbqer")
 
 [node name="LeftWall" type="CollisionShape2D" parent="TowerRight" unique_id=488221240]
-position = Vector2(-258.5, 530)
+position = Vector2(431.5, 530)
 shape = SubResource("RectangleShape2D_7w41v")
 
 [node name="Area2D" type="Area2D" parent="TowerRight" unique_id=510916640]
@@ -407,11 +435,11 @@ position = Vector2(12, 312.5)
 shape = SubResource("RectangleShape2D_fbqer")
 
 [node name="RightWallTop" type="CollisionShape2D" parent="TowerRight" unique_id=478700435]
-position = Vector2(435.5, 72.5)
+position = Vector2(-256.5, 72.5)
 shape = SubResource("RectangleShape2D_f15jd")
 
 [node name="RightWallBottom" type="CollisionShape2D" parent="TowerRight" unique_id=1740897508]
-position = Vector2(435.5, 923.5)
+position = Vector2(-250.5, 923.5)
 shape = SubResource("RectangleShape2D_f15jd")
 
 [node name="Interior" type="Polygon2D" parent="TowerRight" unique_id=1983505635]
@@ -556,7 +584,7 @@ polygon = PackedVector2Array(-962, 53, 962.8086, 52.99994, 1293, 53, 1293, 667, 
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1862920484]
 position = Vector2(581, 323)
-script = ExtResource("2_js386")
+script = ExtResource("4_fbqer")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=977003687]
 rotation = 1.0471976
@@ -575,9 +603,9 @@ shadow_item_cull_mask = 3
 [node name="Pixelator" type="ColorRect" parent="." unique_id=2099999901]
 material = SubResource("ShaderMaterial_pixl")
 layout_direction = 1
-offset_left = -125.0
+offset_left = -1866.9998
 offset_top = -833.99994
-offset_right = -25.0
+offset_right = -1698.3497
 offset_bottom = -733.99994
 scale = Vector2(40, 40)
 
