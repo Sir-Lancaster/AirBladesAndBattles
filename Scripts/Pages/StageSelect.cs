@@ -48,6 +48,8 @@ public partial class StageSelect : Control
 
     public override void _Ready()
     {
+        MusicManager.Instance?.PlayMusic();
+
         _stage1Button.Pressed += () => SelectStage(_stage1Button, Stage1Path);
         _stage2Button.Pressed += () => SelectStage(_stage2Button, Stage2Path);
         _stage3Button.Pressed += () => SelectStage(_stage3Button, Stage3Path);

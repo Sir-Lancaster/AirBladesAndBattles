@@ -10,9 +10,11 @@
 [ext_resource type="AudioStream" uid="uid://hqqkqrn3ivyi" path="res://Assets/Music/Two.mp3" id="8_m8bja"]
 [ext_resource type="AudioStream" uid="uid://bcsrhwtjjl6q6" path="res://Assets/Music/One.mp3" id="9_8sca6"]
 [ext_resource type="AudioStream" uid="uid://beiucaqw3msy6" path="res://Assets/Music/Fight.mp3" id="10_aqfmt"]
+[ext_resource type="PackedScene" uid="uid://ds5m2d46s32vc" path="res://Scenes/Stages/Utility/GameEnd.tscn" id="11_gend1"]
 
 [node name="BattleScene" type="Node2D" unique_id=1083902639 node_paths=PackedStringArray("_gameHUD", "_countdownOverlay", "_countdownLabel", "_threeAudio", "_twoAudio", "_oneAudio", "_fightAudio")]
 script = ExtResource("1_ei3p6")
+_gameEndScene = ExtResource("11_gend1")
 _gameHUD = NodePath("GameHud")
 _kernelCowboyPortrait = ExtResource("2_m8yak")
 _sirEdwardPortrait = ExtResource("3_50uvd")

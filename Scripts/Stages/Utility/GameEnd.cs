@@ -12,10 +12,10 @@ public partial class GameEnd : CanvasLayer
     public string OverrideWinnerName { get; set; } = string.Empty;
 
     /// <summary>
-    /// When true the return button closes the multiplayer peer before going to main menu.
+    /// When true the return button navigates all peers back to stage select (multiplayer flow).
     /// Set to true by BattleManager for multiplayer matches.
     /// </summary>
-    public bool DisconnectOnReturn { get; set; } = false;
+    public bool ReturnToStageSelect { get; set; } = false;
 
     public override void _Ready()
     {
@@ -35,14 +35,18 @@ public partial class GameEnd : CanvasLayer
 
         _winnerLabel.Text = $"{FormatName(charKey)} Wins!";
 
-        if (DisconnectOnReturn)
+        if (ReturnToStageSelect)
         {
-            _returnButton.Pressed += () =>
+            if (NetworkManager.Instance.IsHost)
             {
-                Multiplayer.MultiplayerPeer?.Close();
-                Multiplayer.MultiplayerPeer = null;
-                GameManager.Instance.GoToMainMenu();
-            };
+                _returnButton.Text = "Next Round";
+                _returnButton.Pressed += () => NetworkManager.Instance.StartStageSelect();
+            }
+            else
+            {
+                _returnButton.Text = "Waiting for host...";
+                _returnButton.Disabled = true;
+            }
         }
         else
         {

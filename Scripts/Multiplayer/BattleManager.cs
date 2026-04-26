@@ -100,6 +100,8 @@ public partial class BattleManager : Node2D
         // the data string to every peer and runs this function on each of them.
         _spawner.SpawnFunction = new Callable(this, nameof(CustomSpawn));
 
+        MusicManager.Instance?.StopMusic();
+
         LoadStage();
 
         if (Multiplayer.IsServer())
@@ -466,7 +468,7 @@ public partial class BattleManager : Node2D
 
         var gameEnd = _gameEndScene.Instantiate<GameEnd>();
         gameEnd.OverrideWinnerName = charName;
-        gameEnd.DisconnectOnReturn = true;
+        gameEnd.ReturnToStageSelect = true;
         AddChild(gameEnd);
     }
 
